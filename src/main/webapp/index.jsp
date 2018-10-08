@@ -1,3 +1,8 @@
+<%@page import="com.google.gson.GsonBuilder"%>
+<%@page import="ugt.opciones.iu.OpcionesIU"%>
+<%@page import="servicios.swLogin"%>
+<%@page import="ugt.entidades.Tbusuariosentidad"%>
+<%@page import="utg.login.Login"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Iterator"%>
@@ -49,6 +54,8 @@
         session.setAttribute("ingreso", "false");
         String codigocas = "";
         String cedulacas = "";
+        String nombre = "";
+        Login login = (Login) session.getAttribute("login");
         try {
 
             if (request.getUserPrincipal() != null) {
@@ -82,6 +89,10 @@
                                 if (attributeName == "clientName") {
                                     session.setAttribute("tipousuario2", attributeValue.toString());
                                 }
+
+                                if (attributeName == "given_name") {
+                                    nombre = attributeValue.toString();
+                                }
                             }
                         }
                     } else {
@@ -99,11 +110,34 @@
                     } else {
                         tipoLogueo = "Institucional";
                     }
-                    
+
                     //aqui desarrollo
+                    if (login == null) {
+                        login = new Login();
+                        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+                        String json = swLogin.loginUser(cedulacas);
+                        if (json.length() > 2) {
+                            JSONArray arrayJSON = new JSONArray(json);
+                            for (int i = 0; i < arrayJSON.length(); i++) {
+                                JSONObject childJSONObject = arrayJSON.getJSONObject(i);
+                                Tbusuariosentidad roles = gson.fromJson(childJSONObject.toString(), Tbusuariosentidad.class);
+                                login.getRolesEntity().add(roles);
+                            }
+                            if (login.getRolesEntity().size() > 0) {
+                                login.setRolActivo(login.getRolesEntity().get(0).getTbroles());
+                                String jsonArrayOpc = swLogin.opcionesRol(login.getRolActivo().getIdrol().toString());
+                                OpcionesIU opciones = new OpcionesIU();
+                                opciones.setListaJSON(jsonArrayOpc);
+                                session.setAttribute("opcionesIU", opciones);
+                            }
+
+                            session.setAttribute("login", login);
+                        } else {
+                            response.sendError(501, "Error No existe en el sistema");
+                        }
+                    }
                 }
             }
-             
 
         } catch (Exception e) {
         } finally {
@@ -112,8 +146,8 @@
     %>
     <link href="assets/css/skins/darkblue.css" rel="stylesheet" type="text/css"/>
     <body class="sidebar-fixed topnav-fixed dashboard">
-        <div id="Logeo" name="Logeo" ><div style="display:none;"><% out.println(tipoLogueo); %></div></div>
-      
+        <div id="Logeo" name="Logeo" ><div style="display:none;"><% out.println(tipoLogueo);%></div></div>
+
         <!-- WRAPPER -->
         <div id="wrapper" class="wrapper">
             <!-- TOP BAR -->
@@ -133,17 +167,25 @@
                                     <div id="btnUser" class="btn-group">
                                         <a  class="btn btn-link dropdown-toggle" data-toggle="dropdown" >
                                             <img src="assets/img/user-avatar.png" alt="User Avatar" />
-                                            <span class='name'>Usuario logueado</span><span class='caret'></span>
-                                               
+                                            <span class='name'><%out.print(nombre); %></span><span class='caret'></span>
+
 
                                         </a>
                                         <ul class="dropdown-menu" role="menu" >
-                                            <li>
-                                                <a onclick="fncLnkAdmin();" style='cursor: pointer'>
-                                                    <i class="fa fa-user"></i>
-                                                    <span class="text">Menu 1</span>
-                                                </a>
-                                            </li>
+                                            <%
+                                                if (login != null) {
+                                                    for (Tbusuariosentidad rol : login.getRolesEntity()) {
+                                                        if (rol.getTbroles().getEstado() != "Deshabilitado") {
+                                                            out.println("<li>");
+                                                            out.println("    <a onclick=\"fncambiarRol(" + rol.getTbroles().getCharrol() + ");\" style='cursor: pointer'>");
+                                                            out.println("       <i class=\"fa fa-user\"></i>");
+                                                            out.println("       <span class=\"text\">"+rol.getTbroles().getDescripcion()+"</span>");
+                                                            out.println("    </a>");
+                                                            out.println("</li>");
+                                                        }
+                                                    }
+                                                }
+                                            %>
                                             <li>
                                                 <a onclick="Matar();" style='cursor: pointer' >
                                                     <i class="fa fa-power-off"></i>
@@ -196,33 +238,33 @@
                         <h2>Ejemplo</h2>
                         <em>SEjemplo DTIC ESPOCH</em>
                     </div>
-                    
+
                     <div id='contenidoInferior' class="main-content">
                         <p class="lead">ejemplo.</p>
-                        
-                        
-                        <div id="menuLateral" class="col-xs-3">
-                        <div id="menuTipo">
-                            <span id='lnkReportes'  class='dda-link'onclick="graficarPanelInicio(1)">
-                                <i class='fa fa-pie-chart'></i>
-                            </span>
-                            <span id='lnkDocumentos' class='dda-link' onclick="graficarPanelInicio(2)">
-                                <i class='fa fa-file-text'></i>
-                            </span>
-                            <span id='lnkConfigurar' class='dda-link'  onclick="graficarPanelInicio(3)">
-                                <i class='fa fa-cog'></i>
-                            </span>
-                        </div>
-                        <div id="menuLateralScrollbar">
 
-                            <!-- Menú Lateral-->
-                            <div id="contenidoMenuLateral">
-                                <!--Contenido Menu Sistema--> 
+
+                        <div id="menuLateral" class="col-xs-3">
+                            <div id="menuTipo">
+                                <span id='lnkReportes'  class='dda-link'onclick="graficarPanelInicio(1)">
+                                    <i class='fa fa-pie-chart'></i>
+                                </span>
+                                <span id='lnkDocumentos' class='dda-link' onclick="graficarPanelInicio(2)">
+                                    <i class='fa fa-file-text'></i>
+                                </span>
+                                <span id='lnkConfigurar' class='dda-link'  onclick="graficarPanelInicio(3)">
+                                    <i class='fa fa-cog'></i>
+                                </span>
                             </div>
-                        </div>
-                    </div> 
-                        
-                        
+                            <div id="menuLateralScrollbar">
+
+                                <!-- Menú Lateral-->
+                                <div id="contenidoMenuLateral">
+                                    <!--Contenido Menu Sistema--> 
+                                </div>
+                            </div>
+                        </div> 
+
+
                         </br>
                         <div class="bottom-30px"></div>
                     </div>
@@ -261,12 +303,12 @@
         <script src="assets/js/king-chart-stat.js"></script>
         <script src="assets/js/king-table.js"></script>
         <script src="assets/js/king-components.js"></script>
-        
-        
+
+
         <script src="js/validacion.js" type="text/javascript"></script>
         <script src="js/validaTiempo.js" type="text/javascript"></script>
         <script src="js/dtic.js" type="text/javascript"></script>
-        
+
         <script src="assets/js/plugins/jqgrid/jquery.jqGrid.min.js"></script>
         <script src="assets/js/plugins/jqgrid/i18n/grid.locale-en.js"></script>
         <script src="assets/js/plugins/jqgrid/jquery.jqGrid.fluid.js"></script>

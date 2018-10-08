@@ -37,7 +37,7 @@ function fncLnkAdmin() {
     $("#left-sidebar").css("background-color", "#304A54");
     $("#contenidoDinamico").html("");
     $.ajax({
-        url: "MenuSA.jsp",
+        url: "protected/PaginasPrincipales/MenuSA.jsp",
         type: "GET",
         data: {},
         contentType: "application/json ; charset=UTF-8",
