@@ -3,6 +3,7 @@ $(document).ready(function () {
         $('.left-sidebar').addClass('minified');
         $('.content-wrapper').addClass('expanded');
     }
+    cambiarRol("first");
 });
 
 function abrecierra() {

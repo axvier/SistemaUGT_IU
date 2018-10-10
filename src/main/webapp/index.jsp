@@ -235,12 +235,12 @@
                 <!-- main -->
                 <div id='contenidoDinamico' class="content">
                     <div class="main-header">
-                        <h2>Ejemplo</h2>
-                        <em>SEjemplo DTIC ESPOCH</em>
+                        <h2>UGT</h2>
+                        <em>ESPOCH</em>
                     </div>
 
                     <div id='contenidoInferior' class="main-content">
-                        <p class="lead">ejemplo.</p>
+                        <p class="lead">Bienvenido.</p>
 
 
                         <div id="menuLateral" class="col-xs-3">

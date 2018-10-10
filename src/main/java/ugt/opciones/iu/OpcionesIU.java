@@ -12,7 +12,7 @@ import ugt.entidades.listas.OpcionesL;
  *
  * @author Xavy PC
  */
-public class OpcionesIU extends OpcionesL{
+public class OpcionesIU extends OpcionesL {
 
     public void setListaJSON(String arrayJSON) {
         if (arrayJSON.length() > 2) {
@@ -23,4 +23,20 @@ public class OpcionesIU extends OpcionesL{
             this.setLista(lista);
         }
     }
+
+    public String htmlMenu() {
+        String HTML = "";
+        for (Tbopciones opcion : this.getLista()) {
+            switch (opcion.getIdopcion()) {
+                case 1: //Menu Gestion roles - usuarios - opciones
+//                    HTML += getHTMLMenuGestionRolesUsuariosOpciones(opcion.getNombre());
+                    break;
+            }
+        }
+        return HTML;
+    }
+    
+//    private String getHTMLMenuGestionRolesUsuariosOpciones(String opcion){
+//        
+//    }
 }
