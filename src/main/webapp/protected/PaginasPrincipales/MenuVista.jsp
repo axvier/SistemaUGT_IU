@@ -13,15 +13,15 @@
     if (login != null) {
         if (login.getRolActivo().getCharrol().equals("Admin")) {
 %>
-<link href="../../assets/css/skins/fulldark.css" rel="stylesheet" type="text/css"/>
+<link href="assets/css/skins/fulldark.css" rel="stylesheet" type="text/css"/>
 <%} else if (login.getRolActivo().getCharrol().equals("Sadmi")) {
 %>
-<link href="../../assets/css/skins/slategray.css" rel="stylesheet" type="text/css"/>
+<link href="assets/css/skins/slategray.css" rel="stylesheet" type="text/css"/>
 <%} else {
 %>
-<link href="../../assets/css/skins/darkblue.css" rel="stylesheet" type="text/css"/>
+<link href="assets/css/skins/darkblue.css" rel="stylesheet" type="text/css"/>
 <%}%>
-<script src="assets/js/jquery/jquery-2.1.0.min.js"></script>
+<!--<script src="assets/js/jquery/jquery-2.1.0.min.js"></script>-->
 <script src="assets/js/king-common.js"></script>
 
 <div class="sidebar-minified js-toggle-minified">
@@ -33,7 +33,7 @@
         <ul class="main-menu">
             <%
                 String accion = request.getParameter("accion");
-                if (accion.equals("mostrarMenu")) {
+                if (accion.equals("imprimirMenu")) {
                     OpcionesIU opcionesIU = (OpcionesIU) session.getAttribute("opcionesIU");
 //                        String menu = opcionesIU.htmlMenu();
 //                        String data = "{\"contenido\":\"" + menu + "\"}";
@@ -80,12 +80,12 @@
                 }
                 if (opc.getIdopcion().equals(3)) {//Menu Gestión Conductores
             %>
-            <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-drivers-license fa-fw"></i><span class="text">Gestión conductores</span>
+            <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-users"></i><span class="text">Gestión conductores</span>
                     <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
                 <ul id="submenu1" class="sub-menu ">
                     <li style='cursor: pointer'>
                         <a onclick="fncGestionChoferes()">
-                            <i class="fa fa-user-circle"></i><span class="text">Conductores disponibles</span>
+                            <i class="fa fa-user"></i><span class="text">Conductores disponibles</span>
                         </a>
                     </li>
                     <li style='cursor: pointer'>
@@ -137,12 +137,12 @@
                 }
                 if (opc.getIdopcion().equals(6)) {//Menu Gestión Ordenes de Movilizacion
             %>
-            <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-briefcase fa-fw"></i><span class="text">Gestión salvoconductos</span>
+            <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-clone fa-fw"></i><span class="text">Gestión salvoconductos</span>
                     <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
                 <ul id="submenu1" class="sub-menu ">
                     <li style='cursor: pointer'>
                         <a onclick="fncGenerarOrden()">
-                            <i class="fa fa-tachometerl"></i><span class="text">Generar Orden</span>
+                            <i class="fa fa-th"></i><span class="text">Generar Orden</span>
                         </a>
                     </li>
                     <li style='cursor: pointer'>
@@ -153,38 +153,71 @@
                 </ul>
             </li>
             <%
-                            }
-                if (opc.getIdopcion().equals(6)) {//Menu Para Reportes
+                }
+                if (opc.getIdopcion().equals(7)) {//Menu Para Reportes
             %>
-            <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-clone fa-fw"></i><span class="text">Reportes</span>
+            <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-bar-chart fa-fw"></i><span class="text">Reportes</span>
                     <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
                 <ul id="submenu1" class="sub-menu ">
                     <li style='cursor: pointer'>
                         <a onclick="fncReporteConductores()">
-                            <i class="fa fa-tachometerl"></i><span class="text">Conductores</span>
+                            <i class="fa fa-users"></i><span class="text">Conductores</span>
                         </a>
                     </li>
                     <li style='cursor: pointer'>
-                        <a onclick="fncReporteConductores()">
-                            <i class="fa fa-tachometerl"></i><span class="text">Vehiculos</span>
+                        <a onclick="fncReporteVehiculos()">
+                            <i class="fa fa-truck"></i><span class="text">Vehiculos</span>
                         </a>
                     </li>
                     <li style='cursor: pointer'>
-                        <a onclick="fncReporteConductores()">
-                            <i class="fa fa-tachometerl"></i><span class="text">Vehiculos</span>
+                        <a onclick="fncReporteSolicitudes()">
+                            <i class="fa fa-check"></i><span class="text">Solicitudes</span>
+                        </a>
+                    </li>
+                    <li style='cursor: pointer'>
+                        <a onclick="fncReporteOrdenes()">
+                            <i class="fa fa-list-ul"></i><span class="text">ordenes de movilizacion</span>
                         </a>
                     </li>
                 </ul>
             </li>
             <%
-                            }
+                }
+                if (opc.getIdopcion().equals(8)) {//Menu Mis solicitudes Usuario
+            %>
+            <li style='cursor: pointer'>
+                <a onclick="fncMisSolicitudes();">
+                    <i class="fa fa-book"></i><span class="text">Mis Solicitudes</span>
+                </a>
+            </li>
+            <%
+                }
+                if (opc.getIdopcion().equals(9)) {//Menu Nueva Solicitud Usuario
+            %>
+            <li style='cursor: pointer'>
+                <a onclick="fncNuevaSolicitud();">
+                    <i class="fa fa-plus fa-fw"></i><span class="text">Nueva Solicitud</span>
+                </a>
+            </li>
+            <%
+                }
+                if (opc.getIdopcion().equals(10)) {//Menu Gestion de Requisitos PDF
+            %>
+            <li style='cursor: pointer'>
+                <a onclick="fncPDFrequisitos();">
+                    <i class="fa fa-file-pdf-o fa-fw"></i><span class="text">Gestion PDF Requisitos</span>
+                </a>
+            </li>
+            <%
                         }
                     }
-
-                } else {
-                    response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");
                 }
             %>
         </ul>
     </nav>
 </div>
+<%
+    } else {
+        response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");
+    }
+%>

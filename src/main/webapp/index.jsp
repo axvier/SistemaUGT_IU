@@ -177,9 +177,9 @@
                                                     for (Tbusuariosentidad rol : login.getRolesEntity()) {
                                                         if (rol.getTbroles().getEstado() != "Deshabilitado") {
                                                             out.println("<li>");
-                                                            out.println("    <a onclick=\"fncambiarRol(" + rol.getTbroles().getCharrol() + ");\" style='cursor: pointer'>");
+                                                            out.println("    <a onclick=\"fncambiarRol('" + rol.getTbroles().getCharrol() + "');\" style='cursor: pointer'>");
                                                             out.println("       <i class=\"fa fa-user\"></i>");
-                                                            out.println("       <span class=\"text\">"+rol.getTbroles().getDescripcion()+"</span>");
+                                                            out.println("       <span class=\"text\">" + rol.getTbroles().getDescripcion() + "</span>");
                                                             out.println("    </a>");
                                                             out.println("</li>");
                                                         }
@@ -210,15 +210,8 @@
                     <i class="fa fa-exchange"></i>
                 </div>
                 <div class="sidebar-scroll">
-                    <nav class="main-nav">
-                        <ul class="main-menu">
-                            <li style='cursor: pointer' title="Mostrar certificados">
-                                <a onclick="" >
-                                    <i class="fa fa-delicious"></i><span class="text">Mi perfil</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <center><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+                    <span class="sr-only">Cargando...</span></center>
                 </div>
 
             </div>
@@ -243,7 +236,7 @@
                         <p class="lead">Bienvenido.</p>
 
 
-                        <div id="menuLateral" class="col-xs-3">
+<!--                        <div id="menuLateral" class="col-xs-3">
                             <div id="menuTipo">
                                 <span id='lnkReportes'  class='dda-link'onclick="graficarPanelInicio(1)">
                                     <i class='fa fa-pie-chart'></i>
@@ -257,16 +250,16 @@
                             </div>
                             <div id="menuLateralScrollbar">
 
-                                <!-- Menú Lateral-->
+                                 Menú Lateral
                                 <div id="contenidoMenuLateral">
-                                    <!--Contenido Menu Sistema--> 
+                                    Contenido Menu Sistema 
                                 </div>
                             </div>
-                        </div> 
+                        </div> -->
 
 
                         </br>
-                        <div class="bottom-30px"></div>
+                        <!--<div class="bottom-30px"></div>-->
                     </div>
 
                 </div>
@@ -306,7 +299,6 @@
 
 
         <script src="js/validacion.js" type="text/javascript"></script>
-        <script src="js/validaTiempo.js" type="text/javascript"></script>
         <script src="js/dtic.js" type="text/javascript"></script>
 
         <script src="assets/js/plugins/jqgrid/jquery.jqGrid.min.js"></script>
@@ -318,6 +310,9 @@
         <script src="alertify/alertify.js" type="text/javascript"></script>
         <link href="alertify/css/alertify.css" crossorigin="anonymous" rel="stylesheet" />
         <link href="alertify/css/themes/semantic.css" rel="stylesheet" >
+
+        <!--para que funcione la aplicacion-->
+        <script src="js/ugt.js" type="text/javascript"></script>
 
     </body>
 </html>

@@ -15,7 +15,7 @@
             response.sendRedirect("MenuVista.jsp?accion="+accion);
         }else if(opcion.equals("cambiarRol")){
             String rol = request.getParameter("rol");
-            response.sendRedirect("MenuModel.jsp?opcion="+opcion+"&rol="+rol);
+            response.sendRedirect("MenuModelo.jsp?opcion="+opcion+"&rol="+rol);
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

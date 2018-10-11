@@ -15,7 +15,17 @@
         String opcion = request.getParameter("opcion");
         if (opcion.equals("cambiarRol")) {
             String rol = request.getParameter("rol");
-            Tbusuariosentidad search = login.getRolesEntity().stream().filter(userentiy -> userentiy.getTbroles().getCharrol().equals(rol)).findAny().orElse(null);
+            Tbusuariosentidad search = new Tbusuariosentidad();
+            if(rol.equals("first")){
+                search = login.getRolesEntity().get(0);
+            }else{
+                for(Tbusuariosentidad userentity : login.getRolesEntity()){
+                    if(userentity.getTbroles().getCharrol().equals(rol)){
+                        search = userentity;
+                        break;
+                    }
+                }
+            }
             if (search != null) {
                 login.setRolActivo(search.getTbroles());
                 String jsonArrayOpc = swLogin.opcionesRol(login.getRolActivo().getIdrol().toString());
