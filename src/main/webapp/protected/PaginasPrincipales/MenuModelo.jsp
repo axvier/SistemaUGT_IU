@@ -5,7 +5,7 @@
 --%>
 
 <%@page import="ugt.opciones.iu.OpcionesIU"%>
-<%@page import="servicios.swLogin"%>
+<%@page import="ugt.servicios.swLogin"%>
 <%@page import="ugt.entidades.Tbusuariosentidad"%>
 <%@page import="utg.login.Login"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>

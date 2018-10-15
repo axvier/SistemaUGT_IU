@@ -1,6 +1,6 @@
 <%@page import="com.google.gson.GsonBuilder"%>
 <%@page import="ugt.opciones.iu.OpcionesIU"%>
-<%@page import="servicios.swLogin"%>
+<%@page import="ugt.servicios.swLogin"%>
 <%@page import="ugt.entidades.Tbusuariosentidad"%>
 <%@page import="utg.login.Login"%>
 <%@page import="java.util.ArrayList"%>
@@ -302,7 +302,8 @@
         <script src="js/dtic.js" type="text/javascript"></script>
 
         <script src="assets/js/plugins/jqgrid/jquery.jqGrid.min.js"></script>
-        <script src="assets/js/plugins/jqgrid/i18n/grid.locale-en.js"></script>
+        <!--<script src="assets/js/plugins/jqgrid/i18n/grid.locale-en.js"></script>-->
+        <script src="assets/js/plugins/jqgrid/i18n/grid.locale-es.js"></script>
         <script src="assets/js/plugins/jqgrid/jquery.jqGrid.fluid.js"></script>
         <script src="assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
 
@@ -313,6 +314,6 @@
 
         <!--para que funcione la aplicacion-->
         <script src="js/ugt.js" type="text/javascript"></script>
-
+        <script src="protected/Administrador/Conductores/Conductores.js" type="text/javascript"></script>
     </body>
 </html>

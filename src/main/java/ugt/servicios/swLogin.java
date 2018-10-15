@@ -1,4 +1,4 @@
-package servicios;
+package ugt.servicios;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
