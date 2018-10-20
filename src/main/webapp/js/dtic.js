@@ -19,7 +19,7 @@ function VentanaPorte() {
     if ($(window).width() < 992) {
         $('.left-sidebar').addClass('minified');
         $('.content-wrapper').addClass('expanded');
-        
+
     } else {
 
 
@@ -166,3 +166,33 @@ function changeUrlParam(param, value) {
         }
     }
 }
+
+var validarCedula = function (idInput,idplay) {
+    var cad = document.getElementById(idInput).value.trim();
+    var total = 0;
+    var longitud = cad.length;
+    var longcheck = longitud - 1;
+
+    if (cad !== "" && longitud === 10) {
+        for (i = 0; i < longcheck; i++) {
+            if (i % 2 === 0) {
+                var aux = cad.charAt(i) * 2;
+                if (aux > 9)
+                    aux -= 9;
+                total += aux;
+            } else {
+                total += parseInt(cad.charAt(i)); // parseInt o concatenará en lugar de sumar
+            }
+        }
+
+        total = total % 10 ? 10 - total % 10 : 0;
+
+        if (cad.charAt(longitud - 1) == total) {
+            document.getElementById("salida").innerHTML = ("");
+            $('#'+idplay).prop("disabled", false);
+        } else {
+            document.getElementById("salida").innerHTML = ("<p style='color:#FF0000';>Cedula Inválida</p>");
+//            $('#'+idplay).attr("disabled","disabled");
+        }
+    }
+};

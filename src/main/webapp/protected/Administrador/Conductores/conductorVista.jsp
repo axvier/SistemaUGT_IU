@@ -24,6 +24,110 @@
     <em>Conductores</em>
 </div>
 <div class="main-content">
+    <!-- MODAL DIALOG -->
+    <div class="modal fade" id="miModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">UGT | Conductor Nuevo</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="formAddCond" class="form-horizontal" role="form" onsubmit="fncaddNuevoConductor(); return false;">
+                        <div class="form-group">
+                            <label  class="col-sm-2 control-label" for="addCedula">Cédula</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="cedula" class="form-control" id="addCedulaConductor" placeholder="123456789-0" onchange="validarCedula(this.id, 'btnAddCond')" maxlength="10" required/>
+                                <div id="salida"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="addNombres" >Nombres</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="nombres" class="form-control" id="addNombres" placeholder="Nombres" required/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="addApellidos" >Apellidos</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="apellidos" class="form-control" id="addApellidos" placeholder="Apellidos" required/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="addGenero" >Género</label>
+                            <div class="col-sm-10">
+                                <select name="genero" class="form-control" id="addGenero" placeholder="Género">
+                                    <option>Masculino</option>
+                                    <option>Femenino</option>
+                                    <option>Otros</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="addEstado" >Estado</label>
+                            <div class="col-sm-10">
+                                <select name="estado" class="form-control" id="addEstado" placeholder="Estado">
+                                    <option>Disponible</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="addFechanac" >Fecha Nacimiento</label>
+                            <div class="col-sm-10">
+                                <input type="date" name="fechanac" class="form-control" id="addFechanac" placeholder="2018-01-01" required/>
+                            </div>
+                        </div>
+                        <hr>
+                        <p>Licencia</p>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="addTipo" >Tipo Licencia</label>
+                            <div class="col-sm-10">
+                                <select name="tipo" class="form-control selectpicker" id="addTipo" data-live-search="true">
+                                    <option data-tokens="A">A</option>
+                                    <option data-tokens="B">B</option>
+                                    <option data-tokens="F">F</option>
+                                    <option data-tokens="A1">A1</option>
+                                    <option data-tokens="C">C</option>
+                                    <option data-tokens="C1">C1</option>
+                                    <option data-tokens="D">D</option>
+                                    <option data-tokens="D1">D1</option>
+                                    <option data-tokens="E">E</option>
+                                    <option data-tokens="E1">E1</option>
+                                    <option data-tokens="G">G</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="addFechaexpedicion" >Fecha expedición</label>
+                            <div class="col-sm-10">
+                                <input type="date" name="fechaexpedicion" class="form-control" id="addFechaexpedicion" placeholder="2018-01-01" required/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="addFechaexpiracion" >Fecha expiración</label>
+                            <div class="col-sm-10">
+                                <input type="date" name="fechaexpiracion" class="form-control" id="addFechaexpiracion" placeholder="2018-01-01" required/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cerrar</button>
+                            <button type="submit" class="btn btn-success" id="btnAddCond"><i class="fa fa-check-circle"></i> Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END MODAL DIALOG -->
+    <div>
+        <ul class="list-inline file-main-menu">
+            <li>
+                <a data-toggle="modal" data-target="#miModal" style='cursor: pointer'>
+                    <span class="fa-stack fa-lg"><i class="fa fa-user-plus fa-stack-2x"></i></span> Nuevo Conductor
+                </a>
+            </li>
+        </ul>
+    </div>
     <div class="widget widget-table">
         <div class="widget-header">
             <h3><i class="fa fa-table"></i> Gestión </h3><em>Tabla para editar la  información de los conductores disponilbes</em>
@@ -41,7 +145,7 @@
     </div> 
 </div>
 <%
-    } else if(accion.equals("jsonConductores")) {
+    } else if (accion.equals("jsonConductores")) {
         String json = (String) session.getAttribute("jsonArray");
         session.setAttribute("jsonArray", null);
         out.print(json);

@@ -101,7 +101,34 @@ public class swConductor {
             connection.setDoInput(true);
             connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             connection.setRequestProperty("Accept", "application/json; charset=utf-8");
-            try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "ISO-8859-1")) {
+            try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF-8")) {
+                writer.write(json);
+                writer.flush();
+            }
+            InputStream content = (InputStream) connection.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(content));
+            jsonResponse = in.readLine();
+            connection.disconnect();
+        } catch (NumberFormatException | IOException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio insertar para sConductor ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return jsonResponse;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Bloquear Conductor y retornar lista de disponibles JSON">
+    public static String bloquearConductor(String json, String cedula) throws IOException {
+        String jsonResponse = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/bloquearconductor/"+cedula);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            connection.setRequestProperty("Accept", "application/json; charset=utf-8");
+            try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF-8")) {
                 writer.write(json);
                 writer.flush();
             }

@@ -8,9 +8,14 @@
             response.sendRedirect("conductorVista.jsp?accion=" + accion);
         } else if (opc.equals("saveConductor")) {
             String jsonConductor = request.getParameter("jsonConductor");
-            response.sendRedirect("conductorModelo.jsp?opc=" + opc + "&jsonConductor=" + jsonConductor);
+            session.setAttribute("jsonConductor", jsonConductor);
+            String jsonLicencia = request.getParameter("jsonLicencia");
+            session.setAttribute("jsonLicencia", jsonLicencia);
+            response.sendRedirect("conductorModelo.jsp?opc=" + opc);
         } else if (opc.equals("eliminarConductor")) {
             String cedula = request.getParameter("cedula");
+            String json = request.getParameter("jsonConductor");
+            session.setAttribute("json", json);
             response.sendRedirect("conductorModelo.jsp?opc=" + opc + "&cedula=" + cedula);
         } else if (opc.equals("modificarConductor")) {
             String cedula = request.getParameter("cedula");

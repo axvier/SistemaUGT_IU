@@ -64,48 +64,111 @@ function cancelarEdicionConductor(objeto) {
     $(objeto).attr('title', 'Editar');
 }
 
+var fncaddNuevoConductor = function () {
+    var json = convertirObjetoJson("formAddCond");
+    var obj = JSON.parse(json);
+    obj.fechanac = obj.fechanac + "T00:00:00-05:00";
+    var licencia = {};
+    licencia.cedula = obj.cedula;
+    licencia.fechaexpedicion = obj.fechaexpedicion + "T00:00:00-05:00";
+    licencia.fechaexpiracion = obj.fechaexpiracion + "T00:00:00-05:00";
+    licencia.tipo = obj.tipo;
+    delete obj.tipo;
+    delete obj.fechaexpiracion;
+    delete obj.fechaexpedicion;
+    json = JSON.stringify(obj);
+    console.log(json);
+    console.log(JSON.stringify(licencia));
+    $("#jqgridChofer").jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
+    $("#miModal").modal('hide');
+};
+
 var fncDibujarTablaConductor = function () {
     var $grid = $("#jqgridChofer");
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Conductores";
     $grid.jqGrid({
         url: urlbase + "/conductorControlador.jsp?opc=jsonConductores",
+        editurl: urlbase + "/conductorControlador.jsp",
         mtype: "POST",
         datatype: "json",
         colModel: [
-            {label: 'Céedula', name: 'cedula', key: true, width: 100},
-            {label: 'Nombres', name: 'nombres', width: 150,editable: true},
-            {label: 'Apellidos', name: 'apellidos', width: 150,editable: true},
-            {label: 'Género', name: 'genero', width: 80,editable: true},
-            {label: 'Estado', name: 'estado', width: 90,editable: true},
-            {label: 'Fecha Nac', name: 'fechanac', width: 150,
-                formatter: 'date', formatoptions: {newformat: 'Y/m/d'},
-                editable: true
+            {label: 'Cédula', name: 'cedula', key: true, width: 100},
+            {label: 'Nombres', name: 'nombres', width: 150, editable: true},
+            {label: 'Apellidos', name: 'apellidos', width: 150, editable: true},
+            {label: 'Género', name: 'genero', width: 110, editable: true,
+                edittype: 'select',
+                editoptions: {
+                    value: 'Masculino:Masculino;Femenino:Femenino;Otros:Otros'
+                }
+            },
+            {label: 'Estado', name: 'estado', width: 110, editable: true,
+                edittype: 'select',
+                editoptions: {
+                    value: 'Disponible:Disponible;Ocupado:Ocupado'
+                }
+            },
+            {label: 'Fecha Nacimiento', name: 'fechanac', width: 150,
+                formatter: 'date',
+                formatoptions: {
+                    srcformat: "ISO8601Long",
+                    newformat: 'Y-m-d'
+                },
+                editable: true,
+                edittype: 'text',
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).datepicker({
+                            format: "yyyy-mm-dd"
+                        });
+                    }
+                },
+                editrules: {date: true}
             },
             {
                 label: "Opciones",
                 name: "actions",
+                sortable:false,
                 width: 100,
                 formatter: "actions",
                 formatoptions: {
                     keys: true,
                     editOptions: {},
                     addOptions: {},
-                    delOptions: {}
+                    delOptions: {
+                        height: 150,
+                        width: 300,
+                        serializeDelData: function (postdata) {
+                            var rowData = $grid.jqGrid('getRowData', postdata.id);
+                            delete rowData.actions;
+                            rowData.fechanac = rowData.fechanac + "T00:00:00-05:00";
+                            console.log(JSON.stringify(rowData));
+                            return {opc: "eliminarconductor", cedula: postdata.id, jsonConductor: JSON.stringify(rowData)};
+                        }
+                    }
                 }
             }
         ],
-        rownumbers:true,
+        rownumbers: true,
         viewrecords: true,
         width: 780,
         height: 250,
         rowNum: 15,
         loadonce: true,
-        pager: "#jqgrid_pager"
+        pager: "#jqgrid_pager",
+        serializeRowData: function (postdata) {
+            delete postdata.oper;
+            return {opc: "modificarConductor", jsonConductor: JSON.stringify(postdata), cedula: postdata.cedula};
+        }
     });
 
+    $grid.navGrid('#jqgrid_pager', {edit: false, add: false, del: false, search: true, beforeRefresh: function () {
+            $grid.jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
+        }, view: false, position: "left"});
+
     $(window).on("resize", function () {
-        var newWidth = $grid.closest(".ui-jqgrid").parent().width();
-        $grid.jqGrid("setGridWidth", newWidth, true);
-    });
+        var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
+        grid.jqGrid("setGridWidth", newWidth, true);
+    }).trigger('resize');
+
 };
 

@@ -12,7 +12,10 @@
             response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=conductoresConfg");
         }
     } else if (opc.equals("saveConductor")) {
-        String jsonConductor = request.getParameter("jsonConductor");
+        String jsonConductor = (String) session.getAttribute("jsonConductor");
+        String jsonLicencia = (String) session.getAttribute("jsonLicencia");
+        session.setAttribute("jsonConductor", null);
+        session.setAttribute("jsonLicencia", null);
         String jsonObject = swConductor.insertConductor(jsonConductor);
         if (jsonObject.length() > 0) {
             String arrayJSON = swConductor.listarConductores();
@@ -27,7 +30,9 @@
         }
     } else if (opc.equals("eliminarConductor")) {
         String cedula = request.getParameter("cedula");
-        String respuesta = swConductor.eliminarConductor(cedula);
+        String json = (String) session.getAttribute("json");
+        session.setAttribute("json", null);
+        String respuesta = swConductor.bloquearConductor(json, cedula);
         if (respuesta.equals("200") || respuesta.equals("204") || respuesta.equals("202")) {
             String arrayJSON = swConductor.listarConductores();
             if (arrayJSON.length() > 0) {
