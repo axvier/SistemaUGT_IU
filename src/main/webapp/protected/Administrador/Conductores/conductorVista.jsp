@@ -17,6 +17,30 @@
                 + "}";
         response.setContentType("text/plain");
         response.getWriter().write(result);
+    } else if (accion.equals("guardarStatus")) {
+        String respuesta = (String) session.getAttribute("statusGuardar");
+        session.setAttribute("statusGuardar", null);
+        String result = "{"
+                + "\"respuesta\":\"" + respuesta + "\""
+                + "}";
+        response.setContentType("text/plain");
+        response.getWriter().write(result);
+    } else if (accion.equals("eliminarStatus")) {
+        String respuesta = (String) session.getAttribute("statusEliminar");
+        session.setAttribute("statusEliminar", null);
+        String result = "{"
+                + "\"respuesta\":\"" + respuesta + "\""
+                + "}";
+        response.setContentType("text/plain");
+        response.getWriter().write(result);
+    } else if (accion.equals("modificarStatus")) {
+        String respuesta = (String) session.getAttribute("statusMod");
+        session.setAttribute("statusMod", null);
+        String result = "{"
+                + "\"respuesta\":\"" + respuesta + "\""
+                + "}";
+        response.setContentType("text/plain");
+        response.getWriter().write(result);
     } else if (accion.equals("tableConductores")) {
 %>
 <div class="main-header">
@@ -128,6 +152,16 @@
             </li>
         </ul>
     </div>
+    <div class="row">
+        <div class="col-lg-6 pull-right">
+            <div class="input-group">
+                <input id="search_cells" type="search" class="form-control">
+                <span class="input-group-btn">
+                    <button class="btn btn-custom-primary" type="button" disabled="disabled"><i class="fa fa-search"></i></button>
+                </span>
+            </div>
+        </div>
+    </div><br>
     <div class="widget widget-table">
         <div class="widget-header">
             <h3><i class="fa fa-table"></i> Gestión </h3><em>Tabla para editar la  información de los conductores disponilbes</em>

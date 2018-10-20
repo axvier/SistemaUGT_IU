@@ -16,7 +16,7 @@
 <%@page contentType='text/html' pageEncoding='UTF-8'%>
 <html lang="es" class="no-js">
     <head>
-        <title>DTIC | Ejemplo</title>
+        <title>DTIC | UGT</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">

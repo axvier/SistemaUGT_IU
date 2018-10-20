@@ -1,3 +1,4 @@
+<%@page import="ugt.servicios.swLicencia"%>
 <%@page import="ugt.servicios.swConductor"%>
 <%@page import="com.google.gson.Gson"%>
 <%
@@ -5,7 +6,7 @@
     Gson g = new Gson();
     if (opc.equals("conductoresConfg")) { //cargar los conductores
         String arrayJSON = swConductor.listarConductores();
-        if (arrayJSON.length() > 0) {
+        if (arrayJSON.length() > 2) {
 //            ConductoresIU conductoresIU = new ConductoresIU();
 //            conductoresIU.setListaJSON(arrayJSON);
 //            session.setAttribute("ConductoresIU", conductoresIU);
@@ -17,14 +18,14 @@
         session.setAttribute("jsonConductor", null);
         session.setAttribute("jsonLicencia", null);
         String jsonObject = swConductor.insertConductor(jsonConductor);
-        if (jsonObject.length() > 0) {
-            String arrayJSON = swConductor.listarConductores();
-            if (arrayJSON.length() > 0) {
-//                ConductoresIU conductoresIU = new ConductoresIU();
-//                conductoresIU.setListaJSON(arrayJSON);
-//                session.setAttribute("ConductoresIU", conductoresIU);
-                response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=conductoresConfg");
+        if (jsonObject.length() > 2) {
+            String arrayJSON = swLicencia.insertLicencia(jsonLicencia);
+            if (arrayJSON.length() > 2) {
+                session.setAttribute("statusGuardar", "OK");
+            } else {
+                session.setAttribute("statusGuardar", "KO");
             }
+            response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=guardarStatus");
         } else {
             response.sendError(200, "Ha ocurrido un error al momento de guardar");
         }
@@ -32,34 +33,23 @@
         String cedula = request.getParameter("cedula");
         String json = (String) session.getAttribute("json");
         session.setAttribute("json", null);
-        String respuesta = swConductor.bloquearConductor(json, cedula);
-        if (respuesta.equals("200") || respuesta.equals("204") || respuesta.equals("202")) {
-            String arrayJSON = swConductor.listarConductores();
-            if (arrayJSON.length() > 0) {
-//                ConductoresIU conductoresIU = new ConductoresIU();
-//                conductoresIU.setListaJSON(arrayJSON);
-//                session.setAttribute("ConductoresIU", conductoresIU);
-                response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=conductoresConfg");
-            }
+        String arrayJSON = swConductor.bloquearConductor(json, cedula);
+        if (arrayJSON.length() > 2) {
+            session.setAttribute("statusEliminar", "OK");
         } else {
-            response.sendError(200, "Ha ocurrido un error al momento de elimar");
+            session.setAttribute("statusEliminar", "KO");
         }
+        response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=eliminarStatus");
     } else if (opc.equals("modificarConductor")) {
         String cedula = (String) session.getAttribute("cedulaConductor");
-        String jsonConductor = request.getParameter("jsonConductor");
+        String jsonConductor = (String) session.getAttribute("jsonConductor");
         String jsonMod = swConductor.modificarConductor(jsonConductor, cedula);
-        if (jsonMod.length() > 0) {
-            String arrayJSON = swConductor.listarConductores();
-            if (arrayJSON.length() > 0) {
-//                ConductoresIU conductoresIU = new ConductoresIU();
-//                conductoresIU.setListaJSON(arrayJSON);
-//                session.setAttribute("ConductoresIU", conductoresIU);
-                response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=conductoresConfg");
-            }
+        if (jsonMod.length() > 2) {
+            session.setAttribute("statusMod", "OK");
         } else {
-            response.sendError(200, "Ha ocurrido un error al momento de elimar");
-
+            session.setAttribute("statusMod", "KO");
         }
+        response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=modificarStatus");
     } else if (opc.equals("jsonConductores")) {
         String jsonMod = swConductor.listarConductoresDisponibles();
         if (jsonMod.length() > 2) {

@@ -103,6 +103,7 @@ var fncDibujarTablaConductor = function () {
             },
             {label: 'Estado', name: 'estado', width: 110, editable: true,
                 edittype: 'select',
+                search: false,
                 editoptions: {
                     value: 'Disponible:Disponible;Ocupado:Ocupado'
                 }
@@ -122,12 +123,14 @@ var fncDibujarTablaConductor = function () {
                         });
                     }
                 },
-                editrules: {date: true}
+                editrules: {date: true},
+                search: false
             },
             {
                 label: "Opciones",
                 name: "actions",
-                sortable:false,
+                sortable: false,
+                search: false,
                 width: 100,
                 formatter: "actions",
                 formatoptions: {
@@ -165,10 +168,26 @@ var fncDibujarTablaConductor = function () {
             $grid.jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
         }, view: false, position: "left"});
 
+    $grid.jqGrid('filterToolbar', {stringResult: true, searchOnEnter: false,
+        defaultSearch: 'cn', ignoreCase: true});
+
     $(window).on("resize", function () {
         var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
         grid.jqGrid("setGridWidth", newWidth, true);
     }).trigger('resize');
 
+    $("#search_cells").on("keyup", function () {
+        var value = $(this).val();
+        $("table tr").each(function (index) {
+            if (!index)
+                return;
+            $(this).find("td").each(function () {
+                var id = $(this).text().toLowerCase().trim();
+                var not_found = (id.indexOf(value) == -1);
+                $(this).closest('tr').toggle(!not_found);
+                return not_found;
+            });
+        });
+    });
 };
 

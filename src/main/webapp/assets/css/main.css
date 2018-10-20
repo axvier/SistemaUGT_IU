@@ -1030,6 +1030,9 @@
 tr.ui-search-toolbar input {
   margin: 1px 0 0 0; }
 
+.clearsearchclass{
+  color: white; }
+
 tr.ui-search-toolbar select {
   margin: 1px 0 0 0; }
 

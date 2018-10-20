@@ -19,8 +19,10 @@
             response.sendRedirect("conductorModelo.jsp?opc=" + opc + "&cedula=" + cedula);
         } else if (opc.equals("modificarConductor")) {
             String cedula = request.getParameter("cedula");
+            session.setAttribute("cedula", cedula);
             String jsonConductor = request.getParameter("jsonConductor");
-            response.sendRedirect("conductorModelo.jsp?opc=" + opc + "&jsonConductor=" + jsonConductor + "&cedula=" + cedula);
+            session.setAttribute("jsonConductor", jsonConductor);
+            response.sendRedirect("conductorModelo.jsp?opc=" + opc);
         } else if (opc.equals("tableConductores")) {
             response.sendRedirect("conductorVista.jsp?accion="+opc);
         } else if (opc.equals("jsonConductores")) {
