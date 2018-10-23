@@ -196,3 +196,12 @@ var validarCedula = function (idInput,idplay) {
         }
     }
 };
+
+var swalTimer = function (titulo,mensaje,tipo) {
+    swal({
+     title: titulo,
+     text: mensaje,
+     type: tipo,
+     timer: 3000
+     });
+};

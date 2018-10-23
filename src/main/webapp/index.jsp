@@ -312,6 +312,8 @@
         <link href="alertify/css/alertify.css" crossorigin="anonymous" rel="stylesheet" />
         <link href="alertify/css/themes/semantic.css" rel="stylesheet" >
 
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.css">
         <!--para que funcione la aplicacion-->
         <script src="js/ugt.js" type="text/javascript"></script>
         <script src="protected/Administrador/Conductores/Conductores.js" type="text/javascript"></script>

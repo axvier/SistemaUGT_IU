@@ -19,9 +19,12 @@
         response.getWriter().write(result);
     } else if (accion.equals("guardarStatus")) {
         String respuesta = (String) session.getAttribute("statusGuardar");
+        String codigo = (String) session.getAttribute("statusCodigo");
         session.setAttribute("statusGuardar", null);
+        session.setAttribute("statusCodigo", null);
         String result = "{"
-                + "\"respuesta\":\"" + respuesta + "\""
+                + "\"respuesta\":\"" + respuesta + "\","
+                + "\"codigo\":\"" + codigo + "\""
                 + "}";
         response.setContentType("text/plain");
         response.getWriter().write(result);
@@ -150,6 +153,21 @@
                     <span class="fa-stack fa-lg"><i class="fa fa-user-plus fa-stack-2x"></i></span> Nuevo Conductor
                 </a>
             </li>
+            <li>
+                <a  id="mnCondDisp" href="#" onclick="cambiarJQGConductor('jsonConductores')">
+                    <span class="fa-stack fa-lg"><i class="fa fa-check fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores disponibles
+                </a>
+            </li>
+            <li>
+                <a id="mnCondOcup" href="#" onclick="cambiarJQGConductor('jsonConducOcup')">
+                    <span class="fa-stack fa-lg"><i class="fa fa-exchange fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores ocupados
+                </a>
+            </li>
+            <li>
+                <a id="mnCondOcup" href="#" onclick="verLicenciaConductor()">
+                    <span class="fa-stack fa-lg"><i class="fa fa-search fa-stack-1x"></i><i class="fa fa-credit-card fa-stack-2x"></i></span>Ver licencia
+                </a>
+            </li>
         </ul>
     </div>
     <div class="row">
@@ -164,7 +182,7 @@
     </div><br>
     <div class="widget widget-table">
         <div class="widget-header">
-            <h3><i class="fa fa-table"></i> Gestión </h3><em>Tabla para editar la  información de los conductores disponilbes</em>
+            <h3><i class="fa fa-table"></i> Gestión </h3><em>Tabla de edición</em>
         </div>
         <div class="widget-content">
             <div id="jqgrid-wrapper">

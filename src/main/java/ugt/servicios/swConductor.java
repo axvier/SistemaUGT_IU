@@ -42,7 +42,7 @@ public class swConductor {
     }
     //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="Listar Conductores Disponibles">
+    //<editor-fold defaultstate="collapsed" desc="Listar Conductores no Bloqueados">
     public static String listarConductoresDisponibles() {
         String json = "";
         try {
@@ -60,6 +60,54 @@ public class swConductor {
             conexion.disconnect();
         } catch (Exception e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para sConductor ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return json;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Listar Conductores Bloqueados">
+    public static String listarConductoresBloqueados() {
+        String json = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/conductoresbloqueados");
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setRequestMethod("GET");
+            conexion.setDoOutput(true); 
+            conexion.setDoInput(true);
+            InputStream contenido = (InputStream) conexion.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(contenido, "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                json = line;
+            }
+            conexion.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para sConductor bloqueados", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return json;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Listar Conductores por estado">
+    public static String listarConductoresXEstado(String estado) {
+        String json = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/conductoresestado/"+estado);
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setRequestMethod("GET");
+            conexion.setDoOutput(true); 
+            conexion.setDoInput(true);
+            InputStream contenido = (InputStream) conexion.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(contenido, "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                json = line;
+            }
+            conexion.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para sConductor bloqueados", e.getClass().getName() + "****" + e.getMessage());
             System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
         }
         return json;
@@ -123,7 +171,7 @@ public class swConductor {
         try {
             URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/bloquearconductor/"+cedula);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod("PUT");
             connection.setDoOutput(true);
             connection.setDoInput(true);
             connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
@@ -176,14 +224,14 @@ public class swConductor {
     public static String modificarConductor(String json, String cedula) {  //CLIENTE PARA CONSUMIR EL SERVICIO
         String jsonResponse = "";
         try {
-            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tbconductor/" + cedula);  //SERVICIO
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tbconductores/" + cedula);  //SERVICIO
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
             connection.setDoOutput(true);
             connection.setDoInput(true);
             connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
             connection.setRequestProperty("Accept", "application/json; charset=utf-8");
-            try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "ISO-8859-1")) {
+            try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "utf-8")) {
                 writer.write(json);
                 writer.flush();
             }

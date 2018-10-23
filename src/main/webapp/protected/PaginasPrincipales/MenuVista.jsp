@@ -85,7 +85,7 @@
                 <ul id="submenu1" class="sub-menu ">
                     <li style='cursor: pointer'>
                         <a onclick="fncGestionChoferes()">
-                            <i class="fa fa-user"></i><span class="text">Conductores disponibles</span>
+                            <i class="fa fa-user"></i><span class="text">Conductores</span>
                         </a>
                     </li>
                     <li style='cursor: pointer'>

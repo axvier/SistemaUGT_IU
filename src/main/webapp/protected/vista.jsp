@@ -12,7 +12,8 @@
     if (login != null) {
         String accion = request.getParameter("accion");
         if(accion.equals("jsonVacio")){
-            String datos = "{\"data\":\"vacio\"}";
+            String datos = "{\"rows\":\"\"}";
+            out.println(datos);
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

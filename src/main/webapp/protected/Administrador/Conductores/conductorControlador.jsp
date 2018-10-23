@@ -19,13 +19,17 @@
             response.sendRedirect("conductorModelo.jsp?opc=" + opc + "&cedula=" + cedula);
         } else if (opc.equals("modificarConductor")) {
             String cedula = request.getParameter("cedula");
-            session.setAttribute("cedula", cedula);
+            session.setAttribute("cedulaConductor", cedula);
             String jsonConductor = request.getParameter("jsonConductor");
             session.setAttribute("jsonConductor", jsonConductor);
             response.sendRedirect("conductorModelo.jsp?opc=" + opc);
         } else if (opc.equals("tableConductores")) {
             response.sendRedirect("conductorVista.jsp?accion="+opc);
         } else if (opc.equals("jsonConductores")) {
+            response.sendRedirect("conductorModelo.jsp?opc="+opc);
+        } else if (opc.equals("jsonConducBloc")) {
+            response.sendRedirect("conductorModelo.jsp?opc="+opc);
+        } else if (opc.equals("jsonConducOcup")) {
             response.sendRedirect("conductorModelo.jsp?opc="+opc);
         }
     }
