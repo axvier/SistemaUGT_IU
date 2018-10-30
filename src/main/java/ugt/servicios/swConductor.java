@@ -107,7 +107,7 @@ public class swConductor {
             }
             conexion.disconnect();
         } catch (Exception e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para sConductor bloqueados", e.getClass().getName() + "****" + e.getMessage());
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para lsitar conductores por estado", e.getClass().getName() + "****" + e.getMessage());
             System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
         }
         return json;

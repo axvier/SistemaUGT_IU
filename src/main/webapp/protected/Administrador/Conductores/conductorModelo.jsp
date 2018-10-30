@@ -1,3 +1,4 @@
+<%@page import="ugt.licencias.IU.LicenciasIU"%>
 <%@page import="ugt.conductores.iu.ConductorIU"%>
 <%@page import="org.json.JSONObject"%>
 <%@page import="ugt.servicios.swLicencia"%>
@@ -92,7 +93,28 @@
             response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=jsonConductores");
         } else {
             response.sendRedirect("../../vista.jsp?accion=jsonVacio");
-
         }
+    } else if (opc.equals("consLicencia")) {
+        String licenciaCed = (String) session.getAttribute("licenciaCed");
+        session.setAttribute("licenciaCed", null);
+        String jsonArray = swLicencia.licenciaID(licenciaCed);
+        if (jsonArray.length() > 2) {
+            session.setAttribute("jsonArray", jsonArray);
+            response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=jsonConductores");
+        } else {
+            response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=jsonVacio");
+        }
+    } else if (opc.equals("modificarLicencia")) {
+        String idlicencia = (String) session.getAttribute("idlicencia");
+        session.setAttribute("idlicencia", null);
+        String jsonLicencia = (String) session.getAttribute("jsonLicencia");
+        session.setAttribute("jsonLicencia", null);
+        String jsonMod = swLicencia.modificarLicencia(jsonLicencia, idlicencia);
+        if (jsonMod.length() > 2) {
+            session.setAttribute("statusMod", "OK");
+        } else {
+            session.setAttribute("statusMod", "KO");
+        }
+        response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=modificarStatus");
     }
 %>

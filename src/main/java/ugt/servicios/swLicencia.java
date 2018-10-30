@@ -121,10 +121,10 @@ public class swLicencia {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Modificar uuna licencia y retornar sus nuevos datos">
-    public static String modificarLicencia(String json, String cedula) {
+    public static String modificarLicencia(String json, String idlicencia) {
         String jsonResponse = "";
         try {
-            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tblicencias/" + cedula);
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tblicencias/" + idlicencia);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
             connection.setDoOutput(true);

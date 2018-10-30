@@ -95,37 +95,20 @@ var cambiarJQGConductor = function (tipo) {
 };
 
 var verLicenciaConductor = function () {
+    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Conductores";
     var $grid = $("#jqgridChofer");
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
         var rowData = $grid.jqGrid('getRowData', selRowId);
-        alert("Programar ver licencia " + rowData.cedula);
-        $.ajax({
-            url: "protected/Administrador/Conductores/conductorControlador.jsp",
-            type: "POST",
-            dataType: "text",
-            data: {cedula: rowData.cedula, opc: "verLicencia"},
-            success: function (datos) {
-                datos = JSON.parse(datos);
-                if (datos.codigo === "OK") {
-                    swalTimer("Conductor", datos.respuesta, "success");
-                    $("#jqgridChofer").jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
-                    $("#miModal").modal('hide');
-                }
-                if (datos.codigo === "KO") {
-                    swalTimer("Conductor", datos.respuesta, "error");
-                }
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert("Error de ejecucion -> " + textStatus + jqXHR);
-            }
-
-        });
+        $("#modalLicencia").modal({show: true});
+        $("#jqgridCLicencia").jqGrid('setGridParam', {url: urlbase + "/conductorControlador.jsp?opc=consLicencia&cedula=" + rowData.cedula, datatype: 'json'}); // the last setting is for demo only
+        $("#jqgridCLicencia").trigger("reloadGrid");
     } else
         swalTimer("Conductor", "Seleccione una fila", "error");
 };
 
 var fncDibujarTablaConductor = function () {
+    var ced = "S/";
     var $grid = $("#jqgridChofer");
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Conductores";
     $grid.jqGrid({
@@ -204,6 +187,15 @@ var fncDibujarTablaConductor = function () {
             delete postdata.oper;
             postdata.fechanac = postdata.fechanac + "T00:00:00-05:00";
             return {opc: "modificarConductor", jsonConductor: JSON.stringify(postdata), cedula: postdata.cedula};
+        },
+        onSelectRow: function (rowid, selected) {
+            ced = rowid;
+            if (rowid !== null) {
+                $("#cedulac").val(ced);
+                $("#jqgridCLicencia").jqGrid('setGridParam', {url: urlbase + "/conductorControlador.jsp?opc=consLicencia&cedula=" + rowid, datatype: 'json'});
+                $("#jqgridCLicencia").jqGrid('setCaption', 'Datos licencia | '+rowid);;
+                $("#jqgridCLicencia").trigger("reloadGrid");
+            }
         }
     });
 
@@ -226,14 +218,196 @@ var fncDibujarTablaConductor = function () {
                 return;
             $(this).find("td").each(function () {
                 var id = $(this).text().toLowerCase().trim();
-                var not_found = (id.indexOf(value) == -1);
+                var not_found = (id.indexOf(value) === -1);
                 $(this).closest('tr').toggle(!not_found);
                 return not_found;
             });
         });
     });
+
+    var grid = $("#jqgridCLicencia");
+    grid.jqGrid({
+        url: urlbase + "/conductorControlador.jsp?opc=mostrar&accion=jsonVacio",
+        editurl: urlbase + "/conductorControlador.jsp",
+        mtype: "POST",
+        datatype: "json",
+        colModel: [
+            {label: 'ID', name: 'idlicencia', key: true, width: 50, sortable: false, search: false},
+            {label: 'Cédula', name: 'cedulac', jsonmap: "cedulac.cedula", width: 100, editable: true},
+            {label: 'Expedición', name: 'fechaexpedicion', width: 100,
+                sortable: false,
+                search: false,
+                formatter: 'date',
+                formatoptions: {
+                    srcformat: "ISO8601Long",
+                    newformat: 'Y-m-d'
+                },
+                editable: true,
+                edittype: 'text',
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).datepicker({
+                            format: "yyyy-mm-dd"
+                        });
+                    }
+                },
+                editrules: {date: true}
+            },
+            {label: 'Expiración', name: 'fechaexpiracion', width: 100,
+                sortable: false,
+                formatter: 'date',
+                formatoptions: {
+                    srcformat: "ISO8601Long",
+                    newformat: 'Y-m-d'
+                },
+                editable: true,
+                edittype: 'text',
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).datepicker({
+                            format: "yyyy-mm-dd"
+                        });
+                    }
+                },
+                editrules: {date: true},
+                search: false
+            },
+            {label: 'Tipo', name: 'tipo', width: 80, editable: true,
+                sortable: false,
+                search: false,
+                edittype: 'select',
+                editoptions: {
+                    value: 'A:A;B:B;F:F;A1:A1;C:C;C1:C1;D:D;D1:D1;E:E;E1:E1;G:G'
+                }
+            },
+            {
+                label: "Opciones",
+                name: "actions",
+                sortable: false,
+                search: false,
+                width: 90,
+                formatter: "actions",
+                formatoptions: {
+                    keys: true,
+                    delbutton: false,
+                    editOptions: {},
+                    addOptions: {},
+                    delOptions: {}
+                }
+            }
+        ],
+        viewrecords: true,
+        caption: 'Licencia datos',
+        rowNum: 15,
+        loadonce: true,
+        pager: "#jqgpager_licencia",
+        serializeRowData: function (postdata) {
+            var cedula = postdata.cedulac;
+            delete postdata.oper;
+            postdata.fechaexpedicion = postdata.fechaexpedicion + "T00:00:00-05:00";
+            postdata.fechaexpiracion = postdata.fechaexpiracion + "T00:00:00-05:00";
+            var rowData = $grid.jqGrid('getRowData', postdata.cedulac);
+            delete rowData.actions;
+            rowData.fechanac = rowData.fechanac + "T00:00:00-05:00";
+            postdata.cedulac = rowData;
+            return {opc: "modificarLicencia", jsonLicencia: JSON.stringify(postdata), idlicencia: postdata.idlicencia};
+        }
+    });
+
+    grid.navGrid('#jqgpager_licencia', {edit: false, add: false, del: false, search: false, refresh: false, view: false, position: "left"});
 };
 
-var fncDibujarTablaConductorunlock = function () {
-    alert("Programar Conductores Blqueados");
+var fncDibujarTablaConductorUnlock = function () {
+    var $grid = $("#jqgridChoferBloq");
+    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Conductores";
+    $grid.jqGrid({
+        url: urlbase + "/conductorControlador.jsp?opc=jsonConducBloc",
+        editurl: urlbase + "/conductorControlador.jsp",
+        mtype: "POST",
+        datatype: "json",
+        colModel: [
+            {label: 'Cédula', name: 'cedula', key: true, width: 100},
+            {label: 'Nombres', name: 'nombres', width: 150, editable: true},
+            {label: 'Apellidos', name: 'apellidos', width: 150, editable: true},
+            {label: 'Género', name: 'genero', width: 110, editable: true,
+                edittype: 'select',
+                editoptions: {
+                    value: 'Masculino:Masculino;Femenino:Femenino;Otros:Otros'
+                }
+            },
+            {label: 'Estado', name: 'estado', width: 110, editable: true,
+                edittype: 'select',
+                search: false,
+                editoptions: {
+                    value: 'Disponible:Disponible;Ocupado:Ocupado;Bloqueado:Bloqueado'
+                }
+            },
+            {label: 'Fecha Nacimiento', name: 'fechanac', width: 150,
+                formatter: 'date',
+                formatoptions: {
+                    srcformat: "ISO8601Long",
+                    newformat: 'Y-m-d'
+                },
+                editable: true,
+                edittype: 'text',
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).datepicker({
+                            format: "yyyy-mm-dd"
+                        });
+                    }
+                },
+                editrules: {date: true},
+                search: false
+            },
+            {
+                label: "Opciones",
+                name: "actions",
+                sortable: false,
+                search: false,
+                width: 100,
+                formatter: "actions",
+                formatoptions: {
+                    keys: true,
+                    editOptions: {},
+                    addOptions: {},
+                    delOptions: {
+                        height: 150,
+                        width: 300,
+                        serializeDelData: function (postdata) {
+                            var rowData = $grid.jqGrid('getRowData', postdata.id);
+                            delete rowData.actions;
+                            rowData.fechanac = rowData.fechanac + "T00:00:00-05:00";
+                            return {opc: "eliminarConductor", cedula: postdata.id, jsonConductor: JSON.stringify(rowData)};
+                        }
+                    }
+                }
+            }
+        ],
+        rownumbers: true,
+        viewrecords: true,
+        width: 780,
+        height: 250,
+        caption: 'Conductores disponibles',
+        rowNum: 15,
+        loadonce: true,
+        pager: "#jqgpager_bloq",
+        serializeRowData: function (postdata) {
+            delete postdata.oper;
+            postdata.fechanac = postdata.fechanac + "T00:00:00-05:00";
+            return {opc: "modificarConductor", jsonConductor: JSON.stringify(postdata), cedula: postdata.cedula};
+        }
+    });
+
+    $grid.navGrid('#jqgpager_bloq', {edit: false, add: false, del: false, search: true, beforeRefresh: function () {
+            $grid.jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
+        }, view: false, position: "left"});
+
+    $grid.jqGrid('filterToolbar', {stringResult: true, searchOnEnter: false,
+        defaultSearch: 'cn', ignoreCase: true});
+
+    $(window).on("resize", function () {
+        var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
+        grid.jqGrid("setGridWidth", newWidth, true);
+    }).trigger('resize');
 };

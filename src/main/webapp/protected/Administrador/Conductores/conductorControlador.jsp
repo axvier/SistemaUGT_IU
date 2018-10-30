@@ -31,6 +31,16 @@
             response.sendRedirect("conductorModelo.jsp?opc="+opc);
         } else if (opc.equals("jsonConducOcup")) {
             response.sendRedirect("conductorModelo.jsp?opc="+opc);
+        } else if (opc.equals("consLicencia")) {
+            String cedula = request.getParameter("cedula");
+            session.setAttribute("licenciaCed", cedula);
+            response.sendRedirect("conductorModelo.jsp?opc="+opc);
+        } else if (opc.equals("modificarLicencia")) {
+            String idlicencia = request.getParameter("idlicencia");
+            session.setAttribute("idlicencia", idlicencia);
+            String jsonLicencia = request.getParameter("jsonLicencia");
+            session.setAttribute("jsonLicencia", jsonLicencia);
+            response.sendRedirect("conductorModelo.jsp?opc=" + opc);
         }
     }
 %>
