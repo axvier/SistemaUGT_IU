@@ -317,5 +317,6 @@
         <!--para que funcione la aplicacion-->
         <script src="js/ugt.js" type="text/javascript"></script>
         <script src="protected/Administrador/Conductores/Conductores.js" type="text/javascript"></script>
+        <script src="protected/Administrador/Vehiculos/Vehiculos.js" type="text/javascript"></script>
     </body>
 </html>

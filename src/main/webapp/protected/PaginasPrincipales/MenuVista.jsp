@@ -104,7 +104,7 @@
                 <ul id="submenu1" class="sub-menu ">
                     <li style='cursor: pointer'>
                         <a onclick="fncGestionAuto()">
-                            <i class="fa fa-car"></i><span class="text">Vehiculos disponibles</span>
+                            <i class="fa fa-car"></i><span class="text">Vehiculos</span>
                         </a>
                     </li>
                     <li style='cursor: pointer'>

@@ -24,19 +24,25 @@ function eliminarVehiculo(objeto) {
     });
 }
 function  guardarVehiculo(objeto) {
-    var vehiculo = obtenerObjetoVehiculo(objeto);
-    var placa = vehiculo.placaVehiculo = $(objeto).parent().find('.placa').find('#placa').val();
-    var jsonVehiculo = JSON.stringify(vehiculo);
+    var jsonVehiculo = JSON.stringify(objeto);
     $.ajax({
         url: "Administrador/Vehiculos/vehiculoControlador.jsp",
         type: "POST",
         dataType: "text",
-        data: {jsonVehiculo: jsonVehiculo, opc: "saveVehiculo", placa: placa},
+        data: {jsonVehiculo: jsonVehiculo, opc: "saveVehiculo", placa: objeto.placa},
         success: function (datos) {
-            mostrarFormularioAdministrador(datos);
+           datos = JSON.parse(datos);
+            if (datos.codigo === "OK") {
+                swalTimer("Vehículo", datos.respuesta, "success");
+                $("#jqgridVehiculo").jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
+                $("#miModalVehiculo").modal('hide');
+            }
+            if (datos.codigo === "KO") {
+                swalTimer("Vehículo", datos.respuesta, "error");
+            }
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            _fncBtnGuardarKO();
+             alert("Error de ejecucion -> " + textStatus + jqXHR);
         }
 
     });
@@ -85,48 +91,62 @@ function cancelarEdicion(objeto) {
     $(objeto).attr('title', 'Editar');
 }
 
+var fncaddNuevoVehiculo = function () {
+    var obj = {};
+    obj.placa = $("#addPlaca").val();
+    obj.disco = $("#addDisco").val();
+    obj.marca = $("#addMarca").val();
+    obj.modelo = $("#addModelo").val();
+    obj.anio = $("#addAnio").val();
+    obj.anio = $("#addAnio").val();
+    obj.color = $("#addColor").val();
+    obj.color = $("#addColor").val();
+    obj.descripcion = $("#addDescrip").val();
+    var idgrupo = $("#addGrupo").find(':selected').attr('data-idgrupo');
+    var detalle = $("#addGrupo").find(':selected').attr('data-detalle');
+    var nombre = $("#addGrupo").val();
+    obj.idgrupo = {nombre: nombre,idgrupo:idgrupo,detalle:detalle};
+    obj.estado = $("#addEstado").val();
+    guardarVehiculo(obj);
+};
+
+var cambiarJQGVehiculo = function (tipo) {
+    var $grid = $("#jqgridVehiculo");
+    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Vehiculos";
+    $grid.jqGrid('clearGridData');
+    $grid.jqGrid('setGridParam', {url: urlbase + "/vehiculoControlador.jsp?opc=" + tipo, datatype: "json"}).trigger("reloadGrid");
+};
+
 var fncDibujarTableVehiculos = function () {
-    var $grid = $("#jqgridChoferBloq");
+    var $grid = $("#jqgridVehiculo");
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Vehiculos";
     $grid.jqGrid({
         url: urlbase + "/vehiculoControlador.jsp?opc=jsonVehiculos",
-        editurl: urlbase + "/conductorControlador.jsp",
+        editurl: urlbase + "/vehiculoControlador.jsp",
         mtype: "POST",
         datatype: "json",
         colModel: [
-            {label: 'Cédula', name: 'cedula', key: true, width: 100},
-            {label: 'Nombres', name: 'nombres', width: 150, editable: true},
-            {label: 'Apellidos', name: 'apellidos', width: 150, editable: true},
-            {label: 'Género', name: 'genero', width: 110, editable: true,
+            {label: 'Placa', name: 'placa', key: true, width: 80, editable: true},
+            {label: 'Disco', name: 'disco', width: 60, editable: true},
+            {label: 'Marca', name: 'marca', width: 150, editable: true},
+            {label: 'Modelo', name: 'modelo', width: 150, editable: true},
+            {label: 'Año', name: 'anio', width: 100},
+            {label: 'Color', name: 'color', width: 150, editable: true},
+            {label: 'Descripcion', name: 'descripcion', width: 150, editable: true, search: false,
+                edittype: "textarea",
+                editoptions: {cols: 15}
+            },
+            {label: 'Grupo/Tipo', name: 'nombre', jsonmap: "idgrupo.nombre", width: 150, editable: true,
                 edittype: 'select',
                 editoptions: {
-                    value: 'Masculino:Masculino;Femenino:Femenino;Otros:Otros'
+                    value: '1:Automovil;2:Bus;3:otros'
                 }
             },
             {label: 'Estado', name: 'estado', width: 110, editable: true,
                 edittype: 'select',
-                search: false,
                 editoptions: {
                     value: 'Disponible:Disponible;Ocupado:Ocupado;Bloqueado:Bloqueado'
                 }
-            },
-            {label: 'Fecha Nacimiento', name: 'fechanac', width: 150,
-                formatter: 'date',
-                formatoptions: {
-                    srcformat: "ISO8601Long",
-                    newformat: 'Y-m-d'
-                },
-                editable: true,
-                edittype: 'text',
-                editoptions: {
-                    dataInit: function (element) {
-                        $(element).datepicker({
-                            format: "yyyy-mm-dd"
-                        });
-                    }
-                },
-                editrules: {date: true},
-                search: false
             },
             {
                 label: "Opciones",
@@ -144,9 +164,11 @@ var fncDibujarTableVehiculos = function () {
                         width: 300,
                         serializeDelData: function (postdata) {
                             var rowData = $grid.jqGrid('getRowData', postdata.id);
+                            var nombreGrupo = rowData.nombre;
                             delete rowData.actions;
-                            rowData.fechanac = rowData.fechanac + "T00:00:00-05:00";
-                            return {opc: "eliminarConductor", cedula: postdata.id, jsonConductor: JSON.stringify(rowData)};
+//                            rowData.idgrupo = {nombre: rowData.nombre};
+                            delete rowData.nombre;
+                            return {opc: "eliminarVehiculo", placa: postdata.id, jsonVehiculo: JSON.stringify(rowData), nombreGrupo: nombreGrupo};
                         }
                     }
                 }
@@ -156,18 +178,112 @@ var fncDibujarTableVehiculos = function () {
         viewrecords: true,
         width: 780,
         height: 250,
-        caption: 'Conductores disponibles',
-        rowNum: 15,
+        caption: 'Vehículos disponibles',
+        rowNum: 10,
         loadonce: true,
-        pager: "#jqgpager_bloq",
+        pager: "#jqgVehiculo_pager",
         serializeRowData: function (postdata) {
+            var idgrupo = postdata.nombre;
+            delete postdata.nombre;
+//            postdata.idgrupo = {idgrupo: postdata.nombre};
             delete postdata.oper;
-            postdata.fechanac = postdata.fechanac + "T00:00:00-05:00";
-            return {opc: "modificarConductor", jsonConductor: JSON.stringify(postdata), cedula: postdata.cedula};
+            return {opc: "modificarVehiculo", jsonVehiculo: JSON.stringify(postdata), placa: postdata.placa, idgrupo:idgrupo};
         }
     });
 
-    $grid.navGrid('#jqgpager_bloq', {edit: false, add: false, del: false, search: true, beforeRefresh: function () {
+    $grid.navGrid('#jqgVehiculo_pager', {edit: false, add: false, del: false, search: true, beforeRefresh: function () {
+            $grid.jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
+        }, view: false, position: "left"});
+
+    $grid.jqGrid('filterToolbar', {stringResult: true, searchOnEnter: false,
+        defaultSearch: 'cn', ignoreCase: true});
+
+    $(window).on("resize", function () {
+        var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
+        grid.jqGrid("setGridWidth", newWidth, true);
+    }).trigger('resize');
+
+    $("#search_cells").on("keyup", function () {
+        var value = $(this).val();
+        $("table tr").each(function (index) {
+            if (!index)
+                return;
+            $(this).find("td").each(function () {
+                var id = $(this).text().toLowerCase().trim();
+                var not_found = (id.indexOf(value) === -1);
+                $(this).closest('tr').toggle(!not_found);
+                return not_found;
+            });
+        });
+    });
+};
+
+var fncDibujarTableVehiculosUnlock = function () {
+    var $grid = $("#jqgridVehiculoUnlock");
+    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Vehiculos";
+    $grid.jqGrid({
+        url: urlbase + "/vehiculoControlador.jsp?opc=jsonVehiculosUnlock",
+        editurl: urlbase + "/vehiculoControlador.jsp",
+        mtype: "POST",
+        datatype: "json",
+        colModel: [
+            {label: 'Placa', name: 'placa', key: true, width: 80, editable: true},
+            {label: 'Disco', name: 'disco', width: 60, editable: true},
+            {label: 'Marca', name: 'marca', width: 150, editable: true},
+            {label: 'Modelo', name: 'modelo', width: 150, editable: true},
+            {label: 'Año', name: 'anio', width: 100},
+            {label: 'Color', name: 'color', width: 150, editable: true},
+            {label: 'Descripcion', name: 'descripcion', width: 150, editable: true, search: false,
+                edittype: "textarea",
+                editoptions: {cols: 15}
+            },
+            {label: 'Grupo/Tipo', name: 'nombre', jsonmap: "idgrupo.nombre", width: 150, editable: true,
+                edittype: 'select',
+                editoptions: {
+                    value: '1:Automovil;2:Bus;3:otros'
+                }
+            },
+            {label: 'Estado', name: 'estado', width: 110, editable: true,
+                edittype: 'select',
+                editoptions: {
+                    value: 'Disponible:Disponible;Ocupado:Ocupado;Bloqueado:Bloqueado'
+                }
+            },
+            {
+                label: "Opciones",
+                name: "actions",
+                sortable: false,
+                search: false,
+                width: 100,
+                formatter: "actions",
+                formatoptions: {
+                    keys: true,
+                    delbutton: false,
+                    editOptions: {},
+                    addOptions: {},
+                    delOptions: {
+                    }
+                }
+            }
+        ],
+        rownumbers: true,
+        viewrecords: true,
+        width: 780,
+        height: 250,
+        caption: 'Vehículos que están de baja en la institución',
+        rowNum: 10,
+        loadonce: true,
+        pager: "#jqgVehiculoUnlock_pager",
+        serializeRowData: function (postdata) {
+            var idgrupo = postdata.nombre;
+            delete postdata.oper;
+//            postdata.idgrupo = {idgrupo: postdata.nombre};
+            delete postdata.nombre;
+            return {opc: "modificarVehiculo", jsonVehiculo: JSON.stringify(postdata), placa: postdata.placa, idgrupo: idgrupo};
+        }
+    });
+
+    $grid.navGrid('#jqgVehiculoUnlock_pager', {edit: false, add: false, del: false, search: true, beforeRefresh: function () {
             $grid.jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
         }, view: false, position: "left"});
 

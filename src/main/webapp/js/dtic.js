@@ -61,6 +61,7 @@ function convertirObjetoJson(idFrm) {
 
     result = result.replace(/&/gi, '","');
     result = result.replace(/=/gi, '":"');
+    result = result.replace(/\+/gi, '" "');
 
     result = '{'.concat(result);
     result = result.concat('}');

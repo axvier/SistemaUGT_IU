@@ -180,7 +180,7 @@ var fncDibujarTablaConductor = function () {
         width: 780,
         height: 250,
         caption: 'Conductores disponibles',
-        rowNum: 15,
+        rowNum: 10,
         loadonce: true,
         pager: "#jqgrid_pager",
         serializeRowData: function (postdata) {
@@ -298,7 +298,7 @@ var fncDibujarTablaConductor = function () {
         ],
         viewrecords: true,
         caption: 'Licencia datos',
-        rowNum: 15,
+        rowNum: 10,
         loadonce: true,
         pager: "#jqgpager_licencia",
         serializeRowData: function (postdata) {
@@ -369,6 +369,7 @@ var fncDibujarTablaConductorUnlock = function () {
                 formatter: "actions",
                 formatoptions: {
                     keys: true,
+                    delbutton: false,
                     editOptions: {},
                     addOptions: {},
                     delOptions: {
@@ -389,7 +390,7 @@ var fncDibujarTablaConductorUnlock = function () {
         width: 780,
         height: 250,
         caption: 'Conductores disponibles',
-        rowNum: 15,
+        rowNum: 10,
         loadonce: true,
         pager: "#jqgpager_bloq",
         serializeRowData: function (postdata) {

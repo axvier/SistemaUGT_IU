@@ -47,6 +47,30 @@ public class swVehiculo {
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Buscar Vehiculo por ID JSON">
+    public static String listarVehiculoID(String placa) {
+        String result = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tbvehiculos/" + placa);
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setRequestMethod("GET");
+            conexion.setDoOutput(true);
+            conexion.setDoInput(true);
+            InputStream contenido = (InputStream) conexion.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(contenido, "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result = line;
+            }
+            conexion.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para buscar un vehiculo por placa ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+    //</editor-fold>
+
     //<editor-fold defaultstate="collapsed" desc="Elinminar vehiculo">
     public static String eliminarVehiculo(String placa) {
         String resul = "";
@@ -179,7 +203,7 @@ public class swVehiculo {
         return json;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Vehiculo segun Placa JSON">
     public static String vehiculoID(String placa) {
         String json = "";
@@ -201,6 +225,54 @@ public class swVehiculo {
             System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
         }
         return json;
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Listar grupo vehiculos JSON">
+    public static String listarGrupoVehiculo() {
+        String result = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tbgrupovehiculos");
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setRequestMethod("GET");
+            conexion.setDoOutput(true);
+            conexion.setDoInput(true);
+            InputStream contenido = (InputStream) conexion.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(contenido, "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result = line;
+            }
+            conexion.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para listar todos los grupos de vehiculos ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Buscar grupo vehiculo por ID JSON">
+    public static String listarGrupoVehiculoID(String ID) {
+        String result = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tbgrupovehiculos/"+ID);
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setRequestMethod("GET");
+            conexion.setDoOutput(true);
+            conexion.setDoInput(true);
+            InputStream contenido = (InputStream) conexion.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(contenido, "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result = line;
+            }
+            conexion.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para buscar un grupo vehicular por id ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
     }
     //</editor-fold>
 }

@@ -4,24 +4,39 @@
     if (login != null) {
         String opc = request.getParameter("opc");
         if (opc != null) {
-            if (opc.equals("vehiculosConfg")) {
-                //response.sendRedirect("configuracionVista.jsp?accion=" + opc);
+            if (opc.equals("jsonVehiculos")) {
                 response.sendRedirect("vehiculoModelo.jsp?opc=" + opc);
             } else if (opc.equals("mostrar")) {
                 String accion = request.getParameter("accion");
                 response.sendRedirect("vehiculoVista.jsp?accion=" + accion);
             } else if (opc.equals("saveVehiculo")) {
                 String jsonVehiculo = request.getParameter("jsonVehiculo");
-                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc + "&jsonVehiculo=" + jsonVehiculo);
+                session.setAttribute("jsonVehiculo", jsonVehiculo);
+                String placa = request.getParameter("jsonVehiculo");
+                session.setAttribute("placa", placa);
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc);
             } else if (opc.equals("eliminarVehiculo")) {
                 String placa = request.getParameter("placa");
                 String jsonVehiculo = request.getParameter("jsonVehiculo");
-                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc + "&placa=" + placa + "&jsonVehiculo=" + jsonVehiculo);
+                String nombreGrupo = request.getParameter("nombreGrupo");
+                session.setAttribute("json", jsonVehiculo);
+                session.setAttribute("placa", placa);
+                session.setAttribute("nombreGrupo", nombreGrupo);
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc);
             } else if (opc.equals("modificarVehiculo")) {
                 String placa = request.getParameter("placa");
                 String jsonVehiculo = request.getParameter("jsonVehiculo");
-                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc + "&jsonVehiculo=" + jsonVehiculo + "&placa=" + placa);
-            } else {
+                String idgrupo = request.getParameter("idgrupo");
+                session.setAttribute("placa", placa);
+                session.setAttribute("jsonVehiculo", jsonVehiculo);
+                session.setAttribute("idgrupo", idgrupo);
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc);
+            } else if (opc.equals("tableVehiculos")) {
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc );
+            } else if (opc.equals("jsonVehiculosOcup")) {
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc );
+            } else if (opc.equals("jsonVehiculosUnlock")) {
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc );
             }
         }
     } else {

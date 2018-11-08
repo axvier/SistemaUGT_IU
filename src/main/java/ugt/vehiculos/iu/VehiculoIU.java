@@ -5,10 +5,12 @@
  */
 package ugt.vehiculos.iu;
 
+import ugt.entidades.Tbvehiculos;
+
 /**
  *
  * @author Evelyn
  */
-public class VehiculoIU {
+public class VehiculoIU extends Tbvehiculos{
     
 }

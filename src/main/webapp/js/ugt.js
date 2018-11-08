@@ -60,11 +60,11 @@ var fncGestionAuto = function () {
     $.ajax({
         url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
         type: "GET",
-        data: {opc:"mostrar",accion:"tableVehiculos"},
+        data: {opc:"tableVehiculos"},
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
-//            fncDibujarTablaConductor();
+            fncDibujarTableVehiculos();
         },
         error: function (error) {
             location.reload();
@@ -73,5 +73,18 @@ var fncGestionAuto = function () {
 };
 
 var fncGestionAutoBlock = function () {
-    alert("Programar vehiculos dados de baja");
+    $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-3x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
+    $.ajax({
+        url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
+        type: "GET",
+        data: {opc:"mostrar",accion:"tableVehiculosUnlock"},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            $("#contenidoDinamico").html(datos);
+            fncDibujarTableVehiculosUnlock();
+        },
+        error: function (error) {
+            location.reload();
+        }
+    });
 };

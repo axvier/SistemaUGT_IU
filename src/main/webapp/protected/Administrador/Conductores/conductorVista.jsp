@@ -192,7 +192,7 @@
             </li>
             <li>
                 <a id="mnCondOcup" href="#" onclick="cambiarJQGConductor('jsonConducOcup')">
-                    <span class="fa-stack fa-lg"><i class="fa fa-exchange fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores ocupados
+                    <span class="fa-stack fa-lg"><i class="fa fa-exchange fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores con vehiculos
                 </a>
             </li>
             <li>
