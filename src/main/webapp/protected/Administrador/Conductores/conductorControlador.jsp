@@ -41,6 +41,10 @@
             String jsonLicencia = request.getParameter("jsonLicencia");
             session.setAttribute("jsonLicencia", jsonLicencia);
             response.sendRedirect("conductorModelo.jsp?opc=" + opc);
+        } else if (opc.equals("modalAsignarVehiculo")) {
+            String cedula = request.getParameter("cedulaCondVehiculo");
+            session.setAttribute("cedulaCondVehiculo", cedula);
+            response.sendRedirect("conductorModelo.jsp?opc=" + opc);
         }
     }
 %>

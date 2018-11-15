@@ -1,3 +1,7 @@
+<%@page import="ugt.vehiculos.iu.VehiculosIU"%>
+<%@page import="ugt.servicios.swVehiculo"%>
+<%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
+<%@page import="ugt.servicios.swVehiculoConductor"%>
 <%@page import="utg.login.Login"%>
 <%@page import="ugt.licencias.IU.LicenciasIU"%>
 <%@page import="ugt.conductores.iu.ConductorIU"%>
@@ -119,6 +123,22 @@
                 session.setAttribute("statusMod", "KO");
             }
             response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=modificarStatus");
+        } else if (opc.equals("modalAsignarVehiculo")) {
+            String cedulaCond = (String) session.getAttribute("cedulaCondVehiculo");
+            session.setAttribute("cedulaCondVehiculo", null);
+            String arrayJSON = swVehiculoConductor.listarVehiculoConductorCedula(cedulaCond);
+            if (arrayJSON.length() > 2) {
+                VehiculosConductoresIU vehiculosConductoresIU = new VehiculosConductoresIU();
+                vehiculosConductoresIU.setListaJSON(arrayJSON);
+                session.setAttribute("vehiculosConductoresIU", vehiculosConductoresIU);
+            }
+            String vehicullosJSON = swVehiculo.listarVehiculosXEstado("Disponible");
+            if (vehicullosJSON.length() > 2) {
+                VehiculosIU vehiculos  = new VehiculosIU();
+                vehiculos.setListaJson(vehicullosJSON);
+                session.setAttribute("vehiculosIU", vehiculos);
+            }
+            response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion="+opc);
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

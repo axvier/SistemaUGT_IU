@@ -67,7 +67,8 @@
                         <div class="form-group">
                             <label  class="col-sm-2 control-label" for="addPlaca">Placa</label>
                             <div class="col-sm-10">
-                                <input type="text" name="placa" class="form-control" id="addPlaca" placeholder="ABC-1234" maxlength="8" required/>
+                                <input type="text" name="placa" class="form-control" id="addPlaca" placeholder="ABC1234" onchange="validarMatricula(this.id)" maxlength="7" required/>
+                                 <div id="salida"></div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -159,8 +160,8 @@
                 </a>
             </li>
             <li>
-                <a id="mnCondOcup" href="#" onclick="asignarVehiculoConductor()">
-                    <span class="fa-stack fa-lg"></i><i class="fa fa-file-o fa-stack-2x"></i><i class="fa fa-user fa-stack-1x"></i></span>Asignar conductor
+                <a id="mnCondOcup" href="#" onclick="verVehiculoConductor()">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-file-o fa-stack-2x"></i><i class="fa fa-user fa-stack-1x"></i></span>Ver conductor asignado
                 </a>
             </li>
         </ul>

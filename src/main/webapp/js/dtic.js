@@ -168,7 +168,7 @@ function changeUrlParam(param, value) {
     }
 }
 
-var validarCedula = function (idInput,idplay) {
+var validarCedula = function (idInput, idplay) {
     var cad = document.getElementById(idInput).value.trim();
     var total = 0;
     var longitud = cad.length;
@@ -190,7 +190,7 @@ var validarCedula = function (idInput,idplay) {
 
         if (cad.charAt(longitud - 1) == total) {
             document.getElementById("salida").innerHTML = ("");
-            $('#'+idplay).prop("disabled", false);
+            $('#' + idplay).prop("disabled", false);
         } else {
             document.getElementById("salida").innerHTML = ("<p style='color:#FF0000';>Cedula Inválida</p>");
 //            $('#'+idplay).attr("disabled","disabled");
@@ -198,11 +198,24 @@ var validarCedula = function (idInput,idplay) {
     }
 };
 
-var swalTimer = function (titulo,mensaje,tipo) {
+var validarMatricula = function (idInput) {
+    var cad = document.getElementById(idInput).value;
+    $("#"+idInput).val(cad.toString().toUpperCase());
+    cad = cad.toString().toUpperCase();
+    var expPlaca = /^([A-Z]){3}\d{3,4}$/;
+
+    if (expPlaca.test(cad)) {
+        document.getElementById("salida").innerHTML = ("");
+    } else {
+        document.getElementById("salida").innerHTML = ("<p style='color:#FF0000';>Placa incorrecta</p>");
+    }
+};
+
+var swalTimer = function (titulo, mensaje, tipo) {
     swal({
-     title: titulo,
-     text: mensaje,
-     type: tipo,
-     timer: 3000
-     });
+        title: titulo,
+        text: mensaje,
+        type: tipo,
+        timer: 3000
+    });
 };

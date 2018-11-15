@@ -90,7 +90,7 @@
                     </li>
                     <li style='cursor: pointer'>
                         <a onclick="fncGestionChoferesBlock()">
-                            <i class="fa fa-user-times"></i><span class="text">Conductores bloqueados</span>
+                            <i class="fa fa-user-times"></i><span class="text">Conductores Jubilados</span>
                         </a>
                     </li>
                 </ul>

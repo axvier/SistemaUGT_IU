@@ -128,15 +128,15 @@ var fncDibujarTableVehiculos = function () {
         colModel: [
             {label: 'Placa', name: 'placa', key: true, width: 80, editable: true},
             {label: 'Disco', name: 'disco', width: 60, editable: true},
-            {label: 'Marca', name: 'marca', width: 150, editable: true},
-            {label: 'Modelo', name: 'modelo', width: 150, editable: true},
+            {label: 'Marca', name: 'marca', width: 110, editable: true},
+            {label: 'Modelo', name: 'modelo', width: 110, editable: true},
             {label: 'Año', name: 'anio', width: 100},
-            {label: 'Color', name: 'color', width: 150, editable: true},
+            {label: 'Color', name: 'color', width: 100, editable: true},
             {label: 'Descripcion', name: 'descripcion', width: 150, editable: true, search: false,
                 edittype: "textarea",
                 editoptions: {cols: 15}
             },
-            {label: 'Grupo/Tipo', name: 'nombre', jsonmap: "idgrupo.nombre", width: 150, editable: true,
+            {label: 'Grupo/Tipo', name: 'nombre', jsonmap: "idgrupo.nombre", width: 130, editable: true,
                 edittype: 'select',
                 editoptions: {
                     value: '1:Automovil;2:Bus;3:otros'
@@ -146,6 +146,12 @@ var fncDibujarTableVehiculos = function () {
                 edittype: 'select',
                 editoptions: {
                     value: 'Disponible:Disponible;Ocupado:Ocupado;Bloqueado:Bloqueado'
+                }
+            },
+            {label: 'Observación', name: 'observacion', width: 160, search: false, sortable: false, editable: true,
+                edittype: 'textarea',
+                editoptions: {
+                    cols: 20
                 }
             },
             {
@@ -247,6 +253,12 @@ var fncDibujarTableVehiculosUnlock = function () {
                 edittype: 'select',
                 editoptions: {
                     value: 'Disponible:Disponible;Ocupado:Ocupado;Bloqueado:Bloqueado'
+                }
+            },
+            {label: 'Observación', name: 'observacion', width: 160, search: false, sortable: false, editable: true,
+                edittype: 'textarea',
+                editoptions: {
+                    cols: 20
                 }
             },
             {

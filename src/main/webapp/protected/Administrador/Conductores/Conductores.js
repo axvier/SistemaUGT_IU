@@ -100,11 +100,31 @@ var verLicenciaConductor = function () {
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
         var rowData = $grid.jqGrid('getRowData', selRowId);
+        $("#modalLicenciaTitulo").html(" UGT | Licencia información");
         $("#modalLicencia").modal({show: true});
         $("#jqgridCLicencia").jqGrid('setGridParam', {url: urlbase + "/conductorControlador.jsp?opc=consLicencia&cedula=" + rowData.cedula, datatype: 'json'}); // the last setting is for demo only
         $("#jqgridCLicencia").trigger("reloadGrid");
     } else
         swalTimer("Conductor", "Seleccione una fila", "error");
+};
+
+var asignarVehiculosModal = function () {
+//    $("#modGeneralCondTitulo").html(" UGT | Asignados");
+    var $grid = $("#jqgridChofer");
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        var rowData = $grid.jqGrid('getRowData', selRowId);
+        $('#modGeneralCond .modal-content').load('protected/Administrador/Conductores/conductorControlador.jsp?opc=modalAsignarVehiculo&cedulaCondVehiculo=' + rowData.cedula, function () {
+            $('#modGeneralCond').modal({show: true});
+        });
+    } else
+        swalTimer("Conductor", "Seleccione una fila", "error");
+};
+
+var btnAsignacion = function (idbtn) {
+    if ($("#" + idbtn).prop('disabled'))
+        $("#" + idbtn).prop('disabled', false);
+
 };
 
 var fncDibujarTablaConductor = function () {
@@ -120,20 +140,20 @@ var fncDibujarTablaConductor = function () {
             {label: 'Cédula', name: 'cedula', key: true, width: 100},
             {label: 'Nombres', name: 'nombres', width: 150, editable: true},
             {label: 'Apellidos', name: 'apellidos', width: 150, editable: true},
-            {label: 'Género', name: 'genero', width: 110, editable: true,
+            {label: 'Género', name: 'genero', width: 90, editable: true,
                 edittype: 'select',
                 editoptions: {
                     value: 'Masculino:Masculino;Femenino:Femenino;Otros:Otros'
                 }
             },
-            {label: 'Estado', name: 'estado', width: 110, editable: true,
+            {label: 'Estado', name: 'estado', width: 90, editable: true,
                 edittype: 'select',
                 search: false,
                 editoptions: {
                     value: 'Disponible:Disponible;Ocupado:Ocupado'
                 }
             },
-            {label: 'Fecha Nacimiento', name: 'fechanac', width: 150,
+            {label: 'Fecha Nacimiento', name: 'fechanac', width: 120,
                 formatter: 'date',
                 formatoptions: {
                     srcformat: "ISO8601Long",
@@ -150,6 +170,12 @@ var fncDibujarTablaConductor = function () {
                 },
                 editrules: {date: true},
                 search: false
+            },
+            {label: 'Observación', name: 'observacion', width: 160, search: false, sortable: false, editable: true,
+                edittype: 'textarea',
+                editoptions: {
+                    cols: 20
+                }
             },
             {
                 label: "Opciones",
@@ -193,7 +219,7 @@ var fncDibujarTablaConductor = function () {
             if (rowid !== null) {
                 $("#cedulac").val(ced);
                 $("#jqgridCLicencia").jqGrid('setGridParam', {url: urlbase + "/conductorControlador.jsp?opc=consLicencia&cedula=" + rowid, datatype: 'json'});
-                $("#jqgridCLicencia").jqGrid('setCaption', 'Datos licencia | '+rowid);;
+                $("#jqgridCLicencia").jqGrid('setCaption', 'Datos licencia | ' + rowid);
                 $("#jqgridCLicencia").trigger("reloadGrid");
             }
         }
@@ -359,6 +385,12 @@ var fncDibujarTablaConductorUnlock = function () {
                 },
                 editrules: {date: true},
                 search: false
+            },
+            {label: 'Observación', name: 'observacion', width: 150, search: false, sortable: false, editable: true,
+                edittype: 'textarea',
+                editoptions: {
+                    cols: 20
+                }
             },
             {
                 label: "Opciones",

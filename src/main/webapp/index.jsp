@@ -211,7 +211,7 @@
                 </div>
                 <div class="sidebar-scroll">
                     <center><i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
-                    <span class="sr-only">Cargando...</span></center>
+                        <span class="sr-only">Cargando...</span></center>
                 </div>
 
             </div>
@@ -236,26 +236,26 @@
                         <p class="lead">Bienvenido.</p>
 
 
-<!--                        <div id="menuLateral" class="col-xs-3">
-                            <div id="menuTipo">
-                                <span id='lnkReportes'  class='dda-link'onclick="graficarPanelInicio(1)">
-                                    <i class='fa fa-pie-chart'></i>
-                                </span>
-                                <span id='lnkDocumentos' class='dda-link' onclick="graficarPanelInicio(2)">
-                                    <i class='fa fa-file-text'></i>
-                                </span>
-                                <span id='lnkConfigurar' class='dda-link'  onclick="graficarPanelInicio(3)">
-                                    <i class='fa fa-cog'></i>
-                                </span>
-                            </div>
-                            <div id="menuLateralScrollbar">
-
-                                 Menú Lateral
-                                <div id="contenidoMenuLateral">
-                                    Contenido Menu Sistema 
-                                </div>
-                            </div>
-                        </div> -->
+                        <!--                        <div id="menuLateral" class="col-xs-3">
+                                                    <div id="menuTipo">
+                                                        <span id='lnkReportes'  class='dda-link'onclick="graficarPanelInicio(1)">
+                                                            <i class='fa fa-pie-chart'></i>
+                                                        </span>
+                                                        <span id='lnkDocumentos' class='dda-link' onclick="graficarPanelInicio(2)">
+                                                            <i class='fa fa-file-text'></i>
+                                                        </span>
+                                                        <span id='lnkConfigurar' class='dda-link'  onclick="graficarPanelInicio(3)">
+                                                            <i class='fa fa-cog'></i>
+                                                        </span>
+                                                    </div>
+                                                    <div id="menuLateralScrollbar">
+                        
+                                                         Menú Lateral
+                                                        <div id="contenidoMenuLateral">
+                                                            Contenido Menu Sistema 
+                                                        </div>
+                                                    </div>
+                                                </div> -->
 
 
                         </br>
@@ -314,6 +314,7 @@
 
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.css">
+        <script src="assets/js/plugins/select2/select2.min.js" type="text/javascript"></script>
         <!--para que funcione la aplicacion-->
         <script src="js/ugt.js" type="text/javascript"></script>
         <script src="protected/Administrador/Conductores/Conductores.js" type="text/javascript"></script>

@@ -1,3 +1,8 @@
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="ugt.entidades.Tbvehiculos"%>
+<%@page import="ugt.entidades.Tbvehiculosconductores"%>
+<%@page import="ugt.vehiculos.iu.VehiculosIU"%>
+<%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
 <%@page import="utg.login.Login"%>
 <%@page import="ugt.licencias.IU.LicenciasIU"%>
 <%@page import="ugt.conductores.iu.ConductoresIU"%>
@@ -157,7 +162,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="myModalLabel">UGT | Licencia información</h4>
+                    <h4 class="modal-title" id="modalLicenciaTitulo">UGT | Licencia información</h4>
                 </div>
                 <div class="modal-body">
                     <div class="widget-content">
@@ -174,6 +179,15 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cerrar</button>
                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- END MODAL DIALOG -->
+    <!-- MODAL DIALOG -->
+    <div class="modal fade" id="modGeneralCond" tabindex="-1" role="dialog" aria-labelledby="modGeneralCond" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
             </div>
         </div>
     </div>
@@ -198,6 +212,11 @@
             <li>
                 <a id="mnCondOcup" href="#" onclick="verLicenciaConductor()">
                     <span class="fa-stack fa-lg"><i class="fa fa-search fa-stack-1x"></i><i class="fa fa-credit-card fa-stack-2x"></i></span>Ver licencia
+                </a>
+            </li>
+            <li>
+                <a id="mnCondOcup" href="#" onclick="asignarVehiculosModal()">
+                    <span class="fa-stack fa-lg"><i class="fa fa-taxi fa-stack-1x"></i><i class="fa fa-circle-thin fa-stack-2x"></i></span>Asignar vehiculos
                 </a>
             </li>
         </ul>
@@ -243,40 +262,40 @@
     <em>Conductores Bloqueados</em>
 </div>
 <div class="main-content">
-<!--    <div>
-        <ul class="list-inline file-main-menu">
-            <li>
-                <a data-toggle="modal" data-target="#miModal" style='cursor: pointer'>
-                    <span class="fa-stack fa-lg"><i class="fa fa-user-plus fa-stack-2x"></i></span> Nuevo Conductor
-                </a>
-            </li>
-            <li>
-                <a  id="mnCondDisp" href="#" onclick="cambiarJQGConductor('jsonConductores')">
-                    <span class="fa-stack fa-lg"><i class="fa fa-check fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores disponibles
-                </a>
-            </li>
-            <li>
-                <a id="mnCondOcup" href="#" onclick="cambiarJQGConductor('jsonConducOcup')">
-                    <span class="fa-stack fa-lg"><i class="fa fa-exchange fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores ocupados
-                </a>
-            </li>
-            <li>
-                <a id="mnCondOcup" href="#" onclick="verLicenciaConductor()">
-                    <span class="fa-stack fa-lg"><i class="fa fa-search fa-stack-1x"></i><i class="fa fa-credit-card fa-stack-2x"></i></span>Ver licencia
-                </a>
-            </li>
-        </ul>
-    </div>-->
-<!--    <div class="row">
-        <div class="col-lg-6 pull-right">
-            <div class="input-group">
-                <input id="search_cells" type="search" class="form-control">
-                <span class="input-group-btn">
-                    <button class="btn btn-custom-primary" type="button" disabled="disabled"><i class="fa fa-search"></i></button>
-                </span>
+    <!--    <div>
+            <ul class="list-inline file-main-menu">
+                <li>
+                    <a data-toggle="modal" data-target="#miModal" style='cursor: pointer'>
+                        <span class="fa-stack fa-lg"><i class="fa fa-user-plus fa-stack-2x"></i></span> Nuevo Conductor
+                    </a>
+                </li>
+                <li>
+                    <a  id="mnCondDisp" href="#" onclick="cambiarJQGConductor('jsonConductores')">
+                        <span class="fa-stack fa-lg"><i class="fa fa-check fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores disponibles
+                    </a>
+                </li>
+                <li>
+                    <a id="mnCondOcup" href="#" onclick="cambiarJQGConductor('jsonConducOcup')">
+                        <span class="fa-stack fa-lg"><i class="fa fa-exchange fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores ocupados
+                    </a>
+                </li>
+                <li>
+                    <a id="mnCondOcup" href="#" onclick="verLicenciaConductor()">
+                        <span class="fa-stack fa-lg"><i class="fa fa-search fa-stack-1x"></i><i class="fa fa-credit-card fa-stack-2x"></i></span>Ver licencia
+                    </a>
+                </li>
+            </ul>
+        </div>-->
+    <!--    <div class="row">
+            <div class="col-lg-6 pull-right">
+                <div class="input-group">
+                    <input id="search_cells" type="search" class="form-control">
+                    <span class="input-group-btn">
+                        <button class="btn btn-custom-primary" type="button" disabled="disabled"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
             </div>
-        </div>
-    </div><br>-->
+        </div><br>-->
     <div class="widget widget-table">
         <div class="widget-header">
             <h3><i class="fa fa-table"></i> Gestión </h3><em>Tabla de edición</em>
@@ -292,6 +311,153 @@
             </div>
         </div>
     </div> 
+</div>
+<%
+} else if (accion.equals("modalAsignarVehiculo")) {
+    VehiculosConductoresIU vehConductoresIU = (VehiculosConductoresIU) session.getAttribute("vehiculosConductoresIU");
+    session.setAttribute("vehiculosConductoresIU", null);
+    String duenio = (vehConductoresIU != null) ? (vehConductoresIU.getLista().size() > 0) ? vehConductoresIU.getLista().get(0).getTbconductores().getNombres() : "" : "";
+%>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="modalLicenciaTitulo">UGT | Asignación vehicular : <%=duenio%></h4>
+</div>
+<div class="modal-body">
+    <div class="widget-content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <span class="input-group-addon">Vehiculo 1</span>
+                    <select name="vehiculo" class="form-control selectpicker" data-live-search="true" id="vehiculoAsigAdd1">
+                        <%
+                            String valor = "<option selected='selected' disabled='true'>--Escoja uno --</option>";
+                            String date1 = "";
+                            String date2 = "";
+                            if (vehConductoresIU != null) {
+                                Tbvehiculosconductores aux = vehConductoresIU.getLista().get(0);
+                                if (aux != null) {
+                                    valor = "<option value='" + aux.getTbvehiculos().getPlaca() + "' data-jsonvehiculo='" + G.toJson(aux.getTbvehiculos()) + "' selected='selected'>" + aux.getTbvehiculos().getDisco() + " | " + aux.getTbvehiculos().getMarca() + " " + aux.getTbvehiculos().getModelo() + " con placa " + aux.getTbvehiculos().getPlaca() + "</option>";
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                    date1 = (aux.getTbvehiculosconductoresPK().getFechainicio() != null) ? formatter.format(aux.getTbvehiculosconductoresPK().getFechainicio()) : "";
+                                    date2 = (aux.getFechafin() != null) ? formatter.format(aux.getFechafin()) : "";
+                                }
+                            }
+                            out.print(valor);
+                            VehiculosIU vehiculosIU = (VehiculosIU) session.getAttribute("vehiculosIU");
+                            if (vehiculosIU != null) {
+                                for (Tbvehiculos vehiculo : vehiculosIU.getVehiculo()) {
+                                    out.println("<option value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>");
+                                }
+                            }
+                        %>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <label class="fancy-checkbox">
+                            <span>Inicio</span>
+                        </label>
+                    </span>
+                    <input id="fecha1" type="date" class="form-control" value="<%=date1%>">
+                    <span class="input-group-addon">
+                        <label class="fancy-checkbox">
+                            <span>Fin</span>
+                        </label>
+                    </span>
+                    <input id="fecha11" type="date" class="form-control" value="<%=date2%>">
+                </div>
+                <br/>
+                <div class="input-group">
+                    <span class="input-group-addon">Vehiculo 3</span>
+                    <select name="vehiculo" class="form-control selectpicker" data-live-search="true" id="vehiculoAsigAdd2">
+                        <%
+                            valor = "<option selected='selected' disabled='true'>--Escoja uno --</option>";
+                            date1 = "";
+                            date2 = "";
+                            if (vehConductoresIU != null) {
+                                Tbvehiculosconductores aux = null;
+                                if (vehConductoresIU.getLista().size() >= 2) {
+                                    aux = vehConductoresIU.getLista().get(1);
+                                }
+                                if (aux != null) {
+                                    valor = "<option value='" + aux.getTbvehiculos().getPlaca() + "' data-jsonvehiculo='" + G.toJson(aux.getTbvehiculos()) + "' selected='selected'>" + aux.getTbvehiculos().getDisco() + " | " + aux.getTbvehiculos().getMarca() + " " + aux.getTbvehiculos().getModelo() + " con placa " + aux.getTbvehiculos().getPlaca() + "</option>";
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                    date1 = (aux.getTbvehiculosconductoresPK().getFechainicio() != null) ? formatter.format(aux.getTbvehiculosconductoresPK().getFechainicio()) : "";
+                                    date2 = (aux.getFechafin() != null) ? formatter.format(aux.getFechafin()) : "";
+                                }
+                            }
+                            out.print(valor);
+                            if (vehiculosIU != null) {
+                                for (Tbvehiculos vehiculo : vehiculosIU.getVehiculo()) {
+                                    out.println("<option value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>");
+                                }
+                            }
+                        %>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <label class="fancy-checkbox">
+                            <span>Inicio</span>
+                        </label>
+                    </span>
+                    <input id="fecha2" type="date" class="form-control" value="<%=date1%>">
+                    <span class="input-group-addon">
+                        <label class="fancy-checkbox">
+                            <span>Fin</span>
+                        </label>
+                    </span>
+                    <input id="fecha22" type="date" class="form-control" value="<%=date2%>">
+                </div>
+                <br/>
+                <div class="input-group">
+                    <span class="input-group-addon">Vehiculo 2</span>
+                    <select name="vehiculo" class="form-control selectpicker" data-live-search="true" id="vehiculoAsigAdd3">
+                        <%
+                            valor = "<option selected='selected' disabled='true'>--Escoja uno --</option>";
+                            date1 = "";
+                            date2 = "";
+                            if (vehConductoresIU != null) {
+                                Tbvehiculosconductores aux = null;
+                                if (vehConductoresIU.getLista().size() >= 3) {
+                                    aux = vehConductoresIU.getLista().get(2);
+                                }
+                                if (aux != null) {
+                                    valor = "<option value='" + aux.getTbvehiculos().getPlaca() + "' data-jsonvehiculo='" + G.toJson(aux.getTbvehiculos()) + "' selected='selected'>" + aux.getTbvehiculos().getDisco() + " | " + aux.getTbvehiculos().getMarca() + " " + aux.getTbvehiculos().getModelo() + " con placa " + aux.getTbvehiculos().getPlaca() + "</option>";
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                    date1 = (aux.getTbvehiculosconductoresPK().getFechainicio() != null) ? formatter.format(aux.getTbvehiculosconductoresPK().getFechainicio()) : "";
+                                    date2 = (aux.getFechafin() != null) ? formatter.format(aux.getFechafin()) : "";
+                                }
+                            }
+                            out.print(valor);
+                            if (vehiculosIU != null) {
+                                for (Tbvehiculos vehiculo : vehiculosIU.getVehiculo()) {
+                                    out.println("<option value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>");
+                                }
+                            }
+                        %>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <label class="fancy-checkbox">
+                            <span>Inicio</span>
+                        </label>
+                    </span>
+                    <input id="fecha3" type="date" class="form-control" value="<%=date1%>">
+                    <span class="input-group-addon">
+                        <label class="fancy-checkbox">
+                            <span>Fin</span>
+                        </label>
+                    </span>
+                    <input id="fecha33" type="date" class="form-control" value="<%=date2%>">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cerrar</button>
 </div>
 <%
         }

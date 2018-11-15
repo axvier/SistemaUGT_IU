@@ -39,6 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Tbvehiculos.findByDescripcion", query = "SELECT t FROM Tbvehiculos t WHERE t.descripcion = :descripcion")
     , @NamedQuery(name = "Tbvehiculos.findByEstado", query = "SELECT t FROM Tbvehiculos t WHERE t.estado = :estado")
     , @NamedQuery(name = "Tbvehiculos.findByMarca", query = "SELECT t FROM Tbvehiculos t WHERE t.marca = :marca")
+    , @NamedQuery(name = "Tbvehiculos.findByMarca", query = "SELECT t FROM Tbvehiculos t WHERE t.observacion = :observacion")
     , @NamedQuery(name = "Tbvehiculos.findByModelo", query = "SELECT t FROM Tbvehiculos t WHERE t.modelo = :modelo")})
 public class Tbvehiculos implements Serializable {
 
@@ -67,6 +68,9 @@ public class Tbvehiculos implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "marca")
     private String marca;
+    @Size(max = 2147483647)
+    @Column(name = "observacion")
+    private String observacion;
     @Size(max = 2147483647)
     @Column(name = "modelo")
     private String modelo;
@@ -148,6 +152,14 @@ public class Tbvehiculos implements Serializable {
 
     public void setMarca(String marca) {
         this.marca = marca;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
     }
 
     public String getModelo() {
