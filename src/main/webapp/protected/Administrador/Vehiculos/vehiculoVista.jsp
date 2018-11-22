@@ -1,3 +1,5 @@
+<%@page import="ugt.entidades.Tbvehiculosconductores"%>
+<%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
 <%@page import="ugt.entidades.Tbgrupovehiculos"%>
 <%@page import="ugt.gruposvehiculos.iu.GruposVehiculosIU"%>
 <%@page import="utg.login.Login"%>
@@ -55,6 +57,15 @@
 </div>
 <div class="main-content">
     <!-- MODAL DIALOG -->
+    <div class="modal fade" id="modGeneralVehiculo" tabindex="-1" role="dialog" aria-labelledby="modGeneralVehiculo" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+    <!-- END MODAL DIALOG -->
+    <!-- MODAL DIALOG -->
     <div class="modal fade" id="miModalVehiculo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -68,7 +79,7 @@
                             <label  class="col-sm-2 control-label" for="addPlaca">Placa</label>
                             <div class="col-sm-10">
                                 <input type="text" name="placa" class="form-control" id="addPlaca" placeholder="ABC1234" onchange="validarMatricula(this.id)" maxlength="7" required/>
-                                 <div id="salida"></div>
+                                <div id="salida"></div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -160,7 +171,7 @@
                 </a>
             </li>
             <li>
-                <a id="mnCondOcup" href="#" onclick="verVehiculoConductor()">
+                <a id="mnCondOcup" href="#" onclick="verVehiculoConductor('modGeneralVehiculo')">
                     <span class="fa-stack fa-lg"></i><i class="fa fa-file-o fa-stack-2x"></i><i class="fa fa-user fa-stack-1x"></i></span>Ver conductor asignado
                 </a>
             </li>
@@ -325,6 +336,55 @@
     </div> 
 </div>
 <%
+} else if (accion.equals("contentModalVerCond")) {
+    VehiculosConductoresIU vehiculosConductoresIU = (VehiculosConductoresIU) session.getAttribute("vehiculosConductoresIU");
+    session.setAttribute("vehiculosConductoresIU", null);
+%>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="modalLicenciaTitulo">UGT | Ver conductor</h4>
+</div>
+<div class="modal-body">
+    <div class="widget-content">
+        <div id="jqgrid-wrapper">
+            <%
+                if (vehiculosConductoresIU != null) {
+            %>
+            <table id="jqgVerConductor" class="table table-striped table-hover">
+                <thead>        
+                    <tr>            
+                        <th>Cedula</th>         
+                        <th>Nombre</th>          
+                        <th>Apellidos</th>       
+                    </tr>   
+                </thead> 
+                <tbody>
+                    <%
+                        for (Tbvehiculosconductores vehcond : vehiculosConductoresIU.getLista()) {
+                            out.println("    <tr>");
+                            out.println("        <td>" + vehcond.getTbconductores().getCedula() + "</td>");
+                            out.println("        <td>" + vehcond.getTbconductores().getNombres() + "</td>");
+                            out.println("        <td>" + vehcond.getTbconductores().getApellidos() + "</td>");
+                            out.println("    </tr>");
+                        }
+                    %>
+                </tbody>
+            </table>
+            <%
+                } else {
+                    out.println("<p>No se le ha asignado un conductor</p>");
+                }
+            %>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cerrar</button>
+</div>
+<%
+        } else if (accion.equals("jsonVacio")) {
+            String datos = "{\"rows\":\"\"}";
+            out.println(datos);
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

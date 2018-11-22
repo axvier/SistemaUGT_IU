@@ -315,6 +315,7 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.css">
         <script src="assets/js/plugins/select2/select2.min.js" type="text/javascript"></script>
+        <!--<script src="js/jquery.validate.min.js" type="text/javascript"></script>-->
         <!--para que funcione la aplicacion-->
         <script src="js/ugt.js" type="text/javascript"></script>
         <script src="protected/Administrador/Conductores/Conductores.js" type="text/javascript"></script>

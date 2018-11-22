@@ -28,4 +28,15 @@ public class VehiculosConductoresIU extends VehiculosConductoresL {
             this.setLista(lista);
         }
     }
+
+    public Tbvehiculosconductores existeItemID(String searchPlaca) {
+        Tbvehiculosconductores result = null;
+        for (Tbvehiculosconductores search : this.getLista()) {
+            if(search.getTbvehiculos().getPlaca().equals(searchPlaca)){
+                result = search;
+                break;
+            }
+        }
+        return result;
+    }
 }

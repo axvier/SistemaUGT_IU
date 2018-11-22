@@ -121,10 +121,60 @@ var asignarVehiculosModal = function () {
         swalTimer("Conductor", "Seleccione una fila", "error");
 };
 
-var btnAsignacion = function (idbtn) {
-    if ($("#" + idbtn).prop('disabled'))
-        $("#" + idbtn).prop('disabled', false);
+var fncAddVehiculosConductor = function () {
+    var obj = fnObjAsignacionVC();
+    if (obj !== null) {
+        var json = JSON.stringify(obj);
+        $.ajax({
+            url: "protected/Administrador/Conductores/conductorControlador.jsp",
+            type: "POST",
+            dataType: "text",
+            data: {opc: "saveAsignacionVC", jsonLista: json},
+            success: function (datos) {
+                datos = JSON.parse(datos);
+                if (datos.codigo === "OK") {
+                    swalTimer("Conductor", datos.respuesta, "success");
+                    $("#jqgridChofer").jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
+                    $("#miModal").modal('hide');
+                }
+                if (datos.codigo === "KO") {
+                    swalTimer("Conductor", datos.respuesta, "error");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Error de ejecucion -> " + textStatus + jqXHR);
+            }
 
+        });
+    }
+};
+
+var fnObjAsignacionVC = function () {
+    var total = $("#totalVehiculosXpersona").val();
+    var $grid = $("#jqgridChofer");
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    var rowData = $grid.jqGrid('getRowData', selRowId);
+    delete rowData.actions;
+    rowData.fechanac += "T00:00:00-05:00";
+    var vehiculosConductoresL = {};
+    var lista = [];
+    for (var i = 0; i < total; i++) {
+        var Tbvehiculosconductores = {
+            tbconductores: rowData,
+            tbvehiculos: JSON.parse($("#vehiculoAsigAdd" + i).find(':selected').attr('data-jsonvehiculo')),
+            tbvehiculosconductoresPK: {
+                cedula: rowData.cedula,
+                fechainicio: $("#fechainicio" + i).val() + "T00:00:00-05:00",
+                matricula: JSON.parse($("#vehiculoAsigAdd" + i).find(':selected').attr('data-jsonvehiculo')).placa
+            }
+        };
+        if ($("#fechafin" + i).val() !== "") {
+            Tbvehiculosconductores.fechafin = $("#fechafin" + i).val() + "T00:00:00-05:00";
+        }
+        lista.push(Tbvehiculosconductores);
+    }
+    vehiculosConductoresL.lista = lista;
+    return vehiculosConductoresL;
 };
 
 var fncDibujarTablaConductor = function () {
@@ -365,7 +415,7 @@ var fncDibujarTablaConductorUnlock = function () {
                 edittype: 'select',
                 search: false,
                 editoptions: {
-                    value: 'Disponible:Disponible;Ocupado:Ocupado;Bloqueado:Bloqueado'
+                    value: 'Disponible:Disponible;Ocupado:Ocupado;Jubilado:Jubilado'
                 }
             },
             {label: 'Fecha Nacimiento', name: 'fechanac', width: 150,

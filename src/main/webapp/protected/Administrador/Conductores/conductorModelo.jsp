@@ -1,3 +1,6 @@
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="ugt.entidades.Tbvehiculosconductores"%>
+<%@page import="ugt.entidades.listas.VehiculosConductoresL"%>
 <%@page import="ugt.vehiculos.iu.VehiculosIU"%>
 <%@page import="ugt.servicios.swVehiculo"%>
 <%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
@@ -85,7 +88,7 @@
 
             }
         } else if (opc.equals("jsonConducBloc")) {
-            String jsonMod = swConductor.listarConductoresBloqueados();
+            String jsonMod = swConductor.listarConductoresXEstado("Jubilado");
             if (jsonMod.length() > 2) {
                 session.setAttribute("jsonArray", jsonMod);
                 response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=jsonConductores");
@@ -130,15 +133,30 @@
             if (arrayJSON.length() > 2) {
                 VehiculosConductoresIU vehiculosConductoresIU = new VehiculosConductoresIU();
                 vehiculosConductoresIU.setListaJSON(arrayJSON);
-                session.setAttribute("vehiculosConductoresIU", vehiculosConductoresIU);
+                session.setAttribute("vehConductoresIU", vehiculosConductoresIU);
             }
-            String vehicullosJSON = swVehiculo.listarVehiculosXEstado("Disponible");
+            String vehicullosJSON = swVehiculo.listarVehiculosNoEstado("Rematado");
             if (vehicullosJSON.length() > 2) {
                 VehiculosIU vehiculos  = new VehiculosIU();
                 vehiculos.setListaJson(vehicullosJSON);
                 session.setAttribute("vehiculosIU", vehiculos);
             }
             response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion="+opc);
+        } else if (opc.equals("saveAsignacionVC")) {
+            String jsonLista = (String) session.getAttribute("jsonLista");
+            session.setAttribute("jsonLista", null);
+            VehiculosConductoresL listaAsigancion = g.fromJson(jsonLista, VehiculosConductoresL.class);
+            for(Tbvehiculosconductores vehiculoConductor : listaAsigancion.getLista()){
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                String date = formatter.format(vehiculoConductor.getTbvehiculosconductoresPK().getFechainicio());
+                String existe = swVehiculoConductor.listarVehiculosConductoresID(vehiculoConductor.getTbvehiculosconductoresPK().getCedula(),vehiculoConductor.getTbvehiculosconductoresPK().getMatricula(),date);
+                if(existe.length() > 2){ //modificar
+//                    String 
+                }else{ // ingresar como nuevo
+                    
+                }
+            }
+            response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=guardarStatus");
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

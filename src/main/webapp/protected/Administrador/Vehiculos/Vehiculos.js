@@ -31,7 +31,7 @@ function  guardarVehiculo(objeto) {
         dataType: "text",
         data: {jsonVehiculo: jsonVehiculo, opc: "saveVehiculo", placa: objeto.placa},
         success: function (datos) {
-           datos = JSON.parse(datos);
+            datos = JSON.parse(datos);
             if (datos.codigo === "OK") {
                 swalTimer("Vehículo", datos.respuesta, "success");
                 $("#jqgridVehiculo").jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
@@ -42,7 +42,7 @@ function  guardarVehiculo(objeto) {
             }
         },
         error: function (jqXHR, textStatus, errorThrown) {
-             alert("Error de ejecucion -> " + textStatus + jqXHR);
+            alert("Error de ejecucion -> " + textStatus + jqXHR);
         }
 
     });
@@ -91,6 +91,18 @@ function cancelarEdicion(objeto) {
     $(objeto).attr('title', 'Editar');
 }
 
+var verVehiculoConductor = function (idModGeneral) {
+    var $grid = $("#jqgridVehiculo");
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        var rowData = $grid.jqGrid('getRowData', selRowId);
+        $('#modGeneralVehiculo .modal-content').load('protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=contentModalVerCond&placa='+rowData.placa, function () {
+            $('#'+idModGeneral).modal({show: true});
+        });
+    } else
+        swalTimer("Vehículo", "Seleccione una fila", "error");
+};
+
 var fncaddNuevoVehiculo = function () {
     var obj = {};
     obj.placa = $("#addPlaca").val();
@@ -105,7 +117,7 @@ var fncaddNuevoVehiculo = function () {
     var idgrupo = $("#addGrupo").find(':selected').attr('data-idgrupo');
     var detalle = $("#addGrupo").find(':selected').attr('data-detalle');
     var nombre = $("#addGrupo").val();
-    obj.idgrupo = {nombre: nombre,idgrupo:idgrupo,detalle:detalle};
+    obj.idgrupo = {nombre: nombre, idgrupo: idgrupo, detalle: detalle};
     obj.estado = $("#addEstado").val();
     guardarVehiculo(obj);
 };
@@ -145,7 +157,7 @@ var fncDibujarTableVehiculos = function () {
             {label: 'Estado', name: 'estado', width: 110, editable: true,
                 edittype: 'select',
                 editoptions: {
-                    value: 'Disponible:Disponible;Ocupado:Ocupado;Bloqueado:Bloqueado'
+                    value: 'Disponible:Disponible;Ocupado:Ocupado;Rematado:Rematado'
                 }
             },
             {label: 'Observación', name: 'observacion', width: 160, search: false, sortable: false, editable: true,
@@ -193,7 +205,7 @@ var fncDibujarTableVehiculos = function () {
             delete postdata.nombre;
 //            postdata.idgrupo = {idgrupo: postdata.nombre};
             delete postdata.oper;
-            return {opc: "modificarVehiculo", jsonVehiculo: JSON.stringify(postdata), placa: postdata.placa, idgrupo:idgrupo};
+            return {opc: "modificarVehiculo", jsonVehiculo: JSON.stringify(postdata), placa: postdata.placa, idgrupo: idgrupo};
         }
     });
 
@@ -252,7 +264,7 @@ var fncDibujarTableVehiculosUnlock = function () {
             {label: 'Estado', name: 'estado', width: 110, editable: true,
                 edittype: 'select',
                 editoptions: {
-                    value: 'Disponible:Disponible;Ocupado:Ocupado;Bloqueado:Bloqueado'
+                    value: 'Disponible:Disponible;Ocupado:Ocupado;Rematado:Rematado'
                 }
             },
             {label: 'Observación', name: 'observacion', width: 160, search: false, sortable: false, editable: true,

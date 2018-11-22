@@ -16,11 +16,13 @@
         Gson G = new Gson();
         if (accion.equals("conductoresConfg")) { //cargar conductores desde los datos de la solicitud
             ConductoresIU conductoresIU = (ConductoresIU) session.getAttribute("ConductoresIU");
+            session.setAttribute("ConductoresIU", null);
             String resultado = conductoresIU.toHTML();
             response.setContentType("text/plain");
             response.getWriter().write(resultado);
         } else if (accion.equals("respuesta")) {
             String respuesta = (String) session.getAttribute("respuesta");
+            session.setAttribute("respuesta", null);
             String result = "{"
                     + "\"respuesta\":\"" + respuesta + "\""
                     + "}";
@@ -314,8 +316,11 @@
 </div>
 <%
 } else if (accion.equals("modalAsignarVehiculo")) {
-    VehiculosConductoresIU vehConductoresIU = (VehiculosConductoresIU) session.getAttribute("vehiculosConductoresIU");
-    session.setAttribute("vehiculosConductoresIU", null);
+    int vahiculosXpersona = 3;
+    VehiculosConductoresIU vehConductoresIU = (VehiculosConductoresIU) session.getAttribute("vehConductoresIU");
+    session.setAttribute("vehConductoresIU", null);
+    VehiculosIU vehiculosIU = (VehiculosIU) session.getAttribute("vehiculosIU");
+    session.setAttribute("vehiculosIU", null);
     String duenio = (vehConductoresIU != null) ? (vehConductoresIU.getLista().size() > 0) ? vehConductoresIU.getLista().get(0).getTbconductores().getNombres() : "" : "";
 %>
 <div class="modal-header">
@@ -323,138 +328,97 @@
     <h4 class="modal-title" id="modalLicenciaTitulo">UGT | Asignación vehicular : <%=duenio%></h4>
 </div>
 <div class="modal-body">
-    <div class="widget-content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="input-group">
-                    <span class="input-group-addon">Vehiculo 1</span>
-                    <select name="vehiculo" class="form-control selectpicker" data-live-search="true" id="vehiculoAsigAdd1">
-                        <%
-                            String valor = "<option selected='selected' disabled='true'>--Escoja uno --</option>";
-                            String date1 = "";
-                            String date2 = "";
-                            if (vehConductoresIU != null) {
-                                Tbvehiculosconductores aux = vehConductoresIU.getLista().get(0);
-                                if (aux != null) {
-                                    valor = "<option value='" + aux.getTbvehiculos().getPlaca() + "' data-jsonvehiculo='" + G.toJson(aux.getTbvehiculos()) + "' selected='selected'>" + aux.getTbvehiculos().getDisco() + " | " + aux.getTbvehiculos().getMarca() + " " + aux.getTbvehiculos().getModelo() + " con placa " + aux.getTbvehiculos().getPlaca() + "</option>";
-                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                                    date1 = (aux.getTbvehiculosconductoresPK().getFechainicio() != null) ? formatter.format(aux.getTbvehiculosconductoresPK().getFechainicio()) : "";
-                                    date2 = (aux.getFechafin() != null) ? formatter.format(aux.getFechafin()) : "";
+    <form id="formAddVehiculosCond" class="form-horizontal" role="form" onsubmit="fncAddVehiculosConductor();return false;">
+        <div class="widget-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="hidden" value="<%=vahiculosXpersona%>" id="totalVehiculosXpersona">
+                    <div id="salida"></div>
+                    <%
+                        for (int i = 0; i < vahiculosXpersona; i++) {
+                    %>
+                    <div class="input-group">
+                        <span class="input-group-addon" style="background:  #ECF790;">Vehiculo <%=i%></span>
+                        <select name="vehiculo" class="form-control selectpicker" data-live-search="true" id="vehiculoAsigAdd<%=i%>" required>
+                            <%
+                                String valor = "";
+                                String date1 = "";
+                                String date2 = "";
+                                int cont = 0;
+                                Tbvehiculosconductores search = (vehConductoresIU != null) ? (vehConductoresIU.getLista().size() > i) ? vehConductoresIU.itemPos(i) : null : null;
+                                if (vehiculosIU != null) {
+                                    for (Tbvehiculos vehiculo : vehiculosIU.getVehiculo()) {
+                                        if (cont++ == 0) { // si estan en la primer vehiculo total
+                                            if (search == null) { //vehiculo 1 con conductor es nulo sin vehiculo ni conductor
+                                                valor = "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
+                                                valor += (vehiculo.getEstado().equals("Disponible"))
+                                                        ? "<option class='disponibles' value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>\n"
+                                                        : "<option class='jubilados' disabled value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>\n";
+                                            } else {
+                                                if (vehiculo.getPlaca().equals(search.getTbvehiculos().getPlaca())) { //primer vehiculo total es igual a vehiculo 1 con conductor
+                                                    valor += "<option class='jubilados' value='" + search.getTbvehiculos().getPlaca() + "' data-jsonvehiculo='" + G.toJson(search.getTbvehiculos()) + "' selected='selected'>" + search.getTbvehiculos().getDisco() + " | " + search.getTbvehiculos().getMarca() + " " + search.getTbvehiculos().getModelo() + " con placa " + search.getTbvehiculos().getPlaca() + "</option>\n";
+                                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                                    date1 = (search.getTbvehiculosconductoresPK().getFechainicio() != null) ? formatter.format(search.getTbvehiculosconductoresPK().getFechainicio()) : "";
+                                                    date2 = (search.getFechafin() != null) ? formatter.format(search.getFechafin()) : "";
+                                                } else {
+                                                    valor = "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
+                                                    valor += (vehiculo.getEstado().equals("Disponible"))
+                                                            ? "<option class='disponibles' value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>\n"
+                                                            : "<option class='jubilados' disabled value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>\n";
+                                                }
+                                            }
+                                        } else {
+                                            if (search == null) {
+                                                valor += (vehiculo.getEstado().equals("Disponible"))
+                                                        ? "<option class='disponibles' value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>\n"
+                                                        : "<option class='jubilados' disabled value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>\n";
+                                            } else {
+                                                if (vehiculo.getPlaca().equals(search.getTbvehiculos().getPlaca())) {
+                                                    valor += "<option class='jubilados' value='" + search.getTbvehiculos().getPlaca() + "' data-jsonvehiculo='" + G.toJson(search.getTbvehiculos()) + "' selected='selected'>" + search.getTbvehiculos().getDisco() + " | " + search.getTbvehiculos().getMarca() + " " + search.getTbvehiculos().getModelo() + " con placa " + search.getTbvehiculos().getPlaca() + "</option>\n";
+                                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                                                    date1 = (search.getTbvehiculosconductoresPK().getFechainicio() != null) ? formatter.format(search.getTbvehiculosconductoresPK().getFechainicio()) : "";
+                                                    date2 = (search.getFechafin() != null) ? formatter.format(search.getFechafin()) : "";
+                                                } else {
+                                                    valor += (vehiculo.getEstado().equals("Disponible"))
+                                                            ? "<option class='disponibles' value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>\n"
+                                                            : "<option class='jubilados' disabled value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>\n";
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    valor = "<option disabled value='' selected hidden>--Todavía no se han ingresado vehiculos en el Sistema--</option>\n";
                                 }
-                            }
-                            out.print(valor);
-                            VehiculosIU vehiculosIU = (VehiculosIU) session.getAttribute("vehiculosIU");
-                            if (vehiculosIU != null) {
-                                for (Tbvehiculos vehiculo : vehiculosIU.getVehiculo()) {
-                                    out.println("<option value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>");
-                                }
-                            }
-                        %>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <label class="fancy-checkbox">
-                            <span>Inicio</span>
-                        </label>
-                    </span>
-                    <input id="fecha1" type="date" class="form-control" value="<%=date1%>">
-                    <span class="input-group-addon">
-                        <label class="fancy-checkbox">
-                            <span>Fin</span>
-                        </label>
-                    </span>
-                    <input id="fecha11" type="date" class="form-control" value="<%=date2%>">
-                </div>
-                <br/>
-                <div class="input-group">
-                    <span class="input-group-addon">Vehiculo 3</span>
-                    <select name="vehiculo" class="form-control selectpicker" data-live-search="true" id="vehiculoAsigAdd2">
-                        <%
-                            valor = "<option selected='selected' disabled='true'>--Escoja uno --</option>";
-                            date1 = "";
-                            date2 = "";
-                            if (vehConductoresIU != null) {
-                                Tbvehiculosconductores aux = null;
-                                if (vehConductoresIU.getLista().size() >= 2) {
-                                    aux = vehConductoresIU.getLista().get(1);
-                                }
-                                if (aux != null) {
-                                    valor = "<option value='" + aux.getTbvehiculos().getPlaca() + "' data-jsonvehiculo='" + G.toJson(aux.getTbvehiculos()) + "' selected='selected'>" + aux.getTbvehiculos().getDisco() + " | " + aux.getTbvehiculos().getMarca() + " " + aux.getTbvehiculos().getModelo() + " con placa " + aux.getTbvehiculos().getPlaca() + "</option>";
-                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                                    date1 = (aux.getTbvehiculosconductoresPK().getFechainicio() != null) ? formatter.format(aux.getTbvehiculosconductoresPK().getFechainicio()) : "";
-                                    date2 = (aux.getFechafin() != null) ? formatter.format(aux.getFechafin()) : "";
-                                }
-                            }
-                            out.print(valor);
-                            if (vehiculosIU != null) {
-                                for (Tbvehiculos vehiculo : vehiculosIU.getVehiculo()) {
-                                    out.println("<option value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>");
-                                }
-                            }
-                        %>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <label class="fancy-checkbox">
-                            <span>Inicio</span>
-                        </label>
-                    </span>
-                    <input id="fecha2" type="date" class="form-control" value="<%=date1%>">
-                    <span class="input-group-addon">
-                        <label class="fancy-checkbox">
-                            <span>Fin</span>
-                        </label>
-                    </span>
-                    <input id="fecha22" type="date" class="form-control" value="<%=date2%>">
-                </div>
-                <br/>
-                <div class="input-group">
-                    <span class="input-group-addon">Vehiculo 2</span>
-                    <select name="vehiculo" class="form-control selectpicker" data-live-search="true" id="vehiculoAsigAdd3">
-                        <%
-                            valor = "<option selected='selected' disabled='true'>--Escoja uno --</option>";
-                            date1 = "";
-                            date2 = "";
-                            if (vehConductoresIU != null) {
-                                Tbvehiculosconductores aux = null;
-                                if (vehConductoresIU.getLista().size() >= 3) {
-                                    aux = vehConductoresIU.getLista().get(2);
-                                }
-                                if (aux != null) {
-                                    valor = "<option value='" + aux.getTbvehiculos().getPlaca() + "' data-jsonvehiculo='" + G.toJson(aux.getTbvehiculos()) + "' selected='selected'>" + aux.getTbvehiculos().getDisco() + " | " + aux.getTbvehiculos().getMarca() + " " + aux.getTbvehiculos().getModelo() + " con placa " + aux.getTbvehiculos().getPlaca() + "</option>";
-                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                                    date1 = (aux.getTbvehiculosconductoresPK().getFechainicio() != null) ? formatter.format(aux.getTbvehiculosconductoresPK().getFechainicio()) : "";
-                                    date2 = (aux.getFechafin() != null) ? formatter.format(aux.getFechafin()) : "";
-                                }
-                            }
-                            out.print(valor);
-                            if (vehiculosIU != null) {
-                                for (Tbvehiculos vehiculo : vehiculosIU.getVehiculo()) {
-                                    out.println("<option value='" + vehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculo) + "'>" + vehiculo.getDisco() + " | " + vehiculo.getMarca() + " " + vehiculo.getModelo() + " con placa " + vehiculo.getPlaca() + "</option>");
-                                }
-                            }
-                        %>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <label class="fancy-checkbox">
-                            <span>Inicio</span>
-                        </label>
-                    </span>
-                    <input id="fecha3" type="date" class="form-control" value="<%=date1%>">
-                    <span class="input-group-addon">
-                        <label class="fancy-checkbox">
-                            <span>Fin</span>
-                        </label>
-                    </span>
-                    <input id="fecha33" type="date" class="form-control" value="<%=date2%>">
+                                out.println(valor);
+                            %>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon" style="background:  #ECF790;">
+                            <label class="fancy-checkbox">
+                                <span>Inicio</span>
+                            </label>
+                        </span>
+                        <input id="fechainicio<%=i%>" type="date" class="form-control" value="<%=date1%>" required>
+                        <span class="input-group-addon" style="background:  #ECF790;">
+                            <label class="fancy-checkbox">
+                                <span>Fin</span>
+                            </label>
+                        </span>
+                        <input id="fechafin<%=i%>" type="date" class="form-control" value="<%=date2%>" >
+                    </div>
+                    <br/>
+                    <%
+                        }
+                    %>
                 </div>
             </div>
         </div>
-    </div>
+        </br>
+        <div class="container text-right">
+            <button type="submit" class="btn btn-success" >Add</button>
+        </div>
+    </form>
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cerrar</button>

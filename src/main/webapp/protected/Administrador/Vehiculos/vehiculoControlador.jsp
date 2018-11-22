@@ -37,6 +37,10 @@
                 response.sendRedirect("vehiculoModelo.jsp?opc=" + opc );
             } else if (opc.equals("jsonVehiculosUnlock")) {
                 response.sendRedirect("vehiculoModelo.jsp?opc=" + opc );
+            } else if (opc.equals("contentModalVerCond")) {
+                String placa = request.getParameter("placa");
+                session.setAttribute("placa", placa);
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc );
             }
         }
     } else {

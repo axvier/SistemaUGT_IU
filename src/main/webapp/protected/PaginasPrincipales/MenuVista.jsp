@@ -109,7 +109,7 @@
                     </li>
                     <li style='cursor: pointer'>
                         <a onclick="fncGestionAutoBlock()">
-                            <i class="fa fa-lock"></i><span class="text">Vehiculos bloqueados</span>
+                            <i class="fa fa-lock"></i><span class="text">Vehiculos rematados</span>
                         </a>
                     </li>
                 </ul>

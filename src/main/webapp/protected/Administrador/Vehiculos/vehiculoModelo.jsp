@@ -1,3 +1,5 @@
+<%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
+<%@page import="ugt.servicios.swVehiculoConductor"%>
 <%@page import="ugt.entidades.Tbvehiculos"%>
 <%@page import="ugt.entidades.Tbgrupovehiculos"%>
 <%@page import="ugt.gruposvehiculos.iu.GruposVehiculosIU"%>
@@ -30,7 +32,7 @@
 
             }
         } else if (opc.equals("jsonVehiculosUnlock")) {
-            String arrayJSON = swVehiculo.listarVehiculosXEstado("Bloqueado");
+            String arrayJSON = swVehiculo.listarVehiculosXEstado("Rematado");
             if (arrayJSON.length() > 2) {
                 session.setAttribute("arrayJSON", arrayJSON);
                 response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=jsonVehiculos");
@@ -101,7 +103,7 @@
                 Tbgrupovehiculos grupo = g.fromJson(listaGrupo, Tbgrupovehiculos.class);
                 Tbvehiculos vehiculo = g.fromJson(jsonVehiculo, Tbvehiculos.class);
                 vehiculo.setIdgrupo(grupo);
-                String jsonMod = swVehiculo.modificarVehiculo(g.toJson(vehiculo), placa);
+                String jsonMod = swVehiculo.modificarVehiculo(placa,g.toJson(vehiculo));
                 if (jsonMod.length() > 2) {
                     session.setAttribute("statusMod", "OK");
                 } else {
@@ -119,6 +121,15 @@
                 session.setAttribute("grupoVehiculosIU", grupoVehiculosIU);
                 response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=" + opc);
             }
+        } else if (opc.equals("contentModalVerCond")) {
+            String placa = (String) session.getAttribute("placa");
+            String arrayJSON = swVehiculoConductor.listarVehiculoConductorPlaca(placa);
+            if (arrayJSON.length() > 2) {
+                VehiculosConductoresIU vehiculosConductoresIU = new VehiculosConductoresIU();
+                vehiculosConductoresIU.setListaJSON(arrayJSON);
+                session.setAttribute("vehiculosConductoresIU", vehiculosConductoresIU);
+            }
+            response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=contentModalVerCond");
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");
