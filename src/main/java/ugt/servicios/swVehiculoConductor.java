@@ -17,6 +17,7 @@ import utils.Constantes;
  * @author Xavy PC
  */
 public class swVehiculoConductor {
+
     //<editor-fold defaultstate="collapsed" desc="Listar VehiculosConductores JSON">
     public static String listarVehiculosConductores() {
         String result = "";
@@ -64,7 +65,7 @@ public class swVehiculoConductor {
         return result;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Buscar VehiculoConductor por cedula JSON"> //array json
     public static String listarVehiculoConductorCedula(String cedula) {
         String result = "";
@@ -121,7 +122,34 @@ public class swVehiculoConductor {
     public static String modificarVehiculoConductor(String pk, String json) {
         String jsonResponse = "";
         try {
-            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tbvehiculos/" + pk);
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tbvehiculosconductores/" + pk);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            connection.setRequestProperty("Accept", "application/json; charset=utf-8");
+            try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF-8")) {
+                writer.write(json);
+                writer.flush();
+            }
+            InputStream content = (InputStream) connection.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(content));
+            jsonResponse = in.readLine();
+            connection.disconnect();
+        } catch (NumberFormatException | IOException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para modificar un vehiculo conductor", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return jsonResponse;
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Modificar vehiculo conductor y retornar sus nuevos datos JSON">
+    public static String modificarVehiculoConductorIDComp(String cedula, String placa, String fecha, String json) {
+        String jsonResponse = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/vehiculosconductores/" + cedula + "/" + placa + "/" + fecha);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
             connection.setDoOutput(true);
@@ -145,10 +173,10 @@ public class swVehiculoConductor {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Insertar vehiculo condcutor y retornar sus datos JSON">
-    public static String insertVehiculo(String json) throws IOException {
+    public static String insertVehiculoConductor(String json) throws IOException {
         String jsonResponse = "";
         try {
-            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tbvehiculos");
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tbvehiculosconductores");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
@@ -170,12 +198,12 @@ public class swVehiculoConductor {
         return jsonResponse;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Listar VehiculosConductores por ID compuesto JSON">
-    public static String listarVehiculosConductoresID(String cedula,String placa, String fecha) {
+    public static String listarVehiculosConductoresID(String cedula, String placa, String fecha) {
         String result = "";
         try {
-            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/vehiculosconductores/cedula/"+cedula+"/matricula/"+placa+"/fecha/"+fecha);
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/vehiculosconductores/cedula/" + cedula + "/matricula/" + placa + "/fecha/" + fecha);
             HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
             conexion.setRequestMethod("GET");
             conexion.setDoOutput(true);

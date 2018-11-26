@@ -132,14 +132,10 @@ var fncAddVehiculosConductor = function () {
             data: {opc: "saveAsignacionVC", jsonLista: json},
             success: function (datos) {
                 datos = JSON.parse(datos);
-                if (datos.codigo === "OK") {
-                    swalTimer("Conductor", datos.respuesta, "success");
-                    $("#jqgridChofer").jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
-                    $("#miModal").modal('hide');
-                }
-                if (datos.codigo === "KO") {
-                    swalTimer("Conductor", datos.respuesta, "error");
-                }
+                var msj = (datos.respuesta !== null) ? datos.respuesta: "Se han guardado correctamente";
+                swalTimer("Asignación Vehículo-Conductor", msj, "info");
+//                $("#jqgridChofer").jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
+//                $("#miModal").modal('hide');
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 alert("Error de ejecucion -> " + textStatus + jqXHR);

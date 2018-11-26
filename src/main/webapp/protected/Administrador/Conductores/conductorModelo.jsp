@@ -1,3 +1,6 @@
+<%@page import="com.google.gson.GsonBuilder"%>
+<%@page import="ugt.entidades.TbvehiculosconductoresPK"%>
+<%@page import="ugt.entidades.Tbvehiculos"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="ugt.entidades.Tbvehiculosconductores"%>
 <%@page import="ugt.entidades.listas.VehiculosConductoresL"%>
@@ -79,7 +82,7 @@
             }
             response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=modificarStatus");
         } else if (opc.equals("jsonConductores")) {
-            String jsonMod = swConductor.listarConductoresXEstado("Disponible");
+            String jsonMod = swConductor.listarConductoresDiferenteEstado("Jubilado");
             if (jsonMod.length() > 2) {
                 session.setAttribute("jsonArray", jsonMod);
                 response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=jsonConductores");
@@ -137,25 +140,50 @@
             }
             String vehicullosJSON = swVehiculo.listarVehiculosNoEstado("Rematado");
             if (vehicullosJSON.length() > 2) {
-                VehiculosIU vehiculos  = new VehiculosIU();
+                VehiculosIU vehiculos = new VehiculosIU();
                 vehiculos.setListaJson(vehicullosJSON);
                 session.setAttribute("vehiculosIU", vehiculos);
             }
-            response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion="+opc);
+            response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=" + opc);
         } else if (opc.equals("saveAsignacionVC")) {
             String jsonLista = (String) session.getAttribute("jsonLista");
             session.setAttribute("jsonLista", null);
             VehiculosConductoresL listaAsigancion = g.fromJson(jsonLista, VehiculosConductoresL.class);
-            for(Tbvehiculosconductores vehiculoConductor : listaAsigancion.getLista()){
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            int cont = 0;
+            String result = "";
+            for (Tbvehiculosconductores vehiculoConductor : listaAsigancion.getLista()) {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00");
                 String date = formatter.format(vehiculoConductor.getTbvehiculosconductoresPK().getFechainicio());
-                String existe = swVehiculoConductor.listarVehiculosConductoresID(vehiculoConductor.getTbvehiculosconductoresPK().getCedula(),vehiculoConductor.getTbvehiculosconductoresPK().getMatricula(),date);
-                if(existe.length() > 2){ //modificar
-//                    String 
-                }else{ // ingresar como nuevo
-                    
+                String existe = swVehiculoConductor.listarVehiculosConductoresID(vehiculoConductor.getTbvehiculosconductoresPK().getCedula(), vehiculoConductor.getTbvehiculosconductoresPK().getMatricula(), date);
+                if (existe.length() > 2) { //modificar el existente y lanzar habilitado a vehiculo
+                    String fecha = date;
+                    fecha = fecha.replace("T00:00:00-05:00", "");
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+                    String mod = swVehiculoConductor.modificarVehiculoConductorIDComp(vehiculoConductor.getTbvehiculosconductoresPK().getCedula(), vehiculoConductor.getTbvehiculosconductoresPK().getMatricula(), fecha, gson.toJson(vehiculoConductor));
+                    if (mod.length() > 2) {
+                        if (vehiculoConductor.getFechafin() != null) {
+                            Tbvehiculos vehiculoAux = vehiculoConductor.getTbvehiculos();
+                            vehiculoAux.setEstado("Disponible");
+                            String modvehiculo = swVehiculo.modificarVehiculo(vehiculoAux.getPlaca(), g.toJson(vehiculoAux));
+                        }
+                    } else {
+                        result += " |Vehículo " + cont + " no actualizado| ";
+                    }
+                } else { // ingresar como nuevo
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+                    String insert = swVehiculoConductor.insertVehiculoConductor(gson.toJson(vehiculoConductor));
+                    if (insert.length() > 2) {
+                        Tbvehiculos vehiculoAux = vehiculoConductor.getTbvehiculos();
+                        vehiculoAux.setEstado("Ocupado");
+                        String modvehiculo = swVehiculo.modificarVehiculo(vehiculoConductor.getTbvehiculos().getPlaca(), g.toJson(vehiculoAux));
+                    } else {
+                        result += " |Vehículo " + cont + " no insertado| ";
+                    }
                 }
+                cont++;
             }
+            session.setAttribute("statusGuardar", result);
+            session.setAttribute("statusCodigo", "101");
             response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=guardarStatus");
         }
     } else {

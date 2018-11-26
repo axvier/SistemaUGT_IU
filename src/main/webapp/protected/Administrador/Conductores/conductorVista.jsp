@@ -203,14 +203,14 @@
             </li>
             <li>
                 <a  id="mnCondDisp" href="#" onclick="cambiarJQGConductor('jsonConductores')">
-                    <span class="fa-stack fa-lg"><i class="fa fa-check fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores disponibles
+                    <span class="fa-stack fa-lg"><i class="fa fa-check fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores
                 </a>
             </li>
-            <li>
+<!--            <li>
                 <a id="mnCondOcup" href="#" onclick="cambiarJQGConductor('jsonConducOcup')">
                     <span class="fa-stack fa-lg"><i class="fa fa-exchange fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores con vehiculos
                 </a>
-            </li>
+            </li>-->
             <li>
                 <a id="mnCondOcup" href="#" onclick="verLicenciaConductor()">
                     <span class="fa-stack fa-lg"><i class="fa fa-search fa-stack-1x"></i><i class="fa fa-credit-card fa-stack-2x"></i></span>Ver licencia

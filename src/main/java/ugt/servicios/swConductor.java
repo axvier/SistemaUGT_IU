@@ -42,7 +42,7 @@ public class swConductor {
     }
     //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="Listar Conductores no Bloqueados">
+    //<editor-fold defaultstate="collapsed" desc="Listar Conductores disponibles">
     public static String listarConductoresDisponibles() {
         String json = "";
         try {
@@ -108,6 +108,30 @@ public class swConductor {
             conexion.disconnect();
         } catch (Exception e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para lsitar conductores por estado", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return json;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Listar Conductores diferentes a un estado">
+    public static String listarConductoresDiferenteEstado(String estado) {
+        String json = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/conductoresnoestado/"+estado);
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setRequestMethod("GET");
+            conexion.setDoOutput(true); 
+            conexion.setDoInput(true);
+            InputStream contenido = (InputStream) conexion.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(contenido, "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                json = line;
+            }
+            conexion.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para lsitar conductores diferente a un estado", e.getClass().getName() + "****" + e.getMessage());
             System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
         }
         return json;
