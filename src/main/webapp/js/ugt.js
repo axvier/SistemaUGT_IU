@@ -92,13 +92,13 @@ var fncGestionAutoBlock = function () {
 var fncGestionUsuarios = function () {
     $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-3x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
     $.ajax({
-        url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
+        url: "protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
         type: "GET",
-        data: {opc:"tableVehiculos"},
+        data: {opc:"mostrar",accion:"tableUsuarios"},
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
-            fncDibujarTableVehiculos();
+            fncDibujarTableGUsuarios("tbUsuariosG");
         },
         error: function (error) {
             location.reload();

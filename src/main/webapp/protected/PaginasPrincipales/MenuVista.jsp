@@ -40,7 +40,7 @@
 //                        response.setCharacterEncoding("UTF-8");
 //                        response.getWriter().write(data);
                     for (Tbopciones opc : opcionesIU.getLista()) {
-                        if (opc.getIdopcion().equals(1)) {//Menu Gestión roles - usuarios - opciones
+                        if (opc.getIdopcion().equals(1) && opc.getEstado().equals("Habilitado")) {//Menu Gestión roles - usuarios - opciones
             %>
             <li style='cursor: pointer'>
                 <a onclick="fncGestionUsuarios();">
@@ -52,14 +52,14 @@
                     <i class="fa fa-registered fa-fw"></i><span class="text">Roles</span>
                 </a>
             </li>
-            <li style='cursor: pointer'>
+<!--            <li style='cursor: pointer'>
                 <a onclick="fncGestionOpciones();">
                     <i class="fa fa-puzzle-piece fa-fw"></i><span class="text">Opciones</span>
                 </a>
-            </li>
+            </li>-->
             <%
                 }
-                if (opc.getIdopcion().equals(2)) {//Menu Gestión Entidades
+                if (opc.getIdopcion().equals(2) && opc.getEstado().equals("Habilitado")) {//Menu Gestión Entidades
             %>
             <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-tasks"></i><span class="text">Gestión entidad</span>
                     <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
@@ -78,7 +78,7 @@
             </li>
             <%
                 }
-                if (opc.getIdopcion().equals(3)) {//Menu Gestión Conductores
+                if (opc.getIdopcion().equals(3) && opc.getEstado().equals("Habilitado")) {//Menu Gestión Conductores
             %>
             <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-users"></i><span class="text">Gestión conductores</span>
                     <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
@@ -97,7 +97,7 @@
             </li>
             <%
                 }
-                if (opc.getIdopcion().equals(4)) {//Menu Gestión Vehiculos
+                if (opc.getIdopcion().equals(4) && opc.getEstado().equals("Habilitado")) {//Menu Gestión Vehiculos
             %>
             <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-truck fa-fw"></i><span class="text">Gestión vehiculos</span>
                     <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
@@ -116,7 +116,7 @@
             </li>
             <%
                 }
-                if (opc.getIdopcion().equals(5)) {//Menu Gestión Solicitudes
+                if (opc.getIdopcion().equals(5) && opc.getEstado().equals("Habilitado")) {//Menu Gestión Solicitudes
             %>
             <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-briefcase fa-fw"></i><span class="text">Gestión solicitudes</span>
                     <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
@@ -135,7 +135,7 @@
             </li>
             <%
                 }
-                if (opc.getIdopcion().equals(6)) {//Menu Gestión Ordenes de Movilizacion
+                if (opc.getIdopcion().equals(6) && opc.getEstado().equals("Habilitado")) {//Menu Gestión Ordenes de Movilizacion
             %>
             <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-clone fa-fw"></i><span class="text">Gestión salvoconductos</span>
                     <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
@@ -154,7 +154,7 @@
             </li>
             <%
                 }
-                if (opc.getIdopcion().equals(7)) {//Menu Para Reportes
+                if (opc.getIdopcion().equals(7) && opc.getEstado().equals("Habilitado")) {//Menu Para Reportes
             %>
             <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-bar-chart fa-fw"></i><span class="text">Reportes</span>
                     <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
@@ -183,7 +183,7 @@
             </li>
             <%
                 }
-                if (opc.getIdopcion().equals(8)) {//Menu Mis solicitudes Usuario
+                if (opc.getIdopcion().equals(8) && opc.getEstado().equals("Habilitado")) {//Menu Mis solicitudes Usuario
             %>
             <li style='cursor: pointer'>
                 <a onclick="fncMisSolicitudes();">
@@ -192,7 +192,7 @@
             </li>
             <%
                 }
-                if (opc.getIdopcion().equals(9)) {//Menu Nueva Solicitud Usuario
+                if (opc.getIdopcion().equals(9) && opc.getEstado().equals("Habilitado")) {//Menu Nueva Solicitud Usuario
             %>
             <li style='cursor: pointer'>
                 <a onclick="fncNuevaSolicitud();">
@@ -201,7 +201,7 @@
             </li>
             <%
                 }
-                if (opc.getIdopcion().equals(10)) {//Menu Gestion de Requisitos PDF
+                if (opc.getIdopcion().equals(10) && opc.getEstado().equals("Habilitado")) {//Menu Gestion de Requisitos PDF
             %>
             <li style='cursor: pointer'>
                 <a onclick="fncPDFrequisitos();">

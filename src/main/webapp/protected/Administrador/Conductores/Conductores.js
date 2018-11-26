@@ -283,18 +283,34 @@ var fncDibujarTablaConductor = function () {
         grid.jqGrid("setGridWidth", newWidth, true);
     }).trigger('resize');
 
-    $("#search_cells").on("keyup", function () {
-        var value = $(this).val();
-        $("table tr").each(function (index) {
-            if (!index)
-                return;
-            $(this).find("td").each(function () {
-                var id = $(this).text().toLowerCase().trim();
-                var not_found = (id.indexOf(value) === -1);
-                $(this).closest('tr').toggle(!not_found);
-                return not_found;
-            });
+    $("#search_cells").keyup(function () {
+        var rules = [], i, cm,
+                postData = $grid.jqGrid("getGridParam", "postData"),
+                colModel = $grid.jqGrid("getGridParam", "colModel"),
+                searchText = $("#search_cells").val(),
+                l = colModel.length;
+
+        for (i = 0; i < l; i++) {
+            cm = colModel[i];
+            if (cm.search !== false && (typeof cm.stype === "undefined" || cm.stype === "text")) {
+                rules.push({
+                    field: cm.name,
+                    op: "cn",
+                    data: searchText
+                });
+            }
+        }
+
+        $.extend(postData, {
+            filters: {
+                groupOp: "OR",
+                rules: rules
+            }
         });
+
+        $grid.jqGrid("setGridParam", {search: true, postData: postData});
+        $grid.trigger("reloadGrid", [{page: 1, current: true}]);
+        return false;
     });
 
     var grid = $("#jqgridCLicencia");
