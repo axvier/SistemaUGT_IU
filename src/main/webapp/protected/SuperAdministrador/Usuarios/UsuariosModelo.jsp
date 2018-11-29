@@ -3,6 +3,15 @@
     Created on : 25/11/2018, 08:27:18 PM
     Author     : Xavy PC
 --%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="java.util.Date"%>
+<%@page import="com.google.gson.GsonBuilder"%>
+<%@page import="ugt.servicios.swRol"%>
+<%@page import="utg.roles.iu.RolesIU"%>
+<%@page import="ugt.entidades.iu.EntidadesIU"%>
+<%@page import="ugt.servicios.swEntidad"%>
+<%@page import="ugt.servicios.swUsuarioEntidad"%>
 <%@page import="ugt.entidades.Tbusuariosentidad"%>
 <%@page import="ugt.usuariosentidades.iu.UsuariosEntidadesIU"%>
 <%@page import="ugt.servicios.swLogin"%>
@@ -58,35 +67,110 @@
                 session.setAttribute("statusCodigo", "KO");
             }
             response.sendRedirect("UsuariosControlador.jsp?opc=mostrar&accion=modificarStatus");
-        } else if (opc.equals("eliminarUsuario")) {
-            String cedulaUG = request.getParameter("cedulaUG");
-            String jsonUser = (String) session.getAttribute("jsonUser");
+        } else if (opc.equals("eliminarUser")) {
+            String cedulaUG = (String) session.getAttribute("cedulaUG");
             session.setAttribute("cedulaUG", null);
-            session.setAttribute("jsonUser", null);
-            Tbusuarios usuario = g.fromJson(jsonUser, Tbusuarios.class);
-            usuario.setEstado("Bloqueado");
-            session.setAttribute("json", null);
-            String objJSON = swUsuario.modificarUsuario(cedulaUG, g.toJson(usuario));
+            String objJSON = swUsuario.eliminarUsuario(cedulaUG);
             String result = "";
-            if (objJSON.length() > 2) {
-                result += " Se ha bloqueado correctamente ";
+            if (objJSON.equals("200") || objJSON.equals("204") || objJSON.equals("202")) {
+                result += " Se ha eliminado correctamente ";
                 session.setAttribute("statusCodigo", "OK");
-                String arrayJSON = swLogin.loginUser(usuario.getCedula());
+                String arrayJSON = swUsuarioEntidad.terminarUsuarioEntidadCedula(cedulaUG); // servicipo para cerrar todas las asginaciones de fechas en usuario entidad
                 if (arrayJSON.length() > 2) {
-                    UsuariosEntidadesIU usuarioentidadesIU = new UsuariosEntidadesIU();
-                    usuarioentidadesIU.setListaJSON(arrayJSON);
-                    for(Tbusuariosentidad userentidad : usuarioentidadesIU.getLista()){
-//                        String res =
-                    }
+                    result += " junto con los roles asignados en el sistema";
+                    session.setAttribute("statusCodigo", "OK");
                 } else {
-                    result += " pero no tiene ningun rol en el sistema";
+                    result += " pero no se ha actualizado ningun rol en el sistema";
                     session.setAttribute("statusCodigo", "KO");
                 }
             } else {
-                result += " No se ha podido bloquear al usuario ";
+                result += " No se ha podido eliminar al usuario ";
                 session.setAttribute("statusCodigo", "KO");
             }
-            response.sendRedirect("conductorControlador.jsp?opc=mostrar&accion=eliminarStatus");
+            session.setAttribute("statusDelete", result);
+            response.sendRedirect("UsuariosControlador.jsp?opc=mostrar&accion=eliminarStatus");
+        } else if (opc.equals("modalAddGEntidadRol")) {
+            String arrayEntidades = swEntidad.listarEntidades();
+            if (arrayEntidades.length() > 2) {
+                EntidadesIU entidadesIU = new EntidadesIU();
+                entidadesIU.setListaJSON(arrayEntidades);
+                session.setAttribute("entidadesIU", entidadesIU);
+            }
+            String arrayRoles = swRol.listarRoles();
+            if (arrayRoles.length() > 2) {
+                RolesIU rolesIU = new RolesIU();
+                rolesIU.setListaJSON(arrayRoles);
+                session.setAttribute("rolesIU", rolesIU);
+            }
+            response.sendRedirect("UsuariosControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("divModalVerEntidadRol")) {
+            String cedulaUG = (String) session.getAttribute("cedulaUG");
+            session.setAttribute("cedulaUG", null);
+            String arrayJSON = swUsuarioEntidad.totalUsuarioEntidadCedula(cedulaUG);
+            if (arrayJSON.length() > 2) {
+                UsuariosEntidadesIU userentityrol = new UsuariosEntidadesIU();
+                userentityrol.setListaJSON(arrayJSON);
+                session.setAttribute("userentityrol", userentityrol);
+            }
+            response.sendRedirect("UsuariosControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("saveUsuarioEntidad")) {
+            String jsonUsuarioEntidad = (String) session.getAttribute("jsonUsuarioEntidad");
+            session.setAttribute("jsonUsuarioEntidad", null);
+            Tbusuariosentidad aux = g.fromJson(jsonUsuarioEntidad, Tbusuariosentidad.class);
+            String idCompuesto = "id;cedulau=" + aux.getTbusuariosentidadPK().getCedulau() + ";identidad=" + aux.getTbusuariosentidadPK().getIdentidad() + ";idrol=" + aux.getTbusuariosentidadPK().getIdrol();
+            String existe = swUsuarioEntidad.listarUsuarioEntidadID(idCompuesto);
+            if (existe.length() <= 2) {
+                String jsonObject = swUsuarioEntidad.insertUsuarioEntidad(jsonUsuarioEntidad);
+                if (jsonObject.length() > 2) {
+                    session.setAttribute("statusGuardar", "Entidad y rol asignados correctamente");
+                    session.setAttribute("statusCodigo", "OK");
+                } else {
+                    session.setAttribute("statusGuardar", "ERROR NO SE HA PODIDO Asignar!-> Contacte con el proveedor");
+                    session.setAttribute("statusCodigo", "KO");
+                }
+            } else {
+                session.setAttribute("statusGuardar", "El usuario ya esta asignado a " + aux.getTbentidad().getCodigoentidad() + " con el rol " + aux.getTbroles().getDescripcion());
+                session.setAttribute("statusCodigo", "KO");
+            }
+            response.sendRedirect("UsuariosControlador.jsp?opc=mostrar&accion=guardarStatus");
+        } else if (opc.equals("elimUsuarioEntidad")) {
+            String jsonUsuarioEntidad = (String) session.getAttribute("jsonUsuarioEntidad");
+            session.setAttribute("jsonUsuarioEntidad", null);
+            Tbusuariosentidad aux = g.fromJson(jsonUsuarioEntidad, Tbusuariosentidad.class);
+            String idCompuesto = "id;cedulau=" + aux.getTbusuariosentidadPK().getCedulau() + ";identidad=" + aux.getTbusuariosentidadPK().getIdentidad() + ";idrol=" + aux.getTbusuariosentidadPK().getIdrol();
+            String objJSON = swUsuarioEntidad.eliminarUsuarioEntidad(idCompuesto);
+            String result = "";
+            if (objJSON.equals("200") || objJSON.equals("204") || objJSON.equals("202")) {
+                result += " Se ha eliminado correctamente ";
+                session.setAttribute("statusCodigo", "OK");
+            } else {
+                result += " No se ha podido eliminar al usuario ";
+                session.setAttribute("statusCodigo", "KO");
+            }
+            session.setAttribute("statusDelete", result);
+            response.sendRedirect("UsuariosControlador.jsp?opc=mostrar&accion=eliminarStatus");
+        } else if (opc.equals("modUsuarioEntidad")) {
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String jsonUsuarioEntidad = (String) session.getAttribute("jsonUsuarioEntidad");
+            session.setAttribute("jsonUsuarioEntidad", null);
+            Tbusuariosentidad aux = g.fromJson(jsonUsuarioEntidad, Tbusuariosentidad.class);
+            String idCompuesto = "id;cedulau=" + aux.getTbusuariosentidadPK().getCedulau() + ";identidad=" + aux.getTbusuariosentidadPK().getIdentidad() + ";idrol=" + aux.getTbusuariosentidadPK().getIdrol();
+            Calendar today = Calendar.getInstance();
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00-05:00");
+            Date date = sf.parse(sf.format(today.getTime()));
+            aux.setFechafin(date);
+            String jsonone = gson.toJson(aux);
+            String objJSON = swUsuarioEntidad.modificarUsuarioEntidad(idCompuesto,jsonone);
+            String result = "";
+            if (objJSON.length() > 2) {
+                result = " Se ha finalizado correctamente la relación ";
+                session.setAttribute("statusCodigo", "OK");
+            } else {
+                result = " No se ha podido finalizar la relación ";
+                session.setAttribute("statusCodigo", "KO");
+            }
+            session.setAttribute("statusMod", result);
+            response.sendRedirect("UsuariosControlador.jsp?opc=mostrar&accion=modificarStatus");
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

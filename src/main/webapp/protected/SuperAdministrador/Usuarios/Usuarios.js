@@ -15,12 +15,12 @@ var fncAddGUsuario = function (idForm) {
             success: function (datos) {
                 datos = JSON.parse(datos);
                 if (datos.codigo === "OK") {
-                    swalTimer("Usuario estado", datos.respuesta, "success");
+                    swalTimer("Usuario", "Estado: " + datos.codigo + " - " + datos.respuesta, "success");
                     $("#tbUsuariosG").jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
                     $("#modGeneralUsuarios").modal('hide');
                 }
                 if (datos.codigo === "KO") {
-                    swalTimer("Usuario estado", datos.respuesta, "error");
+                    swalTimer("Usuario", "Estado: " + datos.codigo + " - " + datos.respuesta, "error");
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -50,6 +50,121 @@ var addModalUsuario = function (idmodal) {
     });
 };
 
+var addModalEntidadRol = function (idmodal, idtabla) {
+    var $grid = $("#" + idtabla);
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        $('#' + idmodal + ' .modal-content').load('protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp?opc=modalAddGEntidadRol&cedulaUG=' + selRowId, function () {
+            $('#' + idmodal).modal({show: true});
+        });
+    } else
+        swalTimer("Usuario", "Seleccione un usuario", "error");
+};
+
+var fncVerEntidadesRolesAsginados = function (idDivModal) {
+    $('#' + idDivModal).load('protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp?opc=divModalVerEntidadRol&cedulaUG=' + $("#cedulaGU").val());
+};
+
+var fncAddGU_E_R = function (idForm) {
+    var obj = fncObjFormGU_E_R(idForm);
+    if (obj !== null) {
+        obj.fechainicio += "T00:00:00-05:00";
+        var json = JSON.stringify(obj);
+        $.ajax({
+            url: "protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
+            type: "POST",
+            dataType: "text",
+            data: {opc: "saveUsuarioEntidad", jsonUsuarioEntidad: json},
+            success: function (datos) {
+                datos = JSON.parse(datos);
+                if (datos.codigo === "OK") {
+                    swalTimer("Entidad y rol estado", datos.respuesta, "success");
+                }
+                if (datos.codigo === "KO") {
+                    swalTimer("Entidad estado", datos.respuesta, "error");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Error de ejecucion -> " + textStatus + jqXHR);
+            }
+
+        });
+    }
+};
+
+var fncObjFormGU_E_R = function (idForm) {
+    var $grid = $("#tbUsuariosG");
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    var rowData = $grid.jqGrid('getRowData', selRowId);
+    delete rowData.actions;
+    var tbUsuarioEntidad = {
+        fechainicio: $("#" + idForm + " #addGUfechainicio").val(),
+        tbentidad: JSON.parse($("#" + idForm + " #addGUEntidad").find(':selected').attr('data-json')),
+        tbroles: JSON.parse($("#" + idForm + " #addGURol").find(':selected').attr('data-json')),
+        tbusuarios: rowData,
+        tbusuariosentidadPK: {
+            cedulau: rowData.cedula,
+            identidad: JSON.parse($("#" + idForm + " #addGUEntidad").find(':selected').attr('data-json')).identidad,
+            idrol: JSON.parse($("#" + idForm + " #addGURol").find(':selected').attr('data-json')).idrol
+        }
+    };
+    return tbUsuarioEntidad;
+};
+
+var fncEliminarGU_E_R = function (str) {
+    var obj = $("#row" + str).data("json");
+    if (obj !== null) {
+        var json = JSON.stringify(obj);
+        $.ajax({
+            url: "protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
+            type: "POST",
+            dataType: "text",
+            data: {opc: "elimUsuarioEntidad", jsonUsuarioEntidad: json},
+            success: function (datos) {
+                datos = JSON.parse(datos);
+                if (datos.codigo === "OK") {
+                    swalTimer("Entidad y rol", datos.codigo + " - " + datos.respuesta, "success");
+                    fncVerEntidadesRolesAsginados('tabitem2');
+                }
+                if (datos.codigo === "KO") {
+                    swalTimer("Entidad estado", datos.codigo + " - " + datos.respuesta, "error");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Error de ejecucion -> " + textStatus + jqXHR);
+            }
+
+        });
+    }
+};
+
+var fncTerminarGU_E_R = function (str) {
+    var obj = $("#row" + str).data("json");
+    if (obj !== null) {
+        var json = JSON.stringify(obj);
+        $.ajax({
+            url: "protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
+            type: "POST",
+            dataType: "text",
+            data: {opc: "modUsuarioEntidad", jsonUsuarioEntidad: json},
+            success: function (datos) {
+                datos = JSON.parse(datos);
+                if (datos.codigo === "OK") {
+                    swalTimer("Entidad-rol", datos.codigo + " - " + datos.respuesta, "success");
+                    fncVerEntidadesRolesAsginados('tabitem2');
+                }
+                if (datos.codigo === "KO") {
+                    swalTimer("Entidad-rol", datos.codigo + " - " + datos.respuesta, "error");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Error de ejecucion -> " + textStatus + jqXHR);
+            }
+
+        });
+    }
+};
+
 var fncRecargatTGUsuarios = function (idtabla) {
     var $grid = $("#" + idtabla);
     $(window).on("resize", function () {
@@ -73,7 +188,7 @@ var fncDibujarTableGUsuarios = function (idtabla) {
             {label: 'Cedula', name: 'cedula', key: true, width: 70, editable: false},
             {label: 'Email', name: 'email', width: 150, editable: true},
             {label: 'Nombres', name: 'nombres', width: 120, editable: true},
-            {label: 'Apellidos', name: 'apellidos', width: 120},
+            {label: 'Apellidos', name: 'apellidos', width: 120, editable: true},
             {label: 'Tipo', name: 'tipousuario', width: 70, editable: true,
                 edittype: 'select',
                 editoptions: {
@@ -95,6 +210,11 @@ var fncDibujarTableGUsuarios = function (idtabla) {
                 formatter: "actions",
                 formatoptions: {
                     keys: true,
+                    onSuccess: function (jqXHR) {
+                        var datos = JSON.parse(jqXHR.responseText);
+                        swalTimer("Usuarios", "Estado : " + datos.codigo + " - " + datos.respuesta, "info");
+                        return true;
+                    },
                     editOptions: {},
                     addOptions: {},
                     delOptions: {
@@ -103,8 +223,7 @@ var fncDibujarTableGUsuarios = function (idtabla) {
                         serializeDelData: function (postdata) {
                             var rowData = $grid.jqGrid('getRowData', postdata.id);
                             delete rowData.actions;
-                            console.log(JSON.stringify(rowData));
-                            return {opc: "eliminarUsuario", cedula: postdata.id, jsonUser: JSON.stringify(rowData)};
+                            return {opc: "eliminarUser", cedula: postdata.id, jsonUser: JSON.stringify(rowData)};
                         }
                     }
                 }
@@ -120,7 +239,6 @@ var fncDibujarTableGUsuarios = function (idtabla) {
         pager: "#" + idtabla + "_pager",
         serializeRowData: function (postdata) {
             delete postdata.oper;
-            console.log(JSON.stringify(postdata));
             return {opc: "modificarUser", jsonUser: JSON.stringify(postdata), cedula: postdata.cedula};
         }
     });

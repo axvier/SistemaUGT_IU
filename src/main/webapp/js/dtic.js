@@ -216,6 +216,6 @@ var swalTimer = function (titulo, mensaje, tipo) {
         title: titulo,
         text: mensaje,
         type: tipo,
-        timer: 3000
+        timer: 3500
     });
 };

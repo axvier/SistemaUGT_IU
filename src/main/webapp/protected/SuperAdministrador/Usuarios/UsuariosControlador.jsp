@@ -24,6 +24,30 @@
                 String cedulaUG = request.getParameter("cedula");
                 session.setAttribute("cedulaUG", cedulaUG);
                 response.sendRedirect("UsuariosModelo.jsp?opc=" + opc);
+            } else if (opc.equals("eliminarUser")) {
+                String cedulaUG = request.getParameter("cedula");
+                session.setAttribute("cedulaUG", cedulaUG);
+                response.sendRedirect("UsuariosModelo.jsp?opc=" + opc);
+            } else if (opc.equals("modalAddGEntidadRol")) {
+                String cedulaUG = request.getParameter("cedulaUG");
+                session.setAttribute("cedulaUG", cedulaUG);
+                response.sendRedirect("UsuariosModelo.jsp?opc=" + opc);
+            } else if (opc.equals("divModalVerEntidadRol")) {
+                String cedulaUG = request.getParameter("cedulaUG");
+                session.setAttribute("cedulaUG", cedulaUG);
+                response.sendRedirect("UsuariosModelo.jsp?opc=" + opc);
+            } else if (opc.equals("saveUsuarioEntidad")) {
+                String jsonUsuarioEntidad = request.getParameter("jsonUsuarioEntidad");
+                session.setAttribute("jsonUsuarioEntidad", jsonUsuarioEntidad);
+                response.sendRedirect("UsuariosModelo.jsp?opc=" + opc);
+            } else if (opc.equals("elimUsuarioEntidad")) {
+                String jsonUsuarioEntidad = request.getParameter("jsonUsuarioEntidad");
+                session.setAttribute("jsonUsuarioEntidad", jsonUsuarioEntidad);
+                response.sendRedirect("UsuariosModelo.jsp?opc=" + opc);
+            } else if (opc.equals("modUsuarioEntidad")) {
+                String jsonUsuarioEntidad = request.getParameter("jsonUsuarioEntidad");
+                session.setAttribute("jsonUsuarioEntidad", jsonUsuarioEntidad);
+                response.sendRedirect("UsuariosModelo.jsp?opc=" + opc);
             }
         }
     } else {
