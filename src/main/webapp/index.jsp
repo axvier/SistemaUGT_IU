@@ -321,5 +321,6 @@
         <script src="protected/Administrador/Conductores/Conductores.js" type="text/javascript"></script>
         <script src="protected/Administrador/Vehiculos/Vehiculos.js" type="text/javascript"></script>
         <script src="protected/SuperAdministrador/Usuarios/Usuarios.js" type="text/javascript"></script>
+        <script src="protected/SuperAdministrador/Roles/Roles.js" type="text/javascript"></script>
     </body>
 </html>

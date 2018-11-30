@@ -105,3 +105,30 @@ var fncGestionUsuarios = function () {
         }
     });
 };
+
+var fncGestionRoles = function () {
+    $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-3x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
+    $.ajax({
+        url: "protected/SuperAdministrador/Roles/RolesControlador.jsp",
+        type: "GET",
+        data: {opc:"mostrar",accion:"tableGRoles"},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            $("#contenidoDinamico").html(datos);
+            fncDibujarTableGRoles("tbRolesG");
+        },
+        error: function (error) {
+            location.reload();
+        }
+    });
+};
+
+var fncRecargarJQG = function (idtabla,urlbase,urltable) {
+    var $grid = $("#" + idtabla);
+    $(window).on("resize", function () {
+        var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
+        grid.jqGrid("setGridWidth", newWidth, true);
+    }).trigger('resize');
+    $grid.jqGrid('clearGridData');
+    $grid.jqGrid('setGridParam', {url: urlbase + urltable, datatype: "json"}).trigger("reloadGrid");
+};
