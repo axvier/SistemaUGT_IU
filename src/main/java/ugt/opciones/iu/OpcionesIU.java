@@ -35,8 +35,15 @@ public class OpcionesIU extends OpcionesL {
         }
         return HTML;
     }
-    
-//    private String getHTMLMenuGestionRolesUsuariosOpciones(String opcion){
-//        
-//    }
+
+    public Tbopciones existeItemID(int id) {
+        Tbopciones result = null;
+        for (Tbopciones en : this.getLista()) {
+            if (en.getIdopcion().equals(id)) {
+                result = en;
+                break;
+            }
+        }
+        return result;
+    }
 }

@@ -19,6 +19,32 @@
                 response.sendRedirect("RolesModelo.jsp?opc=" + opc);
             } else if (opc.equals("modalAddRol")) {
                 response.sendRedirect("RolesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("GAddGRolOpcion")) {
+                response.sendRedirect("RolesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("chksOpcionesRol")) {
+                String idRol = request.getParameter("idRol");
+                session.setAttribute("idRol", idRol);
+                response.sendRedirect("RolesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("saveRol")) {
+                String jsonUser = request.getParameter("jsonRol");
+                session.setAttribute("jsonRol", jsonUser);
+                response.sendRedirect("RolesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("modificarRol")) {
+                String jsonRol = request.getParameter("jsonRol");
+                session.setAttribute("jsonRol", jsonRol);
+                String idrol = request.getParameter("idrol");
+                session.setAttribute("idrol", idrol);
+                response.sendRedirect("RolesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("eliminarRol")) {
+                String idrol = request.getParameter("idrol");
+                session.setAttribute("idrol", idrol);
+                response.sendRedirect("RolesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("saveRolOpciones")) {
+                String jsonRol = request.getParameter("jsonRol");
+                session.setAttribute("jsonRol", jsonRol);
+                String jsonOpciones = request.getParameter("jsonOpciones");
+                session.setAttribute("jsonOpciones", jsonOpciones);
+                response.sendRedirect("RolesModelo.jsp?opc=" + opc);
             }
         }
     } else {

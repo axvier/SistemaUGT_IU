@@ -4,6 +4,12 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="com.google.gson.GsonBuilder"%>
+<%@page import="ugt.entidades.Tbroles"%>
+<%@page import="ugt.entidades.Tbopciones"%>
+<%@page import="utg.roles.iu.RolesIU"%>
+<%@page import="ugt.rolesopciones.IU.RolesOpcionesIU"%>
+<%@page import="ugt.opciones.iu.OpcionesIU"%>
 <%@page import="ugt.entidades.Tbtipoentidad"%>
 <%@page import="ugt.tiposentidades.iu.TiposEntidadesIU"%>
 <%@page import="com.google.gson.Gson"%>
@@ -20,6 +26,39 @@
             String json = (String) session.getAttribute("arrayJSON");
             session.setAttribute("arrayJSON", null);
             out.print(json);
+        } else if (accion.equals("guardarStatus")) {
+            String respuesta = (String) session.getAttribute("statusGuardar");
+            String codigo = (String) session.getAttribute("statusCodigo");
+            session.setAttribute("statusGuardar", null);
+            session.setAttribute("statusCodigo", null);
+            String result = "{"
+                    + "\"respuesta\":\"" + respuesta + "\","
+                    + "\"codigo\":\"" + codigo + "\""
+                    + "}";
+            response.setContentType("text/plain");
+            response.getWriter().write(result);
+        } else if (accion.equals("modificarStatus")) {
+            String respuesta = (String) session.getAttribute("statusMod");
+            String codigo = (String) session.getAttribute("statusCodigo");
+            session.setAttribute("statusMod", null);
+            session.setAttribute("statusCodigo", null);
+            String result = "{"
+                    + "\"respuesta\":\"" + respuesta + "\","
+                    + "\"codigo\":\"" + codigo + "\""
+                    + "}";
+            response.setContentType("text/plain");
+            response.getWriter().write(result);
+        } else if (accion.equals("eliminarStatus")) {
+            String respuesta = (String) session.getAttribute("statusDelete");
+            String codigo = (String) session.getAttribute("statusCodigo");
+            session.setAttribute("statusDelete", null);
+            session.setAttribute("statusCodigo", null);
+            String result = "{"
+                    + "\"respuesta\":\"" + respuesta + "\","
+                    + "\"codigo\":\"" + codigo + "\""
+                    + "}";
+            response.setContentType("text/plain");
+            response.getWriter().write(result);
         } else if (accion.equals("tableGRoles")) {
 %>
 <div class="main-header">
@@ -49,7 +88,13 @@
                 </a>
             </li>
             <li>
-                <a id="mnCondOcup" href="#" onclick="addModalEntidadRol('modGeneralUsuarios', 'tbUsuariosG')">
+                <a id="mnCondOcup" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-list-alt fa-stack-2x"></i></span>Lista de roles
+                </a>
+            </li>
+            <li>
+                <!--<a id="mnCondOcup" href="#" onclick="addModalRolOpcion('modGestionRol', 'tbRolesG')">-->
+                <a id="mnCondOcup" href="#" onclick="fncAsignarRolOpcion()">
                     <span class="fa-stack fa-lg"></i><i class="fa fa-puzzle-piece fa-stack-2x"></i></span>Add Rol-Opcion
                 </a>
             </li>
@@ -112,7 +157,7 @@
     <h4 class="modal-title" id="modalLicenciaTitulo"> UGT | Nuevo Rol </h4>
 </div>
 <div class="modal-body">
-    <form id="formAddGRol" class="form-horizontal" role="form" onsubmit="fncAddGRol(this.id);return false;">
+    <form id="formAddGRol" class="form-horizontal" role="form" onsubmit="fncAddGRol(this.id, 'modGestionRol', 'tbRolesG');return false;">
         <div class="form-group">
             <label  class="col-sm-2 control-label" for="addGRCharRol">Siglas del rol</label>
             <div class="col-sm-10">
@@ -157,8 +202,141 @@
     </form>
 </div>
 <!--<div class="modal-footer">-->
+<!--</div>-->
+<%
+} else if (accion.equals("GAddGRolOpcion")) {
+    RolesIU gRolesIU = (RolesIU) session.getAttribute("gRolesIU");
+    session.setAttribute("gRolesIU", null);
+    OpcionesIU opcionesIU = (OpcionesIU) session.getAttribute("gOpcionesIU");
+    session.setAttribute("gOpcionesIU", null);
+%>
+<div class="main-header">
+    <h2>UGT</h2>
+    <em>Agragar Roles - Opciones</em>
 </div>
-<%        }
+<div class="main-content">
+    <!-- MODAL DIALOG -->
+    <div class="modal fade" id="modGestionRol" tabindex="-1" role="dialog" aria-labelledby="modGestionRol" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+    <!-- END MODAL DIALOG -->
+    <div>
+        <ul class="list-inline file-main-menu">
+            <li>
+                <a data-toggle="modal" style='cursor: pointer' class="inactive">
+                    <span class="fa-stack fa-lg"><i class="fa fa-plus-circle fa-stack-2x"></i></span> Nuevo Rol
+                </a>
+            </li>
+            <li>
+                <a id="mnCondOcup" href="#" class="inactive">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-retweet fa-stack-2x"></i></span>Recargar
+                </a>
+            </li>
+            <li>
+                <a id="mnCondOcup" href="#" onclick="fncGestionRoles()">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-list-alt fa-stack-2x"></i></span>Lista de roles
+                </a>
+            </li>
+            <li>
+                <a id="mnCondOcup" href="#" onclick="fncAsignarRolOpcion()">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-puzzle-piece fa-stack-2x"></i></span>Add Rol-Opcion
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- HORIZONTAL FORM -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fa fa-edit"></i> Asignaciones </h3></div>
+        <div class="widget-content">
+            <form class="form-horizontal" role="form" id="formAddR-O" onsubmit="fncAddGRol_Opcion(this.id);return false;">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="addGRol" class="control-label sr-only">Roles</label>
+                            <!--<input type="text" class="form-control" id="contact-name" placeholder="Name">-->
+                            <select name="tbroles" class="form-control selectpicker" id="addGRol" data-live-search="true" required onchange="changeSelectRol(this.id, 'chksOpcionesRol')">
+                                <option disabled value='' selected hidden>--Escoja uno --</option>
+                                <%
+                                    if (gRolesIU != null) {
+                                        g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+                                        out.println("");
+                                        for (Tbroles rol : gRolesIU.getLista()) {
+                                            if (!rol.getEstado().equals("Deshabilitado")) {
+                                                out.println("<option data-tokens='" + rol.getIdrol() + "' data-json='" + g.toJson(rol) + "'> [" + rol.getCharrol() + "] " + rol.getDescripcion() + " </option>");
+                                            }
+                                        }
+                                    }
+                                %>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="submit" class="btn btn-success" id="btnSR-O">Aplicar</button>
+                        &nbsp&nbsp
+                        <button type="button" class="btn btn-default" onclick="fncCheckAll('formAddR-O', 'chksOpcionesRol')">Todos</button>
+                        <button type="button" class="btn btn-default" onclick="fncCheckAllNot('formAddR-O', 'chksOpcionesRol')">Ninguno</button>
+                    </div>
+                </div>
+                <div class="row" id="chksOpcionesRol">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-10">
+                        <%
+                            if (opcionesIU != null) {
+                                for (Tbopciones opcion : opcionesIU.getLista()) {
+                                    if (opcion.getEstado().equals("Habilitado")) {
+                                        out.println("  <div class='input-group'>");
+                                        out.println("    <label class='control-inline fancy-checkbox custom-bgcolor-green'>");
+                                        out.println("      <input type='checkbox' name='gch" + opcion.getIdopcion() + "' value='" + opcion.getIdopcion() + "' data-estado='" + opcion.getEstado() + "' data-descripcion='" + opcion.getDescripcion() + "' data-accion='" + opcion.getAccion() + "'>");
+                                        out.println("      <span>" + opcion.getDescripcion() + "</span>");
+                                        out.println("    </label>");
+                                        out.println("  </div>");
+                                    }
+                                }
+                            }
+                        %>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- END HORIZONTAL FORM -->
+</div>
+<%
+} else if (accion.equals("chksOpcionesRol")) {
+    OpcionesIU gopcionesRol = (OpcionesIU) session.getAttribute("gopcionesRol");
+    session.setAttribute("gopcionesRol", null);
+    OpcionesIU opcionesIU = (OpcionesIU) session.getAttribute("gOpcionesIU");
+
+%>
+<!--<div class="row" id="chksOpcionesRol">-->
+<div class="col-sm-2"></div>
+<div class="col-sm-10">
+    <%        if (opcionesIU != null) {
+            for (Tbopciones opcion : opcionesIU.getLista()) {
+                if (opcion.getEstado().equals("Habilitado")) {
+                    out.println("  <div class='input-group'>");
+                    out.println("    <label class='control-inline fancy-checkbox custom-bgcolor-green'>");
+                    if (gopcionesRol.existeItemID(opcion.getIdopcion()) != null) {
+                        out.println("      <input type='checkbox' name='gch" + opcion.getIdopcion() + "' value='" + opcion.getIdopcion() + "' data-estado='" + opcion.getEstado() + "' data-descripcion='" + opcion.getDescripcion() + "' data-accion='" + opcion.getAccion() + "' checked>");
+                    } else {
+                        out.println("      <input type='checkbox' name='gch" + opcion.getIdopcion() + "' value='" + opcion.getIdopcion() + "' data-estado='" + opcion.getEstado() + "' data-descripcion='" + opcion.getDescripcion() + "' data-accion='" + opcion.getAccion() + "'>");
+                    }
+                    out.println("      <span>" + opcion.getDescripcion() + "</span>");
+                    out.println("    </label>");
+                    out.println("  </div>");
+                }
+            }
+        }
+    %>
+</div>
+<!--</div>-->
+<%
+        }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");
     }

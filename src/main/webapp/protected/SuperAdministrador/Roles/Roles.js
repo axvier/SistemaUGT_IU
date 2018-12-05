@@ -10,6 +10,111 @@ var addModalGRol = function (idmodal) {
     });
 };
 
+var fncAddGRol = function (idForm, idmodal, idtabla) {
+    var obj = objAddGRol(idForm);
+    if (obj !== null) {
+        var json = JSON.stringify(obj);
+        $.ajax({
+            url: "protected/SuperAdministrador/Roles/RolesControlador.jsp",
+            type: "POST",
+            dataType: "text",
+            data: {opc: "saveRol", jsonRol: json},
+            success: function (datos) {
+                datos = JSON.parse(datos);
+                if (datos.codigo === "OK") {
+                    swalTimer("Rol ", "Estado: " + datos.codigo + " - " + datos.respuesta, "success");
+                    $("#" + idtabla).jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
+                    $("#" + idmodal).modal('hide');
+                }
+                if (datos.codigo === "KO") {
+                    swalTimer("Rol error", "Estado: " + datos.codigo + " - " + datos.respuesta, "error");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Error de ejecucion -> " + textStatus + jqXHR);
+            }
+        });
+    }
+};
+
+var objAddGRol = function (idForm) {
+    var tbroles = {
+        charrol: $("#" + idForm + " #addCharRol").val(),
+        descripcion: $("#" + idForm + " #addGRDescripcion").val(),
+        estado: $("#" + idForm + " #addGREstado").val(),
+        gerarquia: {
+            descripcion: $("#" + idForm + " #addGRGerarquia").find(':selected').attr('data-descripcion'),
+            idtipo: $("#" + idForm + " #addGRGerarquia").find(':selected').attr('data-tokens')
+        },
+        idrol: 0
+    };
+    return tbroles;
+};
+
+
+var addModalRolOpcion = function (idmodal, idtabla) {
+    var $grid = $("#" + idtabla);
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        $('#' + idmodal + ' .modal-content').load('protected/SuperAdministrador/Roles/RolesControlador.jsp?opc=modalAddGRolOpcion&idRol=' + selRowId, function () {
+            $('#' + idmodal + " .modal-header .modal-title").html(" UGT | " + $grid.jqGrid('getRowData', selRowId).descripcion + " - Opciones ");
+            $('#' + idmodal).modal({show: true});
+        });
+    } else
+        swalTimer("Usuario", "Seleccione un usuario", "error");
+};
+
+var changeSelectRol = function (idSelectRol, idLoad) {
+    var sel = $("#" + idSelectRol).find(':selected').attr('data-tokens');
+    $('#' + idLoad).load('protected/SuperAdministrador/Roles/RolesControlador.jsp?opc=chksOpcionesRol&idRol=' + sel, function () {
+    });
+};
+
+var fncAddGRol_Opcion = function (idForm) {
+    var objRol = objAddGRol_O(idForm);
+    var objOpciones = objAddGR_Opc(idForm);
+    if (objRol !== null && objOpciones !== null) {
+        $.ajax({
+            url: "protected/SuperAdministrador/Roles/RolesControlador.jsp",
+            type: "POST",
+            dataType: "text",
+            data: {opc: "saveRolOpciones", jsonRol: JSON.stringify(objRol), jsonOpciones: JSON.stringify(objOpciones)},
+            success: function (datos) {
+                datos = JSON.parse(datos);
+                if (datos.codigo === "OK") {
+                    swalTimer("Rol ", "Estado: " + datos.codigo + " - " + datos.respuesta, "success");
+                }
+                if (datos.codigo === "KO") {
+                    swalTimer("Rol error", "Estado: " + datos.codigo + " - " + datos.respuesta, "error");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Error de ejecucion -> " + textStatus + jqXHR);
+            }
+        });
+    }
+
+};
+
+var objAddGRol_O = function (idForm) {
+    var tbroles = JSON.parse($("#" + idForm + " #addGRol").find(':selected').attr('data-json'));
+    return tbroles;
+};
+
+var objAddGR_Opc = function (idForm) {
+    var lista = [];
+    $('#' + idForm + ' #chksOpcionesRol input[type=checkbox]:checked').each(function () {
+        var tbopciones = {
+            accion:$(this).attr("data-accion"),
+            descripcion:$(this).attr("data-descripcion"),
+            estado:$(this).attr("data-estado"),
+            idopcion:$(this).val()
+        };
+        lista.push(tbopciones);
+    });
+    return lista;
+};
+
 var fncDibujarTableGRoles = function (idtabla) {
     var $grid = $("#" + idtabla);
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/SuperAdministrador/Roles";
@@ -51,11 +156,11 @@ var fncDibujarTableGRoles = function (idtabla) {
                 formatter: "actions",
                 formatoptions: {
                     keys: true,
-//                    onSuccess: function (jqXHR) {
-//                        var datos = JSON.parse(jqXHR.responseText);
-//                        swalTimer("Usuarios", "Estado : " + datos.codigo + " - " + datos.respuesta, "info");
-//                        return true;
-//                    },
+                    onSuccess: function (jqXHR) {
+                        var datos = JSON.parse(jqXHR.responseText);
+                        swalTimer("Roles", "Estado : " + datos.codigo + " - " + datos.respuesta, "info");
+                        return true;
+                    },
                     editOptions: {},
                     addOptions: {},
                     delOptions: {
@@ -63,7 +168,6 @@ var fncDibujarTableGRoles = function (idtabla) {
                         width: 300,
                         serializeDelData: function (postdata) {
                             delete postdata.oper;
-                            console.log(postdata);
                             return {opc: "eliminarRol", idrol: postdata.id};
                         }
                     }
@@ -85,7 +189,6 @@ var fncDibujarTableGRoles = function (idtabla) {
                 descripcion: $("#" + postdata.idrol + "_gerarquia").find(':selected').attr('data-descripcion'),
                 idtipo: $("#" + postdata.idrol + "_gerarquia").val()
             };
-            console.log(JSON.stringify(postdata));
             return {opc: "modificarRol", jsonRol: JSON.stringify(postdata), idrol: postdata.idrol};
         }
     });

@@ -55,6 +55,7 @@ var addModalEntidadRol = function (idmodal, idtabla) {
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
         $('#' + idmodal + ' .modal-content').load('protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp?opc=modalAddGEntidadRol&cedulaUG=' + selRowId, function () {
+            $('#' + idmodal + " .modal-header .modal-title").html(" UGT | Entidad Rol - " + $grid.jqGrid('getRowData', selRowId).nombres + " ");
             $('#' + idmodal).modal({show: true});
         });
     } else
