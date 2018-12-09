@@ -14,6 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -52,6 +54,11 @@ public class Tbopciones implements Serializable {
     @Size(max = 20)
     @Column(name = "estado")
     private String estado;
+    @OneToMany(mappedBy = "idpadre")
+    private Collection<Tbopciones> tbopcionesCollection;
+    @JoinColumn(name = "idpadre", referencedColumnName = "idopcion")
+    @ManyToOne
+    private Tbopciones idpadre;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idopcion")
     private Collection<Tbrolesopciones> tbrolesopcionesCollection;
 
@@ -92,6 +99,23 @@ public class Tbopciones implements Serializable {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+     @XmlTransient
+    public Collection<Tbopciones> getTbopcionesCollection() {
+        return tbopcionesCollection;
+    }
+
+    public void setTbopcionesCollection(Collection<Tbopciones> tbentidadCollection) {
+        this.tbopcionesCollection = tbentidadCollection;
+    }
+
+    public Tbopciones getIdpadre() {
+        return idpadre;
+    }
+
+    public void setIdpadre(Tbopciones idpadre) {
+        this.idpadre = idpadre;
     }
 
     @XmlTransient

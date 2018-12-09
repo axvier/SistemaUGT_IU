@@ -73,7 +73,7 @@
                 session.setAttribute("gopcionesRol", opcionesRol);
             }
             String objJSON = swOpcion.listarOpciones();
-            if (arrayJSON.length() > 2) {
+            if (objJSON.length() > 2) {
                 OpcionesIU gOpcionesIU = new OpcionesIU();
                 gOpcionesIU.setListaJSON(objJSON);
                 session.setAttribute("gOpcionesIU", gOpcionesIU);
@@ -126,10 +126,11 @@
             session.setAttribute("jsonRol", null);
             session.setAttribute("jsonOpciones", null);
             Tbroles rol = g.fromJson(jsonRol, Tbroles.class);
-            OpcionesIU opciones = g.fromJson(jsonOpciones, OpcionesIU.class);
+            OpcionesIU opciones = new OpcionesIU();
+            opciones.setListaJSON(jsonOpciones);
             String result = "";
             String auxJSON = swRolesOpciones.eliminarOpcionesIDRol(rol.getIdrol().toString());
-            if (auxJSON.equals("OK")) {
+            if (auxJSON.equals("OK") || auxJSON.equals("200") || auxJSON.equals("204") || auxJSON.equals("202") ) {
                 for (Tbopciones search : opciones.getLista()) {
                     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
                     Tbrolesopciones insert = new Tbrolesopciones();

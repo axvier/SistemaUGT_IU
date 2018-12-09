@@ -278,9 +278,11 @@
         <script src="assets/js/jquery/jquery-2.1.0.min.js"></script>
         <script src="assets/js/bootstrap/bootstrap.js"></script>
         <script src="assets/js/plugins/modernizr/modernizr.js"></script>
-        <!--<script src="assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>-->
+        <script src="assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
         <script src="assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
         <script src="assets/js/king-common.js"></script>
+        <script src="assets/js/plugins/wizard/wizard.min.js"></script>
+	<script src="assets/js/plugins/parsley-validation/parsley.min.js"></script>
         <script src="assets/js/plugins/stat/jquery.easypiechart.min.js"></script>
         <script src="assets/js/plugins/raphael/raphael-2.1.0.min.js"></script>
         <script src="assets/js/plugins/stat/flot/jquery.flot.min.js"></script>
@@ -322,5 +324,6 @@
         <script src="protected/Administrador/Vehiculos/Vehiculos.js" type="text/javascript"></script>
         <script src="protected/SuperAdministrador/Usuarios/Usuarios.js" type="text/javascript"></script>
         <script src="protected/SuperAdministrador/Roles/Roles.js" type="text/javascript"></script>
+        <script src="protected/Solicitudes/SolicitudUsuario/Solicitud.js" type="text/javascript"></script>
     </body>
 </html>

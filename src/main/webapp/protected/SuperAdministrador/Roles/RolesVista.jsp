@@ -311,7 +311,7 @@
     OpcionesIU gopcionesRol = (OpcionesIU) session.getAttribute("gopcionesRol");
     session.setAttribute("gopcionesRol", null);
     OpcionesIU opcionesIU = (OpcionesIU) session.getAttribute("gOpcionesIU");
-
+    session.setAttribute("gOpcionesIU", null);
 %>
 <!--<div class="row" id="chksOpcionesRol">-->
 <div class="col-sm-2"></div>
@@ -321,8 +321,12 @@
                 if (opcion.getEstado().equals("Habilitado")) {
                     out.println("  <div class='input-group'>");
                     out.println("    <label class='control-inline fancy-checkbox custom-bgcolor-green'>");
-                    if (gopcionesRol.existeItemID(opcion.getIdopcion()) != null) {
-                        out.println("      <input type='checkbox' name='gch" + opcion.getIdopcion() + "' value='" + opcion.getIdopcion() + "' data-estado='" + opcion.getEstado() + "' data-descripcion='" + opcion.getDescripcion() + "' data-accion='" + opcion.getAccion() + "' checked>");
+                    if (gopcionesRol != null) {
+                        if (gopcionesRol.existeItemID(opcion.getIdopcion()) != null) {
+                            out.println("      <input type='checkbox' name='gch" + opcion.getIdopcion() + "' value='" + opcion.getIdopcion() + "' data-estado='" + opcion.getEstado() + "' data-descripcion='" + opcion.getDescripcion() + "' data-accion='" + opcion.getAccion() + "' checked>");
+                        } else {
+                            out.println("      <input type='checkbox' name='gch" + opcion.getIdopcion() + "' value='" + opcion.getIdopcion() + "' data-estado='" + opcion.getEstado() + "' data-descripcion='" + opcion.getDescripcion() + "' data-accion='" + opcion.getAccion() + "'>");
+                        }
                     } else {
                         out.println("      <input type='checkbox' name='gch" + opcion.getIdopcion() + "' value='" + opcion.getIdopcion() + "' data-estado='" + opcion.getEstado() + "' data-descripcion='" + opcion.getDescripcion() + "' data-accion='" + opcion.getAccion() + "'>");
                     }

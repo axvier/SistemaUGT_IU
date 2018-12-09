@@ -16,17 +16,18 @@ var fncambiarRol = function (rol) {
             $("#contenidoDinamico").html("<div class='main-header'><h2>UGT</h2><em>ESPOCH</em></div><div id='contenidoInferior' class='main-content'><p class='lead'>Bienvenido.</p></div>");
         },
         error: function (error) {
-            $("#left-sidebar").html("Error al cambiar Rol" + error.toString());
+            alert("Error al cambiar Rol" + error.toString());
+            location.reload();
         }
     });
 };
 
-var fncGestionChoferes = function() {
+var fncGestionChoferes = function () {
     $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-3x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
     $.ajax({
         url: "protected/Administrador/Conductores/conductorControlador.jsp",
         type: "GET",
-        data: {opc:"tableConductores"},
+        data: {opc: "tableConductores"},
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
@@ -38,12 +39,12 @@ var fncGestionChoferes = function() {
     });
 };
 
-var fncGestionChoferesBlock = function() {
+var fncGestionChoferesBlock = function () {
     $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-3x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
     $.ajax({
         url: "protected/Administrador/Conductores/conductorControlador.jsp",
         type: "GET",
-        data: {opc:"mostrar",accion:"tableCondUnlock"},
+        data: {opc: "mostrar", accion: "tableCondUnlock"},
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
@@ -60,7 +61,7 @@ var fncGestionAuto = function () {
     $.ajax({
         url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
         type: "GET",
-        data: {opc:"tableVehiculos"},
+        data: {opc: "tableVehiculos"},
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
@@ -77,7 +78,7 @@ var fncGestionAutoBlock = function () {
     $.ajax({
         url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
         type: "GET",
-        data: {opc:"mostrar",accion:"tableVehiculosUnlock"},
+        data: {opc: "mostrar", accion: "tableVehiculosUnlock"},
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
@@ -94,7 +95,7 @@ var fncGestionUsuarios = function () {
     $.ajax({
         url: "protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
         type: "GET",
-        data: {opc:"mostrar",accion:"tableUsuarios"},
+        data: {opc: "mostrar", accion: "tableUsuarios"},
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
@@ -111,7 +112,7 @@ var fncGestionRoles = function () {
     $.ajax({
         url: "protected/SuperAdministrador/Roles/RolesControlador.jsp",
         type: "GET",
-        data: {opc:"mostrar",accion:"tableGRoles"},
+        data: {opc: "mostrar", accion: "tableGRoles"},
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
@@ -128,7 +129,7 @@ var fncAsignarRolOpcion = function () {
     $.ajax({
         url: "protected/SuperAdministrador/Roles/RolesControlador.jsp",
         type: "GET",
-        data: {opc:"GAddGRolOpcion"},
+        data: {opc: "GAddGRolOpcion"},
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
@@ -140,7 +141,24 @@ var fncAsignarRolOpcion = function () {
     });
 };
 
-var fncRecargarJQG = function (idtabla,urlbase,urltable) {
+var fncNuevaSolicitud = function () {
+    $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
+    $.ajax({
+        url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
+        type: "GET",
+        data: {opc: "mostrar", accion: "nuevaSolicitudU"},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            $("#contenidoDinamico").html(datos);
+//            fncDibujarNuev("tbRolesG");
+        },
+        error: function (error) {
+            location.reload();
+        }
+    });
+};
+
+var fncRecargarJQG = function (idtabla, urlbase, urltable) {
     var $grid = $("#" + idtabla);
     $(window).on("resize", function () {
         var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
