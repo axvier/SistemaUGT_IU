@@ -282,7 +282,7 @@
         <script src="assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
         <script src="assets/js/king-common.js"></script>
         <script src="assets/js/plugins/wizard/wizard.min.js"></script>
-	<script src="assets/js/plugins/parsley-validation/parsley.min.js"></script>
+        <script src="assets/js/plugins/parsley-validation/parsley.min.js"></script>
         <script src="assets/js/plugins/stat/jquery.easypiechart.min.js"></script>
         <script src="assets/js/plugins/raphael/raphael-2.1.0.min.js"></script>
         <script src="assets/js/plugins/stat/flot/jquery.flot.min.js"></script>
@@ -298,6 +298,10 @@
         <script src="assets/js/king-chart-stat.js"></script>
         <script src="assets/js/king-table.js"></script>
         <script src="assets/js/king-components.js"></script>
+
+        <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+        <link rel="stylesheet" 
+              href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
 
 
         <script src="js/validacion.js" type="text/javascript"></script>
@@ -319,6 +323,8 @@
         <script src="assets/js/plugins/select2/select2.min.js" type="text/javascript"></script>
         <!--<script src="js/jquery.validate.min.js" type="text/javascript"></script>-->
         <!--para que funcione la aplicacion-->
+        <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"> edicoon text en un text area-->
+        <!--<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>-->
         <script src="js/ugt.js" type="text/javascript"></script>
         <script src="protected/Administrador/Conductores/Conductores.js" type="text/javascript"></script>
         <script src="protected/Administrador/Vehiculos/Vehiculos.js" type="text/javascript"></script>

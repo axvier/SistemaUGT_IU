@@ -211,6 +211,19 @@ var validarMatricula = function (idInput) {
     }
 };
 
+var validarSoloNumeros = function (idInput,label) {
+    var cad = document.getElementById(idInput).value;
+    $("#"+idInput).val(cad.toString().toUpperCase());
+    cad = cad.toString().toUpperCase();
+    var expPlaca = /^([A-Z]){3}\d{3,4}$/;
+
+    if (expPlaca.test(cad)) {
+        document.getElementById(label).innerHTML = ("");
+    } else {
+        document.getElementById(label).innerHTML = ("<p style='color:#FF0000';>Placa incorrecta</p>");
+    }
+};
+
 var swalTimer = function (titulo, mensaje, tipo) {
     swal({
         title: titulo,
