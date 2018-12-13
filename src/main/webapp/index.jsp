@@ -295,9 +295,12 @@
         <script src="assets/js/plugins/datatable/dataTables.bootstrap.js"></script>
         <script src="assets/js/plugins/jquery-mapael/jquery.mapael.js"></script>
         <script src="assets/js/plugins/raphael/maps/usa_states.js"></script>
+        <script src="assets/js/plugins/dropzone/dropzone.min.js" type="text/javascript"></script>
         <script src="assets/js/king-chart-stat.js"></script>
         <script src="assets/js/king-table.js"></script>
         <script src="assets/js/king-components.js"></script>
+<!--        <link href="js/dropzone/dropzone.css" rel="stylesheet" type="text/css"/>
+        <script src="js/dropzone/dropzone.js" type="text/javascript"></script>-->
 
         <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
         <link rel="stylesheet" 

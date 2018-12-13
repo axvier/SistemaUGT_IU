@@ -71,11 +71,12 @@
                         <li data-target="#step1" class="active"><span class="badge badge-info">1</span>Sección motivo<span class="chevron"></span></li>
                         <li data-target="#step2"><span class="badge">2</span>Sección viaje<span class="chevron"></span></li>
                         <li data-target="#step3"><span class="badge">3</span>Sección pasajeros<span class="chevron"></span></li>
-                        <li data-target="#step4"><span class="badge">4</span>Disponibilidad vehículo-conductor<span class="chevron"></span></li>
-                        <li data-target="#step5" class="last"><span class="badge">5</span>Crear oficio</li>
+                        <li data-target="#step4"><span class="badge">4</span>Vehículo-conductor<span class="chevron"></span></li>
+                        <li data-target="#step5" class="last"><span class="badge">5</span>Requerimientos</li>
                     </ul>
                 </div>
                 <div class="step-content">
+                    <!--INICIO SECCION MOTIVO-->
                     <div class="step-pane active" id="step1">
                         <form id="form1" data-parsley-validate novalidate>
                             <p>Detalle el motivo del viaje :</p>
@@ -86,6 +87,8 @@
                             <p id="error-step1"></p>
                         </form>
                     </div>
+                    <!--FIN DE SECCION MOTIVO-->
+                    <!--INICIO DE SECCION VIAJE-->
                     <div class="step-pane" id="step2">
                         <form id="form2" data-parsley-validate novalidate class="form-horizontal" role="form">
                             <p>Ingrese los datos del viaje: </p>
@@ -152,12 +155,14 @@
                             </div>
                         </form>
                     </div>
+                    <!--FIN DE SECCION DE VIAJE-->
+                    <!--INICIO SECCION PASAJEROS-->
                     <div class="step-pane" id="step3">
                         <div class="row">
                             <div class="col-sm-6">
                                 <ul class="list-inline file-main-menu">
                                     <li>
-                                        <a data-toggle="modal" style='cursor: pointer' onclick="fncAddPasajeroManual('Pform3')">
+                                        <a data-toggle="modal" style='cursor: pointer' onclick="fncAddPasajeroManual('form3')">
                                             <span class="fa-stack fa-lg"><i class="fa fa-plus-circle fa-stack-2x"></i></span> Nuevo Pasajero
                                         </a>
                                     </li>
@@ -173,30 +178,55 @@
                                 </div>
                             </div>
                         </div>
-                        <form id="Pform3" data-parsley-validate novalidate class="form-horizontal" role="form">
+                        <form id="form3" data-parsley-validate novalidate class="form-horizontal" role="form">
                             <div id="dynamic_div_solicitud">
                             </div>
                         </form>
                     </div>
+                    <!--FIN DE SECCION PASAJEROS-->
+                    <!--INICIO SECCION DISPONIBILIDAD VEHICULO-CONDUCTOR-->
                     <div class="step-pane" id="step4">
-                        <form id="form3" data-parsley-validate novalidate>
-                            <label class="fancy-checkbox">
-                                <input type="checkbox" name="newsletter">
-                                <span>Subscribe to monthly newsletter</span>
-                            </label>
-                            <label class="fancy-checkbox">
-                                <input type="checkbox" name="terms">
-                                <span>I accept the <a href="#">Terms &amp; Agreements</a></span>
-                            </label>
+                        <form id="form4" data-parsley-validate novalidate>
+
+
                         </form>
                     </div>
+                    <!--FIN DE SECCION DISPONIBILIDAD VEHICULO-CONDUCTOR-->
                     <div class="step-pane" id="step5">
-                        <p class="lead"><i class="fa fa-check-circle text-success"></i> Del clik en siguiente para generare el oficio.</p>
+                        <div class="row widget-content">
+                            <div class="col-sm-4">
+                                <p style="font-size: 20px;">Espacio para subir un archivoPDF que debe contener los siguientes requerimientos escaneados: 
+                                <ul>
+                                    <li>
+                                        Carta de compromiso deslindando a la espoch de resposabilidad
+                                    </li>
+                                    <li>
+                                        Planificación previa autorizada
+                                    </li>
+                                    <li>
+                                        Invitación (de ser el caso)
+                                    </li>
+                                    <li>
+                                        Resoluciónes consejo politécnico (de ser el caso)
+                                    </li>
+                                    <li>
+                                        Copias certificadas
+                                    </li>
+                                </ul></p>
+                            </div>
+                            <div class="col-sm-8">
+                                <!-- FILE UPLOAD -->
+                                <form id="form5"  data-parsley-validate novalidate>
+                                    <div style='float:left; width:100%; height:150px; text-align:center; border-style: solid; border-width: 1px; padding: 0px;' class="dropzone" id="drop_pdfs"></div>
+                                </form>
+                                <!-- END FILE UPLOAD -->
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="actions">
                     <button type="button" class="btn btn-default" id="prevWizard"><i class="fa fa-arrow-left"></i> Anterior</button>
-                    <button type="button" class="btn btn-primary" id="nextWizard">Siguiente<i class="fa fa-arrow-right"></i></button>
+                    <button type="button" class="btn btn-primary" id="nextWizard">Siguiente <i class="fa fa-arrow-right"></i></button>
                 </div>
             </div>
         </div>
@@ -216,14 +246,13 @@
         }
 
         // last step button
-        $btnNext = $(this).parents('.wizard-wrapper').find('.btn-next');
-
-        if (data.step === 5 && data.direction === 'next') {
-            $btnNext.text(' Create My Account')
+        var $btnNext = $(this).parents('.wizard-wrapper').find('#nextWizard');
+        if (data.step === 4 && data.direction === 'next') {
+            $btnNext.text(' Crear Solicitud')
                     .prepend('<i class="fa fa-check-circle"></i>')
                     .removeClass('btn-primary').addClass('btn-success');
         } else {
-            $btnNext.text('Next ').
+            $btnNext.text('Siguiente ').
                     append('<i class="fa fa-arrow-right"></i>')
                     .removeClass('btn-success').addClass('btn-primary');
         }
@@ -241,12 +270,22 @@
     });
 
     $(document).ready(function () {
+        $("#drop_pdfs").dropzone({
+            url: "my-upload-url",
+            paramName: "file",
+            uploadMultiple: true,
+            maxFiles: 1,
+            maxFilesize: 5242880,
+            autoProcessQueue: false,
+            addRemoveLinks: true
+        });
+
         $(function () {
             var projects = [
                 {
                     value: "Giovanni Xavier Aranda Cóndor",
                     label: "1804789830",
-                    json: "{\"apellidos\": \"Aranda\",\"cedula\": \"1804789830\",\"descripcion\": \"Secretario\",\"entidad\": \"UGT\",\"nombres\": \"Xavier\"}"
+                    json: "{\"apellidos\": \"Aranda Cóndor\",\"cedula\": \"1804789830\",\"descripcion\": \"Secretario\",\"entidad\": \"UGT\",\"nombres\": \"Giovanni Xavier\"}"
                 },
                 {
                     value: "nuevo1 nuevo2",

@@ -2,7 +2,7 @@ var idcont = 0;
 
 var fncGuardarSolicitud = function () {
     var ser = $("#form2").serialize();
-    alert('Your account has been created. ' + ser);
+    alert('Your account hd. ' + $("#form1").serialize());
 };
 
 var fncRemovePasjero = function (idrow) {
