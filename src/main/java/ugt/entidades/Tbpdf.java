@@ -44,8 +44,6 @@ public class Tbpdf implements Serializable {
     private byte[] archivo;
     @OneToMany(mappedBy = "idpdf")
     private Collection<Tbordenesmovilizaciones> tbordenesmovilizacionesCollection;
-    @OneToMany(mappedBy = "idpdf")
-    private Collection<Tbsolicitudes> tbsolicitudesCollection;
 
     public Tbpdf() {
     }
@@ -77,15 +75,6 @@ public class Tbpdf implements Serializable {
 
     public void setTbordenesmovilizacionesCollection(Collection<Tbordenesmovilizaciones> tbordenesmovilizacionesCollection) {
         this.tbordenesmovilizacionesCollection = tbordenesmovilizacionesCollection;
-    }
-
-    @XmlTransient
-    public Collection<Tbsolicitudes> getTbsolicitudesCollection() {
-        return tbsolicitudesCollection;
-    }
-
-    public void setTbsolicitudesCollection(Collection<Tbsolicitudes> tbsolicitudesCollection) {
-        this.tbsolicitudesCollection = tbsolicitudesCollection;
     }
 
     @Override

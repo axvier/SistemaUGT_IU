@@ -180,6 +180,11 @@
                     <span class="fa-stack fa-lg"></i><i class="fa fa-gavel fa-stack-2x"></i></span>Revision Mecánica
                 </a>
             </li>
+            <li>
+                <a id="mnCondOcup" href="#" onclick="">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-university fa-stack-2x"></i></span>Dependencias
+                </a>
+            </li>
         </ul>
     </div>
     <div class="row">

@@ -1,8 +1,69 @@
 var idcont = 0;
 
-var fncGuardarSolicitud = function () {
-    var ser = $("#form2").serialize();
+var fncGuardarSolicitud = function ($dropZone) {
     alert('Your account hd. ' + $("#form1").serialize());
+    var motivo = JSON.stringify(fncObjSeccionMotivo());
+    var viaje = JSON.stringify(fncObjSeccionViaje());
+    var listaPasajeros = JSON.stringify(fnObjSeccionPasajeros());
+    var myform = document.getElementsByName("form5");
+    var fd = new FormData(myform);
+    fd.append("pdfData", $dropZone[0].dropzone.files[0]);
+    $.ajax({
+        url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
+        type: "POST",
+        dataType: "text",
+        data: {jsonMotivo: motivo, jsonViaje: viaje, jsonPasajeros: listaPasajeros, fd: fd, opc: "saveSolicitud"},
+        success: function (datos) {
+            datos = JSON.parse(datos);
+            if (datos.codigo === "OK") {
+                swalTimer("Conductor", datos.respuesta, "success");
+                $("#jqgridChofer").jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
+                $("#miModal").modal('hide');
+            }
+            if (datos.codigo === "KO") {
+                swalTimer("Conductor", datos.respuesta, "error");
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert("Error de ejecucion -> " + textStatus + jqXHR);
+        }
+
+    });
+};
+
+var fncObjSeccionMotivo = function () {
+    var seccionMotivo = {
+        idmotivo: 0,
+        descripcion: $("#form1 #addTxtMotivo").val()
+    };
+    return seccionMotivo;
+};
+
+var fncObjSeccionViaje = function () {
+    var seccionViaje = {
+        destino: $("#form2 #addDestino").val(),
+        fecharetorno: $("#form2 #addFechaRetorno").val(),
+        fechasalida: $("#form2 #addFechaSalida").val(),
+        idviaje: 0,
+        origen: $("#form2 #addOrigen").val(),
+        telefono: $("#form2 #addTelefono").val()
+    };
+    return seccionViaje;
+};
+
+var fnObjSeccionPasajeros = function () {
+    var lista = [];
+    $("#form3 #dynamic_div_solicitud div[id^='r']").each(function () {
+        var pasajero = {
+            apellidos: $(this).find('.apellidos').find('#apellidos').val(),
+            cedula: $(this).find('.cedula').find('#cedula').val(),
+            descripcion: $(this).find('.descripcion').find('#descripcion').val(),
+            entidad: $(this).find('.entidad').find('#entidad').val(),
+            nombres: $(this).find('.nombres').find('#nombres').val()
+        };
+        lista.push(pasajero);
+    });
+    return lista;
 };
 
 var fncRemovePasjero = function (idrow) {
@@ -28,7 +89,7 @@ var fncAddPasajeroManual = function (idform) {
             + "                                    <div class='panel panel-default col-sm-8'>"
             + "                                        <div class='panel-heading'>"
             + "                                            <a data-toggle='collapse' data-parent='#accordion' href='#collapseOne" + idcont + "' aria-expanded='false' class='collapsed' >"
-            + "                                                <input type='text' name='pasajeros[]' id='title" + idcont + "' class='form-control pasajeros_lista' placeholder='Ingrese uno' readonly style='cursor: pointer'>"
+            + "                                                <input type='text' name='pasajeros[]' data-salto='s' id='title" + idcont + "' class='form-control pasajeros_lista' placeholder='Ingrese uno' readonly style='cursor: pointer'>"
             + "                                            </a>"
             + "                                        </div>"
             + "                                        <div id='collapseOne" + idcont + "' class='panel-collapse collapse' aria-expanded='false' style='height: 0px;'>"
@@ -85,7 +146,7 @@ var fncCatchSelectS = function (idform) {
             + "                                    <div class='panel panel-default col-sm-8'>"
             + "                                        <div class='panel-heading'>"
             + "                                            <a data-toggle='collapse' data-parent='#accordion' href='#collapseOne" + idcont + "' aria-expanded='false' class='collapsed' >"
-            + "                                                <input type='text' value='" + obj.nombres + " " + obj.apellidos + "' name='pasajeros[]' id='title" + idcont + "' class='form-control pasajeros_lista' placeholder='Ingrese uno' readonly style='cursor: pointer'>"
+            + "                                                <input type='text' value='" + obj.nombres + " " + obj.apellidos + "' data-salto='s' name='pasajeros[]' id='title" + idcont + "' class='form-control pasajeros_lista' placeholder='Ingrese uno' readonly style='cursor: pointer'>"
             + "                                            </a>"
             + "                                        </div>"
             + "                                        <div id='collapseOne" + idcont + "' class='panel-collapse collapse' aria-expanded='false' style='height: 0px;'>"

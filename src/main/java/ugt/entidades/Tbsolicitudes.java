@@ -15,8 +15,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -39,6 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Tbsolicitudes.findByEstado", query = "SELECT t FROM Tbsolicitudes t WHERE t.estado = :estado")
     , @NamedQuery(name = "Tbsolicitudes.findByFecha", query = "SELECT t FROM Tbsolicitudes t WHERE t.fecha = :fecha")
     , @NamedQuery(name = "Tbsolicitudes.findByObservacion", query = "SELECT t FROM Tbsolicitudes t WHERE t.observacion = :observacion")
+    , @NamedQuery(name = "Tbsolicitudes.findByIdpdf", query = "SELECT t FROM Tbsolicitudes t WHERE t.idpdf = :idpdf")
     , @NamedQuery(name = "Tbsolicitudes.findByNumero", query = "SELECT t FROM Tbsolicitudes t WHERE t.numero = :numero")})
 public class Tbsolicitudes implements Serializable {
 
@@ -52,6 +51,8 @@ public class Tbsolicitudes implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "observacion")
     private String observacion;
+    @Column(name = "idpdf")
+    private Integer idpdf;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -67,9 +68,6 @@ public class Tbsolicitudes implements Serializable {
     private Collection<Tbordenesmovilizaciones> tbordenesmovilizacionesCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "solicitud")
     private Collection<Tbdisponibilidadvc> tbdisponibilidadvcCollection;
-    @JoinColumn(name = "idpdf", referencedColumnName = "idpdf")
-    @ManyToOne
-    private Tbpdf idpdf;
 
     public Tbsolicitudes() {
     }
@@ -155,11 +153,11 @@ public class Tbsolicitudes implements Serializable {
         this.tbdisponibilidadvcCollection = tbdisponibilidadvcCollection;
     }
 
-    public Tbpdf getIdpdf() {
+    public Integer getIdpdf() {
         return idpdf;
     }
 
-    public void setIdpdf(Tbpdf idpdf) {
+    public void setIdpdf(Integer idpdf) {
         this.idpdf = idpdf;
     }
 

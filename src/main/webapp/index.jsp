@@ -302,9 +302,9 @@
 <!--        <link href="js/dropzone/dropzone.css" rel="stylesheet" type="text/css"/>
         <script src="js/dropzone/dropzone.js" type="text/javascript"></script>-->
 
-        <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-        <link rel="stylesheet" 
-              href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+        <script src="assets/js/jquery-ui/jquery-ui-1.10.4.custom.js" type="text/javascript"></script>
+        <link href="js/css/selectbox.css" rel="stylesheet" type="text/css"/>
+        <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">-->
 
 
         <script src="js/validacion.js" type="text/javascript"></script>

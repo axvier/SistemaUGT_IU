@@ -146,7 +146,7 @@ var fncNuevaSolicitud = function () {
     $.ajax({
         url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
         type: "GET",
-        data: {opc: "mostrar", accion: "nuevaSolicitudU"},
+        data: {opc: "nuevaSolicitudU"},
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#contenidoDinamico").html(datos);

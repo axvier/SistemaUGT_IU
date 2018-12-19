@@ -232,3 +232,11 @@ var swalTimer = function (titulo, mensaje, tipo) {
         timer: 3500
     });
 };
+
+var swalNormal = function (titulo, mensaje, tipo) {
+    swal({
+        type: tipo,
+        title: titulo,
+        text: mensaje
+    });
+};

@@ -3,6 +3,8 @@
     Created on : 8/12/2018, 01:31:18 PM
     Author     : Xavy PC
 --%>
+<%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
+<%@page import="ugt.entidades.Tbvehiculosdependencias"%>
 <%@page import="com.google.gson.Gson"%>
 <%@page import="utg.login.Login"%>
 <%
@@ -72,7 +74,8 @@
                         <li data-target="#step2"><span class="badge">2</span>Sección viaje<span class="chevron"></span></li>
                         <li data-target="#step3"><span class="badge">3</span>Sección pasajeros<span class="chevron"></span></li>
                         <li data-target="#step4"><span class="badge">4</span>Vehículo-conductor<span class="chevron"></span></li>
-                        <li data-target="#step5" class="last"><span class="badge">5</span>Requerimientos</li>
+                        <li data-target="#step5"><span class="badge">5</span>Requerimientos<span class="chevron"></span></li>
+                        <li data-target="#step6" class="last"><span class="badge">6</span>Enviar</li>
                     </ul>
                 </div>
                 <div class="step-content">
@@ -81,8 +84,8 @@
                         <form id="form1" data-parsley-validate novalidate>
                             <p>Detalle el motivo del viaje :</p>
                             <div class="widget-content no-padding">
-                                <!--<textarea id="addTxtMotivo" name="motivo" lang="es" data-iconlibrary="fa" rows="15" required data-parsley-errors-container="#error-step1" style="min-width: 98%"></textarea>-->
-                                <textarea id="addTxtMotivo" name="motivo" lang="es" data-iconlibrary="fa" rows="15" style="min-width: 98%"></textarea>
+                                <textarea id="addTxtMotivo" name="motivo" lang="es" data-iconlibrary="fa" rows="15" required data-parsley-errors-container="#error-step1" style="min-width: 98%"></textarea>
+                                <!--<textarea id="addTxtMotivo" name="motivo" lang="es" data-iconlibrary="fa" rows="15" style="min-width: 98%"></textarea>-->
                             </div>
                             <p id="error-step1"></p>
                         </form>
@@ -97,8 +100,8 @@
                                     <div class="form-group">
                                         <label for="addOrigen" class="col-md-3 control-label">Origen</label>
                                         <div class="input-group">
-                                            <!--<input type="text" class="form-control" id="addOrigen" placeholder="Origen" required data-parsley-errors-container="#error-step2_1">-->
-                                            <input type="text" class="form-control" id="addOrigen" placeholder="Origen">
+                                            <input type="text" class="form-control" id="addOrigen" placeholder="Origen" required data-parsley-errors-container="#error-step2_1">
+                                            <!--<input type="text" class="form-control" id="addOrigen" placeholder="Origen">-->
                                             <span class="input-group-addon"><i class="fa fa-home"></i></span>
                                         </div>
                                         <p id="error-step2_1"></p>
@@ -108,8 +111,8 @@
                                     <div class="form-group">
                                         <label for="addDestino" class="col-md-3 control-label">Destino</label>
                                         <div class="input-group">
-                                            <!--<input type="text" class="form-control" id="addDestino" placeholder="Destino" required data-parsley-errors-container="#error-step2_2">-->
-                                            <input type="text" class="form-control" id="addDestino" placeholder="Destino">
+                                            <input type="text" class="form-control" id="addDestino" placeholder="Destino" required data-parsley-errors-container="#error-step2_2">
+                                            <!--<input type="text" class="form-control" id="addDestino" placeholder="Destino">-->
                                             <span class="input-group-addon"><i class="fa fa-plane"></i></span>
                                         </div>
                                         <p id="error-step2_2"></p>
@@ -121,8 +124,8 @@
                                     <div class="form-group">
                                         <label for="addFechaSalida" class="col-md-3 control-label">Fecha salida</label>
                                         <div class="input-group">
-                                            <!--<input type="datetime-local" class="form-control" id="addFechaSalida" placeholder="Fecha salida" required data-parsley-errors-container="#error-step2_3">-->
-                                            <input type="datetime-local" class="form-control" id="addFechaSalida" placeholder="Fecha salida">
+                                            <input type="datetime-local" class="form-control" id="addFechaSalida" placeholder="Fecha salida" required data-parsley-errors-container="#error-step2_3">
+                                            <!--<input type="datetime-local" class="form-control" id="addFechaSalida" placeholder="Fecha salida">-->
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                         </div>
                                         <p id="error-step2_3"></p>
@@ -132,8 +135,8 @@
                                     <div class="form-group">
                                         <label for="addFechaRetorno" class="col-md-3 control-label">Fecha retorno</label>
                                         <div class="input-group">
-                                            <!--<input type="datetime-local" class="form-control" id="addFechaRetorno" title="Fecha retorno" required data-parsley-errors-container="#error-step2_4">-->
-                                            <input type="datetime-local" class="form-control" id="addFechaRetorno" title="Fecha retorno">
+                                            <input type="datetime-local" class="form-control" id="addFechaRetorno" title="Fecha retorno" required data-parsley-errors-container="#error-step2_4">
+                                            <!--<input type="datetime-local" class="form-control" id="addFechaRetorno" title="Fecha retorno">-->
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                         </div>
                                         <p id="error-step2_4"></p>
@@ -145,8 +148,8 @@
                                     <div class="form-group">
                                         <label for="addTelefono" class="col-md-3 control-label">Teléfono</label>
                                         <div class="input-group">
-                                            <!--<input type="text" class="form-control" id="addTelefono" placeholder="0912345678" required data-parsley-errors-container="#error-step2_5">-->
-                                            <input type="text" class="form-control" id="addTelefono" placeholder="0912345678">
+                                            <input type="text" class="form-control" id="addTelefono" placeholder="0912345678" required data-parsley-errors-container="#error-step2_5">
+                                            <!--<input type="text" class="form-control" id="addTelefono" placeholder="0912345678">-->
                                             <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                                         </div>
                                         <p id="error-step2_5"></p>
@@ -173,25 +176,73 @@
                                     <input type="text" id="search_solicitud_pasajeros" name="search" class="form-control searchbox" />
                                     <input type=hidden id="json_solicitud_pasajeros" name="search"/>
                                     <span class="input-group-btn">
-                                        <button id="search_solicitud_pasajeros_button" class="btn btn-custom-secondary" type="button" disabled="disabled" onclick="fncCatchSelectS('Pform3')"><i class="fa fa-plus"></i></button>
+                                        <button id="search_solicitud_pasajeros_button" class="btn btn-custom-secondary" type="button" disabled="disabled" onclick="fncCatchSelectS('form3')"><i class="fa fa-plus"></i></button>
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <form id="form3" data-parsley-validate novalidate class="form-horizontal" role="form">
-                            <div id="dynamic_div_solicitud">
-                            </div>
+                            <div id="dynamic_div_solicitud"></div>
                         </form>
                     </div>
                     <!--FIN DE SECCION PASAJEROS-->
                     <!--INICIO SECCION DISPONIBILIDAD VEHICULO-CONDUCTOR-->
                     <div class="step-pane" id="step4">
                         <form id="form4" data-parsley-validate novalidate>
-
-
+                            <%
+                                Tbvehiculosdependencias vehiculodependencia = (Tbvehiculosdependencias) session.getAttribute("vehiculodependencia");
+                                session.setAttribute("vehiculodependencia", null);
+                                VehiculosConductoresIU vehiculoConductor = (VehiculosConductoresIU) session.getAttribute("vehiculoConductor");
+                                session.setAttribute("vehiculoConductor", null);
+                            %>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="addOrigen" class="col-md-3 control-label">Vehículo:</label>
+                                        <div class="input-group">
+                                            <%
+                                                if (vehiculodependencia != null) {
+                                                    if (vehiculodependencia.getTbvehiculos() != null) {
+                                                        out.println("<input type='text' class='form-control' id='addOrigen' placeholder='vehiculo' value='El vehiculo " + vehiculodependencia.getTbvehiculos().getDisco() + " placa " + vehiculodependencia.getTbvehiculos().getPlaca() + " esta asignado por defecto");
+                                                    } else {
+                                                        out.println("<input type='text' class='form-control' id='addOrigen' placeholder='vehiculo' value='El vehiculo será asignado en la unidad (UGT)' readonly>");
+                                                    }
+                                                } else {
+                                                    out.println("<input type='text' class='form-control' id='addOrigen' placeholder='vehiculo' value='El vehiculo será asignado en la unidad (UGT)' readonly>");
+                                                }
+                                            %>
+                                            <span class="input-group-addon"><i class="fa fa-home"></i></span>
+                                        </div>
+                                        <p id="error-step2_1"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="addDestino" class="col-md-3 control-label">Conductor:</label>
+                                        <div class="input-group">
+                                            <%
+                                                if (vehiculoConductor != null) {
+                                                    if (vehiculoConductor.getLista().get(0).getTbconductores() != null) {
+                                                        out.println("<input type='text' class='form-control' id='addDestino' placeholder='Condcutor' value='El conductor " + vehiculoConductor.getLista().get(0).getTbconductores().getApellidos() + " " + vehiculoConductor.getLista().get(0).getTbconductores().getNombres() + " esta asignado por defecto' readonly>");
+                                                    } else {
+                                                        out.println("<input type='text' class='form-control' id='addDestino' placeholder='Condcutor' value='El conductor será asignado en la unidad (UGT)' readonly>");
+                                                    }
+                                                } else {
+                                                    out.println("<input type='text' class='form-control' id='addDestino' placeholder='Condcutor' value='El conductor será asignado en la unidad (UGT)' readonly>");
+                                                }
+                                            %>
+                                            <span class="input-group-addon"><i class="fa fa-plane"></i></span>
+                                        </div>
+                                        <p id="error-step2_2"></p>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
                     </div>
                     <!--FIN DE SECCION DISPONIBILIDAD VEHICULO-CONDUCTOR-->
+                    <!--INICIO SECCION SUBIR PDF-->
                     <div class="step-pane" id="step5">
                         <div class="row widget-content">
                             <div class="col-sm-4">
@@ -223,6 +274,11 @@
                             </div>
                         </div>
                     </div>
+                    <!--FIN SECCION SUBIR PDF-->
+                    <div class="step-pane" id="step6">
+                        <p class="lead"><i class="fa fa-check-circle text-success"></i> Todo listo! De click en el botón "Enviar solicitud" para completar el envio. <p>Si desea
+                            revise los pasos anteriores para verificar los datos.</p></p>
+                    </div>
                 </div>
                 <div class="actions">
                     <button type="button" class="btn btn-default" id="prevWizard"><i class="fa fa-arrow-left"></i> Anterior</button>
@@ -235,6 +291,7 @@
 
 </div>
 <script>
+    var dropFile;
     $('#demo-wizard').on('change', function (e, data) {
         // validation
         if ($('#form' + data.step).length > 0) {
@@ -247,8 +304,8 @@
 
         // last step button
         var $btnNext = $(this).parents('.wizard-wrapper').find('#nextWizard');
-        if (data.step === 4 && data.direction === 'next') {
-            $btnNext.text(' Crear Solicitud')
+        if (data.step === 5 && data.direction === 'next') {
+            $btnNext.text(' Enviar solicitud')
                     .prepend('<i class="fa fa-check-circle"></i>')
                     .removeClass('btn-primary').addClass('btn-success');
         } else {
@@ -256,9 +313,21 @@
                     append('<i class="fa fa-arrow-right"></i>')
                     .removeClass('btn-success').addClass('btn-primary');
         }
+        if (data.step === 3 && data.direction === 'next') {
+            if (!$.trim($('#dynamic_div_solicitud').html()).length) {
+                swalNormal("0 Pasajeros", "Debe ingresar al menos un pasajero", "error");
+                $(this).wizard('previous');
+            }
+        }
+        if (data.step === 5 && data.direction === 'next') {
+            if (typeof dropFile[0].dropzone.files[0] === "undefined") {
+                swalNormal("PDF no encontrado", "Debe subir un pdf con los requerimientos especificados", "error");
+                $(this).wizard('previous');
+            }
+        }
 
     }).on('finished', function () {
-        fncGuardarSolicitud();
+        fncGuardarSolicitud(dropFile);
     });
 
     $('#nextWizard').click(function () {
@@ -270,12 +339,13 @@
     });
 
     $(document).ready(function () {
-        $("#drop_pdfs").dropzone({
+        dropFile = $("#drop_pdfs").dropzone({
             url: "my-upload-url",
             paramName: "file",
             uploadMultiple: true,
             maxFiles: 1,
             maxFilesize: 5242880,
+            acceptedFiles: "application/pdf",
             autoProcessQueue: false,
             addRemoveLinks: true
         });
