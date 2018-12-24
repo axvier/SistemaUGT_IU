@@ -3,6 +3,7 @@
     Created on : 8/12/2018, 01:31:07 PM
     Author     : Xavy PC
 --%>
+<%@page import="ugt.entidades.listas.PasajerosL"%>
 <%@page import="ugt.servicios.swPDF"%>
 <%@page import="java.util.logging.Level"%>
 <%@page import="java.util.logging.Logger"%>
@@ -54,10 +55,13 @@
             }
             response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
         } else if (opc.equals("saveSolicitud")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
             byte[] bytes = (byte[]) session.getAttribute("byteSPDF");
             String jsonMotivo = (String) session.getAttribute("jsonMotivo");
             String jsonViaje = (String) session.getAttribute("jsonViaje");
             String jsonPasajeros = (String) session.getAttribute("jsonPasajeros");
+            String extension = (String) session.getAttribute("extension");
+            session.setAttribute("extension", null);
             session.setAttribute("byteSPDF", null);
             session.setAttribute("jsonMotivo", null);
             session.setAttribute("jsonViaje", null);
@@ -71,16 +75,38 @@
             solicitud.setNumero(0);
             String objJSON = swSolicitudes.insertSolicitud(g.toJson(solicitud));
             if (objJSON.length() > 2) {
-                g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+                solicitud = g.fromJson(objJSON, Tbsolicitudes.class); // set nuevos datos de la solicitud insertada
                 Solicitudesfull solfull = new Solicitudesfull();
-                //ingreso de solicitud
-                solfull.setSolicitud(g.fromJson(objJSON, Tbsolicitudes.class));
+                //insertar pdf y actualizar idpdf a solcitud
+                if (bytes != null) {
+                    if (bytes.length > 0) {
+                        try {
+                            String encoded = Base64.getEncoder().encodeToString(bytes);
+                            String pdfJSON = new JSONObject()
+                                    .put("idpdf", 0)
+                                    .put("archivo", encoded).toString();
+                            String jsonPDF = swPDF.insertPDF(pdfJSON);
+                            if (jsonPDF.length() > 2) {
+                                JSONObject obj = new JSONObject(jsonPDF);
+                                solicitud.setIdpdf(obj.getInt("idpdf"));
+                                swSolicitudes.modificarSolicitudID(solicitud.getNumero().toString(), g.toJson(solicitud));
+                            }
+                        } catch (Exception e) {
+                            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en subir el PDF ", e.getClass().getName() + "****" + e.getMessage());
+                            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+                        }
+                    }
+                }
+                //set datos de solictud en la clase con los componentes
+                solfull.setSolicitud(solicitud);
                 //ingreso de solicitante
                 if (login.getRolesEntity().size() > 0) {
-                    solfull.getSolicitante().setCedulau(login.getRolesEntity().get(0).getTbusuarios());
-                    solfull.getSolicitante().setExtension("Riobamba");
-                    solfull.getSolicitante().setIdsolicitante(0);
-                    solfull.getSolicitante().setSolicitud(solicitud);
+                    Tbseccionsolicitantes usrAux = new Tbseccionsolicitantes();
+                    usrAux.setCedulau(login.getRolesEntity().get(0).getTbusuarios());
+                    usrAux.setExtension(extension);
+                    usrAux.setIdsolicitante(0);
+                    usrAux.setSolicitud(solicitud);
+                    solfull.setSolicitante(usrAux);
                 }
                 //ingreso de motivo
                 if (jsonMotivo != null) {
@@ -88,35 +114,37 @@
                 }
                 //ingreso de viaje
                 if (jsonViaje != null) {
-                    solfull.setViaje(g.fromJson(jsonMotivo, Tbseccionviajes.class));
+                    solfull.setViaje(g.fromJson(jsonViaje, Tbseccionviajes.class));
                 }
                 //ingreso pasajeros
                 if (jsonPasajeros != null) {
+                    PasajerosL pasajeros = new PasajerosL();
                     JSONArray arrayJSON = new JSONArray(jsonPasajeros);
                     for (int i = 0; i < arrayJSON.length(); i++) {
                         JSONObject childJSONObject = arrayJSON.getJSONObject(i);
                         Tbpasajeros pasajero = g.fromJson(childJSONObject.toString(), Tbpasajeros.class);
-                        solfull.getPasajeros().add(pasajero);
+                        pasajeros.add(pasajero);
+                    }
+                    if (pasajeros.getLista().size() > 0) {
+                        solfull.setPasajeros(pasajeros.getLista());
                     }
                 }
-                //ingreso por servicio solcitud fullcon los demas 
-                if (bytes.length > 0) {
-                    try {
-                        String encoded = Base64.getEncoder().encodeToString(bytes);
-                        String pdfJSON = new JSONObject()
-                                .put("idpdf", 0)
-                                .put("archivo", encoded).toString();
-                        String jsonPDF = swPDF.insertPDF(pdfJSON);
-                        if (jsonPDF.length() > 2) {
-                            JSONObject obj = new JSONObject(jsonPDF);
-                            solfull.setIdpdf(obj.getInt("idpdf"));
-                        }
-                    } catch (Exception e) {
-                        Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en subir el PDF ", e.getClass().getName() + "****" + e.getMessage());
-                        System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
-                    }
-
+                //ingreso de una solcitud full con los componentes 
+                String status = "";
+                String result = swSolicitudes.insertSolicitudComponentes(g.toJson(solfull));
+                if (result.length() > 2) {
+                    JSONObject obj = new JSONObject(result);
+                    status += (obj.getString("motivo").length() <= 2) ? " Error en objeto motivo, " : " motivo OK ";
+                    status += (obj.getString("solicitante").length() <= 2) ? " Error en objeto solicitante, " : " solicitante OK ";
+                    status += (obj.getString("viaje").length() <= 2) ? " Error en objeto viaje, " : " viaje OK ";
+                    status += (obj.getString("pasajeros").length() <= 2) ? " Error en objeto pasajeros, " : " pasajeros OK ";
+                    session.setAttribute("statusGuardar", status);
+                    session.setAttribute("statusCodigo", "Estado");
+                } else {
+                    session.setAttribute("statusGuardar", "ERROR NO SE HA PODIDO GUARDAR LA SOLICITUD!-> Contacte con el proveedor");
+                    session.setAttribute("statusCodigo", "KO");
                 }
+                response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=guardarStatus");
             }
         }
     } else {

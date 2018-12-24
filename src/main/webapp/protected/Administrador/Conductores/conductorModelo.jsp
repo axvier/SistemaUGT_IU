@@ -60,7 +60,7 @@
             String cedula = request.getParameter("cedula");
             String json = (String) session.getAttribute("json");
             ConductorIU conductr = g.fromJson(json, ConductorIU.class);
-            conductr.setEstado("Bloqueado");
+            conductr.setEstado("Jubilado");
             session.setAttribute("json", null);
             String arrayJSON = swConductor.bloquearConductor(g.toJson(conductr), cedula);
             if (arrayJSON.length() > 2) {

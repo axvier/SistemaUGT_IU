@@ -19,7 +19,26 @@
             String json = (String) session.getAttribute("arrayJSON");
             session.setAttribute("arrayJSON", null);
             out.print(json);
+        } else if (accion.equals("guardarStatus")) {
+            String respuesta = (String) session.getAttribute("statusGuardar");
+            String codigo = (String) session.getAttribute("statusCodigo");
+            session.setAttribute("statusGuardar", null);
+            session.setAttribute("statusCodigo", null);
+            String result = "{"
+                    + "\"respuesta\":\"" + respuesta + "\","
+                    + "\"codigo\":\"" + codigo + "\""
+                    + "}";
+            response.setContentType("text/plain");
+            response.getWriter().write(result);
         } else if (accion.equals("nuevaSolicitudU")) {
+            String cedula = "";
+            String nombres = "";
+            String apellidos = "";
+            if (login.getRolesEntity().size() > 0) {
+                cedula = login.getRolesEntity().get(0).getTbusuarios().getCedula();
+                apellidos = login.getRolesEntity().get(0).getTbusuarios().getApellidos();
+                nombres = login.getRolesEntity().get(0).getTbusuarios().getNombres();
+            }
 %>
 <div class="main-header">
     <h2>UGT</h2>
@@ -82,9 +101,52 @@
                     <!--INICIO SECCION MOTIVO-->
                     <div class="step-pane active" id="step1">
                         <form id="form1" data-parsley-validate novalidate>
-                            <p>Detalle el motivo del viaje :</p>
+                            <p><b>Datos solicitante: </b></p>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="addNombres" class="col-md-3 control-label">Nombres</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="addNombres" value="<%=nombres%>" readonly>
+                                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="addApellidos" class="col-md-3 control-label">Apellidos</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="addApellidos" value="<%=apellidos%>" readonly>
+                                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="addCedula" class="col-md-3 control-label">Cedula</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="addCedula" value="<%=cedula%>" readonly>
+                                            <span class="input-group-addon"><i class="fa fa-book"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="addExtension" class="col-md-3 control-label">Extension</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="addExtension" placeholder="Macas/Riobamba" required data-parsley-errors-container="#error-step112_1">
+                                            <!--<input type="text" class="form-control" id="addExtension" placeholder="Macas/Riobamba">-->
+                                            <span class="input-group-addon"><i class="fa fa-home"></i></span>
+                                        </div>
+                                        <p id="error-step112_1"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <p><b>Detalle el motivo del viaje :</b></p>
                             <div class="widget-content no-padding">
-                                <textarea id="addTxtMotivo" name="motivo" lang="es" data-iconlibrary="fa" rows="15" required data-parsley-errors-container="#error-step1" style="min-width: 98%"></textarea>
+                                <textarea id="addTxtMotivo" name="motivo" lang="es" data-iconlibrary="fa" rows="12" required data-parsley-errors-container="#error-step1" style="min-width: 98%"></textarea>
                                 <!--<textarea id="addTxtMotivo" name="motivo" lang="es" data-iconlibrary="fa" rows="15" style="min-width: 98%"></textarea>-->
                             </div>
                             <p id="error-step1"></p>
@@ -148,7 +210,7 @@
                                     <div class="form-group">
                                         <label for="addTelefono" class="col-md-3 control-label">Teléfono</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" id="addTelefono" placeholder="0912345678" required data-parsley-errors-container="#error-step2_5">
+                                            <input type="text" class="form-control" id="addTelefono" placeholder="0912345678" maxlength="15" required data-parsley-errors-container="#error-step2_5">
                                             <!--<input type="text" class="form-control" id="addTelefono" placeholder="0912345678">-->
                                             <span class="input-group-addon"><i class="fa fa-phone"></i></span>
                                         </div>
@@ -277,7 +339,7 @@
                     <!--FIN SECCION SUBIR PDF-->
                     <div class="step-pane" id="step6">
                         <p class="lead"><i class="fa fa-check-circle text-success"></i> Todo listo! De click en el botón "Enviar solicitud" para completar el envio. <p>Si desea
-                            revise los pasos anteriores para verificar los datos.</p></p>
+                            revise los pasos anteriores para verificar los datos. Al terminar se mostrara el oficio final que Ud puede imprimir</p></p>
                     </div>
                 </div>
                 <div class="actions">
@@ -327,7 +389,7 @@
         }
 
     }).on('finished', function () {
-        fncGuardarSolicitud(dropFile);
+        fncGuardarSolicitud();
     });
 
     $('#nextWizard').click(function () {
@@ -339,15 +401,53 @@
     });
 
     $(document).ready(function () {
+        Dropzone.autoDiscover = false;
         dropFile = $("#drop_pdfs").dropzone({
-            url: "my-upload-url",
+            url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=saveSolicitud",
             paramName: "file",
             uploadMultiple: true,
             maxFiles: 1,
             maxFilesize: 5242880,
             acceptedFiles: "application/pdf",
             autoProcessQueue: false,
-            addRemoveLinks: true
+            addRemoveLinks: true,
+            success: function (file, response) {
+                console.log("Successfully uploaded :D :" + response);
+                var datos = JSON.parse(response);
+                var tipo = (data.codigo === "KO")? "warning":"info";
+                swalNormal(" Solicitud ", "[" + datos.codigo + "] " + datos.respuesta, tipo);
+                fncConfirmarGenerarSolcitud();
+            },
+            error: function (file, response) {
+                var datos = JSON.parse(response);
+                var tipo = (data.codigo === "KO")? "warning":"info";
+                swalNormal(" Solicitud ", "[" + datos.codigo + "] " + datos.respuesta, tipo);
+                console.log("error uploaded D: :" + response);
+//            },
+//            init: function () {
+//
+//                var myDropzone = this;
+//
+//                // Update selector to match your button
+//                $(".btn-success").click(function (e) {
+//                    alert("enviando");
+//                    e.preventDefault();
+//                    myDropzone.processQueue();
+//                });
+//
+//                this.on('sending', function (file, xhr, formData) {
+//                    // Append all form inputs to the formData Dropzone will POST
+//                    var motivo = JSON.stringify(fncObjSeccionMotivo());
+//                    var viaje = JSON.stringify(fncObjSeccionViaje());
+//                    var listaPasajeros = JSON.stringify(fnObjSeccionPasajeros());
+//                    var extension = $("#form1 #addExtension").val();
+//                    formData.append("jsonMotivo", motivo);
+//                    formData.append("jsonViaje", viaje);
+//                    formData.append("jsonPasajeros", listaPasajeros);
+//                    formData.append("jsonPasajeros", listaPasajeros);
+//                    formData.append("extension", extension);
+//                });
+            }
         });
 
         $(function () {

@@ -13,13 +13,18 @@ import ugt.entidades.Tbsolicitudes;
  *
  * @author Xavy PC
  */
-public class Solicitudesfull extends Tbsolicitudes {
+public class Solicitudesfull{
 
-    private Tbseccionmotivo motivo = new Tbseccionmotivo();
-    private Tbseccionviajes viaje = new Tbseccionviajes();
-    private Tbseccionsolicitantes solicitante = new Tbseccionsolicitantes();
-    private List<Tbpasajeros> pasajeros = new ArrayList<>();
-    private Tbdisponibilidadvc disponibilidadvc = new Tbdisponibilidadvc();
+    private Tbsolicitudes solicitud;
+    private Tbseccionmotivo motivo;
+    private Tbseccionviajes viaje;
+    private Tbseccionsolicitantes solicitante;
+    private List<Tbpasajeros> pasajeros;
+    private Tbdisponibilidadvc disponibilidadvc;
+
+    public Tbsolicitudes getSolicitud() {
+        return solicitud;
+    }
 
     public List<Tbpasajeros> getPasajeros() {
         return pasajeros;
@@ -61,12 +66,8 @@ public class Solicitudesfull extends Tbsolicitudes {
         this.solicitante = solicitante;
     }
 
-    public void setSolicitud(Tbsolicitudes solicitud) {
-        this.setNumero(solicitud.getNumero());
-        this.setEstado(solicitud.getEstado());
-        this.setFecha(solicitud.getFecha());
-        this.setIdpdf(solicitud.getIdpdf());
-        this.setObservacion(solicitud.getObservacion());
+    public void setSolicitud(Tbsolicitudes sol) {
+        this.solicitud = sol;
     }
 
 }

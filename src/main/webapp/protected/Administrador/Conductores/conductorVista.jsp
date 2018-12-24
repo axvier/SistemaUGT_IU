@@ -261,7 +261,7 @@
 %>
 <div class="main-header">
     <h2>UGT</h2>
-    <em>Conductores Bloqueados</em>
+    <em>Conductores Jubilados</em>
 </div>
 <div class="main-content">
     <!--    <div>

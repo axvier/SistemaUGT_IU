@@ -79,7 +79,7 @@
                     }
                 }
                 VehiculoIU vehiculo = g.fromJson(json, VehiculoIU.class);
-                vehiculo.setEstado("Bloqueado");
+                vehiculo.setEstado("Rematado");
                 vehiculo.setIdgrupo(search);
                 String arrayJSON = swVehiculo.bloquearVehiculo(g.toJson(vehiculo), placa);
                 if (arrayJSON.length() > 2) {

@@ -200,7 +200,7 @@ var validarCedula = function (idInput, idplay) {
 
 var validarMatricula = function (idInput) {
     var cad = document.getElementById(idInput).value;
-    $("#"+idInput).val(cad.toString().toUpperCase());
+    $("#" + idInput).val(cad.toString().toUpperCase());
     cad = cad.toString().toUpperCase();
     var expPlaca = /^([A-Z]){3}\d{3,4}$/;
 
@@ -211,9 +211,9 @@ var validarMatricula = function (idInput) {
     }
 };
 
-var validarSoloNumeros = function (idInput,label) {
+var validarSoloNumeros = function (idInput, label) {
     var cad = document.getElementById(idInput).value;
-    $("#"+idInput).val(cad.toString().toUpperCase());
+    $("#" + idInput).val(cad.toString().toUpperCase());
     cad = cad.toString().toUpperCase();
     var expPlaca = /^([A-Z]){3}\d{3,4}$/;
 
@@ -233,10 +233,48 @@ var swalTimer = function (titulo, mensaje, tipo) {
     });
 };
 
+var swalTimerLoading = function (titulo, mensaje, timer) {
+    swal({
+        title: titulo,
+        text: mensaje,
+        timer: timer,
+        animation: true,
+        onOpen: function () {
+            swal.showLoading();
+        }
+    }).then(
+            function () {},
+            // handling the promise rejection
+                    function (dismiss) {
+                        if (dismiss === 'timer') {
+                            console.log('El servidor no responde');
+                        }
+                    }
+            );
+        };
+
 var swalNormal = function (titulo, mensaje, tipo) {
     swal({
         type: tipo,
         title: titulo,
         text: mensaje
+    });
+};
+
+var swalConfirmNormal = function (titulo, mensaje, tipo, funcion) {
+    swal({
+        title: titulo,
+        text: mensaje,
+        type: tipo,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'SI',
+        cancelButtonText: 'NO'
+    }).then((result) => {
+        if (result.value) {
+            if (funcion === "fncGenerarSOlcitud")
+                fncGenerarSOlcitud();
+        }
     });
 };

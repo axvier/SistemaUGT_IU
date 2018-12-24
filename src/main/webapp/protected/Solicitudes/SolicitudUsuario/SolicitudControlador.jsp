@@ -30,23 +30,30 @@
                         while (iter.hasNext()) {
                             FileItem FItem = (FileItem) iter.next();
                             if (!FItem.isFormField()) {
-                                if (FItem.getFieldName().equals("pdfData")) {
-                                    byte[] bytes = IOUtils.toByteArray(FItem.getInputStream());
-                                    session.setAttribute("byteSPDF", bytes);
-                                }
+//                                if (FItem.getFieldName().equals("pdfData")) {
+                                byte[] bytes = IOUtils.toByteArray(FItem.getInputStream());
+                                session.setAttribute("byteSPDF", bytes);
+//                                }
+                            }
+                            if (FItem.getFieldName().equals("extension")) {
+                                session.setAttribute("extension", FItem.getString());
+                            }
+                            if (FItem.getFieldName().equals("jsonMotivo")) {
+                                session.setAttribute("jsonMotivo", FItem.getString());
+                            }
+                            if (FItem.getFieldName().equals("jsonViaje")) {
+                                session.setAttribute("jsonViaje", FItem.getString());
+                            }
+                            if (FItem.getFieldName().equals("jsonPasajeros")) {
+                                session.setAttribute("jsonPasajeros", FItem.getString());
                             }
                         }
+                        response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
                     } catch (FileUploadException e) {
                         out.println(e.toString());
+                        response.sendError(501, this.getServletName() + "-> Error al querer subir el archivo al sistema");
                     }
                 }
-                String jsonMotivo = request.getParameter("jsonMotivo");
-                String jsonViaje = request.getParameter("jsonViaje");
-                String jsonPasajeros = request.getParameter("jsonPasajeros");
-                session.setAttribute("jsonMotivo", jsonMotivo);
-                session.setAttribute("jsonViaje", jsonViaje);
-                session.setAttribute("jsonPasajeros", jsonPasajeros);
-                response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
             }
         }
     } else {

@@ -1,34 +1,49 @@
 var idcont = 0;
 
-var fncGuardarSolicitud = function ($dropZone) {
-    alert('Your account hd. ' + $("#form1").serialize());
+var fncConfirmarGenerarSolcitud = function () {
+    swal.close();
+    swalConfirmNormal("Todo listo!", "Desea Generar su solicitud en PDF", "info", "fncGenerarSOlcitud");
+};
+
+var fncGenerarSOlcitud = function () {
+    swal.close();
+    swalTimerLoading("Solicitud PDF","Se esta generando su solicitud esto puede tardar unos minutos",3000);
+}
+
+var fncGuardarSolicitud = function () {
+    swalTimerLoading("Enviando", "Solicitud", 90000);
     var motivo = JSON.stringify(fncObjSeccionMotivo());
     var viaje = JSON.stringify(fncObjSeccionViaje());
     var listaPasajeros = JSON.stringify(fnObjSeccionPasajeros());
-    var myform = document.getElementsByName("form5");
-    var fd = new FormData(myform);
-    fd.append("pdfData", $dropZone[0].dropzone.files[0]);
-    $.ajax({
-        url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
-        type: "POST",
-        dataType: "text",
-        data: {jsonMotivo: motivo, jsonViaje: viaje, jsonPasajeros: listaPasajeros, fd: fd, opc: "saveSolicitud"},
-        success: function (datos) {
-            datos = JSON.parse(datos);
-            if (datos.codigo === "OK") {
-                swalTimer("Conductor", datos.respuesta, "success");
-                $("#jqgridChofer").jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
-                $("#miModal").modal('hide');
-            }
-            if (datos.codigo === "KO") {
-                swalTimer("Conductor", datos.respuesta, "error");
-            }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            alert("Error de ejecucion -> " + textStatus + jqXHR);
-        }
-
+    var extension = $("#form1 #addExtension").val();
+    var $dropZone = Dropzone.forElement("#drop_pdfs");
+    $dropZone.on('sendingmultiple', function (data, xhr, formData) {
+        formData.append("jsonMotivo", motivo);
+        formData.append("jsonViaje", viaje);
+        formData.append("jsonPasajeros", listaPasajeros);
+        formData.append("extension", extension);
     });
+    $dropZone.processQueue();
+//    var fd = new FormData();
+//    fd.append("pdfdata", $dropZone.files[0]);
+//    console.log(fd);
+//    console.log(fd);
+//    $.ajax({
+//        url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?jsonMotivo=" + motivo + "&jsonViaje="+viaje+"&jsonPasajeros="+ listaPasajeros+"&extension="+$("#form1 #addExtension").val()+"&opc=saveSolicitud",
+//        type: "POST",
+//        cache: false,
+//        processData: false,
+//        contentType: false,
+//        data: {fd: fd},
+//        success: function (datos) {
+//            datos = JSON.parse(datos);
+//            swalTimer(" Solicitud ", "[" + datos.codigo + "] " + datos.respuesta, "info");
+//        },
+//        error: function (jqXHR, textStatus, errorThrown) {
+//            alert("Error de ejecucion -> " + textStatus + jqXHR);
+//        }
+//
+//    });
 };
 
 var fncObjSeccionMotivo = function () {
@@ -42,8 +57,8 @@ var fncObjSeccionMotivo = function () {
 var fncObjSeccionViaje = function () {
     var seccionViaje = {
         destino: $("#form2 #addDestino").val(),
-        fecharetorno: $("#form2 #addFechaRetorno").val(),
-        fechasalida: $("#form2 #addFechaSalida").val(),
+        fecharetorno: $("#form2 #addFechaRetorno").val() + ":00-05:00",
+        fechasalida: $("#form2 #addFechaSalida").val() + ":00-05:00",
         idviaje: 0,
         origen: $("#form2 #addOrigen").val(),
         telefono: $("#form2 #addTelefono").val()
