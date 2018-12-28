@@ -260,21 +260,3 @@ var swalNormal = function (titulo, mensaje, tipo) {
         text: mensaje
     });
 };
-
-var swalConfirmNormal = function (titulo, mensaje, tipo, funcion) {
-    swal({
-        title: titulo,
-        text: mensaje,
-        type: tipo,
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'SI',
-        cancelButtonText: 'NO'
-    }).then((result) => {
-        if (result.value) {
-            if (funcion === "fncGenerarSOlcitud")
-                fncGenerarSOlcitud();
-        }
-    });
-};

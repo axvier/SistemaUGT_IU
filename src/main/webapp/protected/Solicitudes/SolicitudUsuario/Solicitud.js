@@ -1,14 +1,36 @@
 var idcont = 0;
 
-var fncConfirmarGenerarSolcitud = function () {
-    swal.close();
-    swalConfirmNormal("Todo listo!", "Desea Generar su solicitud en PDF", "info", "fncGenerarSOlcitud");
+var fncConfirmarGenerarSolcitud = function (datos) {
+    var titulo;
+    var mensaje;
+    var tipo;
+    if (datos.codigo === "KO") {
+        titulo = "Datos Imcompletos!", mensaje = "Algunas partes no se han guardado correctamete, desea generar su solicitud Pdf de todos modos",
+                tipo = "warning";
+    } else {
+        titulo = "Todo listo!", mensaje = "Desea Generar su solicitud en PDF", tipo = "success";
+    }
+    swal({
+        title: titulo,
+        text: mensaje,
+        type: tipo,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'SI',
+        cancelButtonText: 'NO'
+    }).then((valor) => {
+        if (valor)
+            this.fncGenerarSOlcitud(); // this should execute now
+        else
+            this.fncNuevaSolicitud();
+    });
 };
 
 var fncGenerarSOlcitud = function () {
-    swal.close();
-    swalTimerLoading("Solicitud PDF","Se esta generando su solicitud esto puede tardar unos minutos",3000);
-}
+    alert("PDFGenerado");
+    fncNuevaSolicitud();
+};
 
 var fncGuardarSolicitud = function () {
     swalTimerLoading("Enviando", "Solicitud", 90000);
@@ -18,32 +40,16 @@ var fncGuardarSolicitud = function () {
     var extension = $("#form1 #addExtension").val();
     var $dropZone = Dropzone.forElement("#drop_pdfs");
     $dropZone.on('sendingmultiple', function (data, xhr, formData) {
+        motivo = encodeURI(motivo);
+        viaje = encodeURI(viaje);
+        listaPasajeros = encodeURI(listaPasajeros);
+        extension = encodeURI(extension);
         formData.append("jsonMotivo", motivo);
         formData.append("jsonViaje", viaje);
         formData.append("jsonPasajeros", listaPasajeros);
         formData.append("extension", extension);
     });
     $dropZone.processQueue();
-//    var fd = new FormData();
-//    fd.append("pdfdata", $dropZone.files[0]);
-//    console.log(fd);
-//    console.log(fd);
-//    $.ajax({
-//        url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?jsonMotivo=" + motivo + "&jsonViaje="+viaje+"&jsonPasajeros="+ listaPasajeros+"&extension="+$("#form1 #addExtension").val()+"&opc=saveSolicitud",
-//        type: "POST",
-//        cache: false,
-//        processData: false,
-//        contentType: false,
-//        data: {fd: fd},
-//        success: function (datos) {
-//            datos = JSON.parse(datos);
-//            swalTimer(" Solicitud ", "[" + datos.codigo + "] " + datos.respuesta, "info");
-//        },
-//        error: function (jqXHR, textStatus, errorThrown) {
-//            alert("Error de ejecucion -> " + textStatus + jqXHR);
-//        }
-//
-//    });
 };
 
 var fncObjSeccionMotivo = function () {
@@ -69,16 +75,21 @@ var fncObjSeccionViaje = function () {
 var fnObjSeccionPasajeros = function () {
     var lista = [];
     $("#form3 #dynamic_div_solicitud div[id^='r']").each(function () {
-        var pasajero = {
+        var tbpasajeros = {
             apellidos: $(this).find('.apellidos').find('#apellidos').val(),
             cedula: $(this).find('.cedula').find('#cedula').val(),
             descripcion: $(this).find('.descripcion').find('#descripcion').val(),
             entidad: $(this).find('.entidad').find('#entidad').val(),
             nombres: $(this).find('.nombres').find('#nombres').val()
         };
-        lista.push(pasajero);
+        var tipo = $(this).find('.tipo').find('#tipo').val();
+        var obj = {
+            tbpasajeros: tbpasajeros,
+            tipo: tipo
+        };
+        lista.push(obj);
     });
-    return lista;
+    return {lista: lista};
 };
 
 var fncRemovePasjero = function (idrow) {
@@ -103,11 +114,14 @@ var fncAddPasajeroManual = function (idform) {
     var div = "                                <div class='row' id='r" + idcont + "'>"
             + "                                    <div class='panel panel-default col-sm-8'>"
             + "                                        <div class='panel-heading'>"
-            + "                                            <a data-toggle='collapse' data-parent='#accordion' href='#collapseOne" + idcont + "' aria-expanded='false' class='collapsed' >"
-            + "                                                <input type='text' name='pasajeros[]' data-salto='s' id='title" + idcont + "' class='form-control pasajeros_lista' placeholder='Ingrese uno' readonly style='cursor: pointer'>"
+            + "                                            <a data-toggle='collapse' data-parent='#accordion' href='#collapseOne" + idcont + "'>"
+            + "                                                <div class='input-group'>"
+            + "                                                  <input type='text' name='pasajeros[]' data-salto='s' id='title" + idcont + "' class='form-control pasajeros_lista' placeholder='Ingrese uno' readonly style='cursor: pointer'>"
+            + "                                                  <span class='input-group-addon'><i class='fa fa-arrows-v'></i></span>"
+            + "                                                </div>"
             + "                                            </a>"
             + "                                        </div>"
-            + "                                        <div id='collapseOne" + idcont + "' class='panel-collapse collapse' aria-expanded='false' style='height: 0px;'>"
+            + "                                        <div id='collapseOne" + idcont + "' class='panel-collapse collapse in'>"
             + "                                            <div class='panel-body'>"
             + "                                                <div class='contenidoPasajero' id='" + idcont + "'>"
             + "                                                    <div class='form-group cedula'>"
@@ -140,6 +154,17 @@ var fncAddPasajeroManual = function (idform) {
             + "                                                            <input type='text' id='descripcion' class='form-control' placeholder='Describa el cargo/ocupación' value='' aria-describedby='basic-addon1'>"
             + "                                                        </div>"
             + "                                                    </div>"
+            + "                                                   <div class='form-group tipo'>"
+            + "                                                        <label for='ticket-name' class='col-sm-2 control-label'>Tipo</label>"
+            + "                                                        <div class='col-sm-6'>"
+            + "                                                            <select id='tipo' class='form-control' title='Tipo de pasajero'>"
+            + "                                                               <option disabled value='' selected hidden> -Escoja uno- </option>"
+            + "                                                               <option data-tokens='Normal' value='Normal'>Normal</option>"
+            + "                                                               <option data-tokens='Comision' value='Comision'>Comision</option>"
+            + "                                                               <option data-tokens='Controlador' value='Controlador'>Controlador</option>"
+            + "                                                            </select>"
+            + "                                                        </div>"
+            + "                                                    </div>"
             + "                                                </div>"
             + "                                            </div>"
             + "                                        </div>"
@@ -160,11 +185,14 @@ var fncCatchSelectS = function (idform) {
     var div = "                                <div class='row' id='r" + idcont + "'>"
             + "                                    <div class='panel panel-default col-sm-8'>"
             + "                                        <div class='panel-heading'>"
-            + "                                            <a data-toggle='collapse' data-parent='#accordion' href='#collapseOne" + idcont + "' aria-expanded='false' class='collapsed' >"
-            + "                                                <input type='text' value='" + obj.nombres + " " + obj.apellidos + "' data-salto='s' name='pasajeros[]' id='title" + idcont + "' class='form-control pasajeros_lista' placeholder='Ingrese uno' readonly style='cursor: pointer'>"
+            + "                                            <a data-toggle='collapse' data-parent='#accordion' href='#collapseOne" + idcont + "'>"
+            + "                                                <div class='input-group'>"
+            + "                                                  <input type='text' value='" + obj.nombres + " " + obj.apellidos + "' data-salto='s' name='pasajeros[]' id='title" + idcont + "' class='form-control pasajeros_lista' placeholder='Ingrese uno' readonly style='cursor: pointer'>"
+            + "                                                  <span class='input-group-addon'><i class='fa fa-arrows-v'></i></span>"
+            + "                                                </div>"
             + "                                            </a>"
             + "                                        </div>"
-            + "                                        <div id='collapseOne" + idcont + "' class='panel-collapse collapse' aria-expanded='false' style='height: 0px;'>"
+            + "                                        <div id='collapseOne" + idcont + "' class='panel-collapse collapse in'>"
             + "                                            <div class='panel-body'>"
             + "                                                <div class='contenidoPasajero' id='" + idcont + "'>"
             + "                                                    <div class='form-group cedula'>"
@@ -197,6 +225,17 @@ var fncCatchSelectS = function (idform) {
             + "                                                            <input type='text' id='descripcion' class='form-control' placeholder='Describa el cargo/ocupación' value='" + obj.descripcion + "' aria-describedby='basic-addon1'>"
             + "                                                        </div>"
             + "                                                    </div>"
+            + "                                                    <div class='form-group tipo'>"
+            + "                                                        <label for='ticket-name' class='col-sm-2 control-label'>Tipo</label>"
+            + "                                                        <div class='col-sm-6'>"
+            + "                                                            <select id='tipo' class='form-control' title='Tipo de pasajero'>"
+            + "                                                               <option disabled value='' selected hidden> -Escoja uno- </option>"
+            + "                                                               <option data-tokens='Normal' value='Normal'>Normal</option>"
+            + "                                                               <option data-tokens='Comision' value='Comision'>Comision</option>"
+            + "                                                               <option data-tokens='Controlador' value='Controlador'>Controlador</option>"
+            + "                                                            </select>"
+            + "                                                        </div>"
+            + "                                                    </div>"
             + "                                                </div>"
             + "                                            </div>"
             + "                                        </div>"
@@ -207,4 +246,8 @@ var fncCatchSelectS = function (idform) {
             + "                                </div>";
     $("#" + idform + " #dynamic_div_solicitud").append(div);
     idcont++;
+    $("#search_solicitud_pasajeros").val("");
+    $("#json_solicitud_pasajeros").val("");
+    $("#search_solicitud_pasajeros_button").prop('disabled', true);
+
 };

@@ -68,8 +68,8 @@ public class Tbseccionviajes implements Serializable {
     @JoinColumn(name = "solicitud", referencedColumnName = "numero")
     @ManyToOne(optional = false)
     private Tbsolicitudes solicitud;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idviaje")
-    private Collection<Tbpasajeros> tbpasajerosCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tbseccionviajes")
+    private Collection<Tbviajepasajero> tbviajepasajeroCollection;
 
     public Tbseccionviajes() {
     }
@@ -134,13 +134,13 @@ public class Tbseccionviajes implements Serializable {
         this.solicitud = solicitud;
     }
 
-    @XmlTransient
-    public Collection<Tbpasajeros> getTbpasajerosCollection() {
-        return tbpasajerosCollection;
+     @XmlTransient
+    public Collection<Tbviajepasajero> getTbviajepasajeroCollection() {
+        return tbviajepasajeroCollection;
     }
 
-    public void setTbpasajerosCollection(Collection<Tbpasajeros> tbpasajerosCollection) {
-        this.tbpasajerosCollection = tbpasajerosCollection;
+    public void setTbviajepasajeroCollection(Collection<Tbviajepasajero> tbviajepasajeroCollection) {
+        this.tbviajepasajeroCollection = tbviajepasajeroCollection;
     }
 
     @Override

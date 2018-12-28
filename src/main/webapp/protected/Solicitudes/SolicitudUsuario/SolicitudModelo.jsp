@@ -3,6 +3,14 @@
     Created on : 8/12/2018, 01:31:07 PM
     Author     : Xavy PC
 --%>
+<%@page import="ugt.servicios.swSeccionViaje"%>
+<%@page import="ugt.servicios.swViajePasajero"%>
+<%@page import="ugt.entidades.TbviajepasajeroPK"%>
+<%@page import="ugt.servicios.swSeccionMotivo"%>
+<%@page import="ugt.servicios.swSeccionSolicitante"%>
+<%@page import="ugt.servicios.swPasajero"%>
+<%@page import="ugt.entidades.Tbviajepasajero"%>
+<%@page import="ugt.entidades.listas.ViajesPasajerosL"%>
 <%@page import="ugt.entidades.listas.PasajerosL"%>
 <%@page import="ugt.servicios.swPDF"%>
 <%@page import="java.util.logging.Level"%>
@@ -54,8 +62,32 @@
                 session.setAttribute("vehiculodependencia", vehiculodependencia);
             }
             response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("pasajeroAutocomplete")) {
+            String termino = (String) session.getAttribute("term");
+            session.setAttribute("term", null);
+            String jsonPasajeros = swPasajero.listarPasajerosTerm(termino);
+            JSONArray arrayJSON = new JSONArray(jsonPasajeros);
+            JSONArray result = new JSONArray();
+            for (int i = 0; i < arrayJSON.length(); i++) {
+                JSONObject childJSONObject = arrayJSON.getJSONObject(i);
+                JSONObject objJSON = new JSONObject()
+                        .put("value", childJSONObject.getString("apellidos") + " " + childJSONObject.getString("nombres"))
+                        .put("label", childJSONObject.getString("cedula"))
+                        .put("json", childJSONObject.toString());
+                result.put(objJSON);
+            }
+            if (arrayJSON.length() > 0) {
+                session.setAttribute("listTerm", result.toString());
+            } else {
+                String objJSON = new JSONObject()
+                        .put("value", "")
+                        .put("label", "Cargando...").toString();
+                session.setAttribute("listTerm", objJSON);
+            }
+            response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
         } else if (opc.equals("saveSolicitud")) {
             g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+            String status = "";
             byte[] bytes = (byte[]) session.getAttribute("byteSPDF");
             String jsonMotivo = (String) session.getAttribute("jsonMotivo");
             String jsonViaje = (String) session.getAttribute("jsonViaje");
@@ -89,7 +121,9 @@
                             if (jsonPDF.length() > 2) {
                                 JSONObject obj = new JSONObject(jsonPDF);
                                 solicitud.setIdpdf(obj.getInt("idpdf"));
-                                swSolicitudes.modificarSolicitudID(solicitud.getNumero().toString(), g.toJson(solicitud));
+                                if (swSolicitudes.modificarSolicitudID(solicitud.getNumero().toString(), g.toJson(solicitud)).length() <= 2) {
+                                    status += " ERROR EN ASIGNAR EL PDF, ";
+                                }
                             }
                         } catch (Exception e) {
                             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en subir el PDF ", e.getClass().getName() + "****" + e.getMessage());
@@ -106,43 +140,73 @@
                     usrAux.setExtension(extension);
                     usrAux.setIdsolicitante(0);
                     usrAux.setSolicitud(solicitud);
-                    solfull.setSolicitante(usrAux);
+                    String objJSONSolicitante = swSeccionSolicitante.insertSolicitante(g.toJson(usrAux));
+                    if (objJSONSolicitante.length() > 2) { // si se ingreso correctamente
+                        solfull.setSolicitante(g.fromJson(objJSONSolicitante, Tbseccionsolicitantes.class)); // insertar solicitante en solicitud full
+                    } else { // si no enviar mensaje 
+                        status += " ERROR EN GUARDAR DATOS DE SOLICITANTE, ";
+                    }
                 }
                 //ingreso de motivo
                 if (jsonMotivo != null) {
-                    solfull.setMotivo(g.fromJson(jsonMotivo, Tbseccionmotivo.class));
+                    Tbseccionmotivo motivoAux = g.fromJson(jsonMotivo, Tbseccionmotivo.class);// extraer motivo y insertar id solicitud
+                    motivoAux.setSolicitud(solicitud);
+                    String objJSONMotivo = swSeccionMotivo.insertMotivo(g.toJson(motivoAux));
+                    if (objJSONMotivo.length() > 2) { // si se ingreso correctamente
+                        solfull.setMotivo(g.fromJson(objJSONMotivo, Tbseccionmotivo.class)); // insertar motivo en solicitud full
+                    } else { // si no enviar mensaje 
+                        status += " ERROR AL GUARDAR MOTIVO, ";
+                    }
                 }
                 //ingreso de viaje
                 if (jsonViaje != null) {
-                    solfull.setViaje(g.fromJson(jsonViaje, Tbseccionviajes.class));
+                    Tbseccionviajes viajeAux = g.fromJson(jsonViaje, Tbseccionviajes.class);// extraer viaje y insertar id solicitud
+                    viajeAux.setSolicitud(solicitud);
+                    String objJSONViaje = swSeccionViaje.insertViaje(g.toJson(viajeAux));
+                    if (objJSONViaje.length() > 2) { // si se ingreso correctamente
+                        solfull.setViaje(g.fromJson(objJSONViaje, Tbseccionviajes.class)); // insertar viaje en solicitud full
+                    } else { // si no enviar mensaje 
+                        status += " ERROR AL GUARDAR EL VIAJE, ";
+                    }
                 }
                 //ingreso pasajeros
                 if (jsonPasajeros != null) {
-                    PasajerosL pasajeros = new PasajerosL();
-                    JSONArray arrayJSON = new JSONArray(jsonPasajeros);
-                    for (int i = 0; i < arrayJSON.length(); i++) {
-                        JSONObject childJSONObject = arrayJSON.getJSONObject(i);
-                        Tbpasajeros pasajero = g.fromJson(childJSONObject.toString(), Tbpasajeros.class);
-                        pasajeros.add(pasajero);
+                    ViajesPasajerosL pasajeros = g.fromJson(jsonPasajeros, ViajesPasajerosL.class);
+                    ViajesPasajerosL pasajerosAux = new ViajesPasajerosL();
+                    for (Tbviajepasajero viajePasajeroAux : pasajeros.getLista()) {
+                        String existe = swPasajero.listarPasajeroID(viajePasajeroAux.getTbpasajeros().getCedula());
+                        if (existe.length() <= 2) { // si no existe entonces se lo inserta
+                            if (swPasajero.insertPasajero(g.toJson(viajePasajeroAux.getTbpasajeros())).length() <= 2) {
+                                status += "Error al ingresar pasajero " + viajePasajeroAux.getTbpasajeros().getCedula();
+                            }
+                        }
+                        //pregutnamos si ya existe la seccion viaje de la solicitud con su id
+                        if (solfull.getViaje() != null) {
+                            if (solfull.getViaje().getIdviaje() != 0) {
+                                //insertamos la seccion viaje
+                                viajePasajeroAux.setTbseccionviajes(solfull.getViaje());
+                                //insertamos los pks
+                                viajePasajeroAux.setTbviajepasajeroPK(new TbviajepasajeroPK(solfull.getViaje().getIdviaje(), viajePasajeroAux.getTbpasajeros().getCedula()));
+                                // insertamos la relacion pasajero y viaje
+                                String objJSONViajePasajero = swViajePasajero.insertViajePasajero(g.toJson(viajePasajeroAux));
+                                if (objJSONViajePasajero.length() > 2) { // si se ingreso correctamente
+                                    pasajerosAux.add(g.fromJson(objJSONViajePasajero, Tbviajepasajero.class));
+                                } else { // si no enviar mensaje 
+                                    status += " ERROR PASAJERO " + viajePasajeroAux.getTbpasajeros().getCedula() + ", ";
+                                }
+                            }
+                        }
                     }
-                    if (pasajeros.getLista().size() > 0) {
-                        solfull.setPasajeros(pasajeros.getLista());
+                    if (pasajerosAux.getLista().size() > 0) {
+                        solfull.setPasajeros(pasajerosAux.getLista());
                     }
                 }
-                //ingreso de una solcitud full con los componentes 
-                String status = "";
-                String result = swSolicitudes.insertSolicitudComponentes(g.toJson(solfull));
-                if (result.length() > 2) {
-                    JSONObject obj = new JSONObject(result);
-                    status += (obj.getString("motivo").length() <= 2) ? " Error en objeto motivo, " : " motivo OK ";
-                    status += (obj.getString("solicitante").length() <= 2) ? " Error en objeto solicitante, " : " solicitante OK ";
-                    status += (obj.getString("viaje").length() <= 2) ? " Error en objeto viaje, " : " viaje OK ";
-                    status += (obj.getString("pasajeros").length() <= 2) ? " Error en objeto pasajeros, " : " pasajeros OK ";
+                if (status.length() > 2) {
                     session.setAttribute("statusGuardar", status);
-                    session.setAttribute("statusCodigo", "Estado");
-                } else {
-                    session.setAttribute("statusGuardar", "ERROR NO SE HA PODIDO GUARDAR LA SOLICITUD!-> Contacte con el proveedor");
                     session.setAttribute("statusCodigo", "KO");
+                } else {
+                    session.setAttribute("statusGuardar", "Solicitud Guardada");
+                    session.setAttribute("statusCodigo", "OK");
                 }
                 response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=guardarStatus");
             }

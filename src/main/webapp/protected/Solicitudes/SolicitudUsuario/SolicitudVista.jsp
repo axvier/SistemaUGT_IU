@@ -19,6 +19,11 @@
             String json = (String) session.getAttribute("arrayJSON");
             session.setAttribute("arrayJSON", null);
             out.print(json);
+        } else if (accion.equals("pasajeroAutocomplete")) {
+            String json = (String) session.getAttribute("listTerm");
+            session.setAttribute("listTerm", null);
+            response.setContentType("text/plain");
+            response.getWriter().write(json);
         } else if (accion.equals("guardarStatus")) {
             String respuesta = (String) session.getAttribute("statusGuardar");
             String codigo = (String) session.getAttribute("statusCodigo");
@@ -244,7 +249,7 @@
                             </div>
                         </div>
                         <form id="form3" data-parsley-validate novalidate class="form-horizontal" role="form">
-                            <div id="dynamic_div_solicitud"></div>
+                            <div class="panel-group" id="dynamic_div_solicitud"></div>
                         </form>
                     </div>
                     <!--FIN DE SECCION PASAJEROS-->
@@ -317,13 +322,22 @@
                                         Planificación previa autorizada
                                     </li>
                                     <li>
+                                        Delegaciones respectivas con visto bueno
+                                    </li>
+                                    <li>
                                         Invitación (de ser el caso)
                                     </li>
                                     <li>
                                         Resoluciónes consejo politécnico (de ser el caso)
                                     </li>
                                     <li>
-                                        Copias certificadas
+                                        Giras estudiantiles con el respectivo visto bueno
+                                    </li>
+                                    <li>
+                                        Pronóstico del tiempo INAMHI
+                                    </li>
+                                    <li>
+                                        Copias certificadas fiel copia del original
                                     </li>
                                 </ul></p>
                             </div>
@@ -412,78 +426,35 @@
             autoProcessQueue: false,
             addRemoveLinks: true,
             success: function (file, response) {
-                console.log("Successfully uploaded :D :" + response);
                 var datos = JSON.parse(response);
-                var tipo = (data.codigo === "KO")? "warning":"info";
-                swalNormal(" Solicitud ", "[" + datos.codigo + "] " + datos.respuesta, tipo);
-                fncConfirmarGenerarSolcitud();
+                console.log("Mensaje servidor :" + response);
+                fncConfirmarGenerarSolcitud(datos);
             },
             error: function (file, response) {
-                var datos = JSON.parse(response);
-                var tipo = (data.codigo === "KO")? "warning":"info";
-                swalNormal(" Solicitud ", "[" + datos.codigo + "] " + datos.respuesta, tipo);
+                response = JSON.parse(response);
+                var tipo = (response.codigo === "KO") ? "warning" : "info";
+                swalNormal(" Solicitud ", "[" + response.codigo + "] " + response.respuesta, tipo);
                 console.log("error uploaded D: :" + response);
-//            },
-//            init: function () {
-//
-//                var myDropzone = this;
-//
-//                // Update selector to match your button
-//                $(".btn-success").click(function (e) {
-//                    alert("enviando");
-//                    e.preventDefault();
-//                    myDropzone.processQueue();
-//                });
-//
-//                this.on('sending', function (file, xhr, formData) {
-//                    // Append all form inputs to the formData Dropzone will POST
-//                    var motivo = JSON.stringify(fncObjSeccionMotivo());
-//                    var viaje = JSON.stringify(fncObjSeccionViaje());
-//                    var listaPasajeros = JSON.stringify(fnObjSeccionPasajeros());
-//                    var extension = $("#form1 #addExtension").val();
-//                    formData.append("jsonMotivo", motivo);
-//                    formData.append("jsonViaje", viaje);
-//                    formData.append("jsonPasajeros", listaPasajeros);
-//                    formData.append("jsonPasajeros", listaPasajeros);
-//                    formData.append("extension", extension);
-//                });
             }
         });
 
         $(function () {
-            var projects = [
-                {
-                    value: "Giovanni Xavier Aranda Cóndor",
-                    label: "1804789830",
-                    json: "{\"apellidos\": \"Aranda Cóndor\",\"cedula\": \"1804789830\",\"descripcion\": \"Secretario\",\"entidad\": \"UGT\",\"nombres\": \"Giovanni Xavier\"}"
-                },
-                {
-                    value: "nuevo1 nuevo2",
-                    label: "0987341734",
-                    json: "{\"apellidos\": \"nuevo2\",\"cedula\": \"0987341734\",\"descripcion\": \"uenco\",\"entidad\": \"UGT\",\"nombres\": \"nuevo1\"}"
-                },
-                {
-                    value: "otro otro2",
-                    label: "0123456789",
-                    json: "{\"apellidos\": \"otro2\",\"cedula\": \"0123456789\",\"descripcion\": \"presidente\",\"entidad\": \"UGT\",\"nombres\": \"otro1\"}"
-                }
-            ];
             $("#search_solicitud_pasajeros").autocomplete({
-//                source: function (request, response) {
-//                    $.ajax({
-//                        url: "SearchController",
-//                        type: "GET",
-//                        data: {
-//                            term: request.term
-//                        },
-//                        dataType: "json",
-//                        success: function (data) {
-//                            response(data);
-//                        }
-//                    });
-//                }
-                source: projects,
-//                minLength: 2,
+                source: function (request, response) {
+                    $.ajax({
+                        url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=pasajeroAutocomplete",
+                        type: "GET",
+                        data: {
+                            term: request.term
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            response(data);
+                        }
+                    });
+                },
+//                source: projects,
+                minLength: 1,
                 select: function (event, ui) {
 //                    fncCatchSelectS(ui);
                     $("#json_solicitud_pasajeros").val(ui.item.json);

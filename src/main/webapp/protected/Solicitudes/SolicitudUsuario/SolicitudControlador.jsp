@@ -22,6 +22,10 @@
                 response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
             } else if (opc.equals("nuevaSolicitudU")) {
                 response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
+            } else if (opc.equals("pasajeroAutocomplete")) {
+                String term = request.getParameter("term");
+                session.setAttribute("term", term);
+                response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
             } else if (opc.equals("saveSolicitud")) {
                 if (ServletFileUpload.isMultipartContent(request)) {
                     try {
@@ -36,16 +40,16 @@
 //                                }
                             }
                             if (FItem.getFieldName().equals("extension")) {
-                                session.setAttribute("extension", FItem.getString());
+                                session.setAttribute("extension", java.net.URLDecoder.decode(FItem.getString(), "UTF-8"));
                             }
                             if (FItem.getFieldName().equals("jsonMotivo")) {
-                                session.setAttribute("jsonMotivo", FItem.getString());
+                                session.setAttribute("jsonMotivo", java.net.URLDecoder.decode(FItem.getString(), "UTF-8"));
                             }
                             if (FItem.getFieldName().equals("jsonViaje")) {
-                                session.setAttribute("jsonViaje", FItem.getString());
+                                session.setAttribute("jsonViaje", java.net.URLDecoder.decode(FItem.getString(), "UTF-8"));
                             }
                             if (FItem.getFieldName().equals("jsonPasajeros")) {
-                                session.setAttribute("jsonPasajeros", FItem.getString());
+                                session.setAttribute("jsonPasajeros", java.net.URLDecoder.decode(FItem.getString(), "UTF-8"));
                             }
                         }
                         response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);

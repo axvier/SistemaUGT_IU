@@ -1,13 +1,12 @@
 package ugt.solicitudes;
 
-import java.util.ArrayList;
 import java.util.List;
 import ugt.entidades.Tbdisponibilidadvc;
-import ugt.entidades.Tbpasajeros;
 import ugt.entidades.Tbseccionmotivo;
 import ugt.entidades.Tbseccionsolicitantes;
 import ugt.entidades.Tbseccionviajes;
 import ugt.entidades.Tbsolicitudes;
+import ugt.entidades.Tbviajepasajero;
 
 /**
  *
@@ -19,18 +18,18 @@ public class Solicitudesfull{
     private Tbseccionmotivo motivo;
     private Tbseccionviajes viaje;
     private Tbseccionsolicitantes solicitante;
-    private List<Tbpasajeros> pasajeros;
+    private List<Tbviajepasajero> pasajeros;
     private Tbdisponibilidadvc disponibilidadvc;
 
     public Tbsolicitudes getSolicitud() {
         return solicitud;
     }
 
-    public List<Tbpasajeros> getPasajeros() {
+    public List<Tbviajepasajero> getPasajeros() {
         return pasajeros;
     }
 
-    public void setPasajeros(List<Tbpasajeros> pasajeros) {
+    public void setPasajeros(List<Tbviajepasajero> pasajeros) {
         this.pasajeros = pasajeros;
     }
 
