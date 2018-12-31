@@ -151,6 +151,7 @@ var fncNuevaSolicitud = function () {
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
 //            fncDibujarNuev("tbRolesG");
+//            fncConfirmarGenerarSolcitud({nombres_apellidos:"Giovanni Aranda", rol_entidad:"rol de "});
         },
         error: function (error) {
             location.reload();

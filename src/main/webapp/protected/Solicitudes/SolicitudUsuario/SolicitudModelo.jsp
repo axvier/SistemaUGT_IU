@@ -3,6 +3,7 @@
     Created on : 8/12/2018, 01:31:07 PM
     Author     : Xavy PC
 --%>
+<%@page import="ugt.solicitudes.SolicitudPDF"%>
 <%@page import="ugt.servicios.swSeccionViaje"%>
 <%@page import="ugt.servicios.swViajePasajero"%>
 <%@page import="ugt.entidades.TbviajepasajeroPK"%>
@@ -179,6 +180,9 @@
                             if (swPasajero.insertPasajero(g.toJson(viajePasajeroAux.getTbpasajeros())).length() <= 2) {
                                 status += "Error al ingresar pasajero " + viajePasajeroAux.getTbpasajeros().getCedula();
                             }
+                        } else {
+                            swPasajero.modificarPasajero(viajePasajeroAux.getTbpasajeros().getCedula(), g.toJson(viajePasajeroAux.getTbpasajeros()));
+//                                status += "Error al ingresar pasajero " + viajePasajeroAux.getTbpasajeros().getCedula();
                         }
                         //pregutnamos si ya existe la seccion viaje de la solicitud con su id
                         if (solfull.getViaje() != null) {
@@ -208,7 +212,46 @@
                     session.setAttribute("statusGuardar", "Solicitud Guardada");
                     session.setAttribute("statusCodigo", "OK");
                 }
-                response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=guardarStatus");
+                String auxNA = login.getRolesEntity().get(0).getTbusuarios().getNombres() + " " + login.getRolesEntity().get(0).getTbusuarios().getApellidos();
+                session.setAttribute("statusnombresapellidos", auxNA);
+                if (login.getRolActivo() != null) {
+                    if (login.getRolActivo().getIdrol() != null) {
+                        String idrol = login.getRolActivo().getIdrol().toString();
+                        String cedula = login.getRolesEntity().get(0).getTbusuarios().getCedula();
+                        String objJSONSolicitante = swSeccionSolicitante.buscarEntidadSolicitante(cedula, idrol);
+                        if (objJSONSolicitante.length() > 2) {
+                            Tbusuariosentidad entidadRol = g.fromJson(objJSONSolicitante, Tbusuariosentidad.class);
+                            String auxRE = entidadRol.getTbroles().getDescripcion() + " de " + entidadRol.getTbentidad().getNombre();
+                            session.setAttribute("statusrolentidad", auxRE);
+                        }
+                    }
+                }
+                session.setAttribute("solicitudFull", solfull.getSolicitud().getNumero().toString());
+                response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=guardarStatusSol");
+            }
+        } else if (opc.equals("modConfirmSolPDF")) {
+            String auxNA = login.getRolesEntity().get(0).getTbusuarios().getNombres() + " " + login.getRolesEntity().get(0).getTbusuarios().getApellidos();
+            session.setAttribute("statusnombresapellidos", auxNA);
+            if (login.getRolActivo() != null) {
+                if (login.getRolActivo().getIdrol() != null) {
+                    String idrol = login.getRolActivo().getIdrol().toString();
+                    String cedula = login.getRolesEntity().get(0).getTbusuarios().getCedula();
+                    String objJSONSolicitante = swSeccionSolicitante.buscarEntidadSolicitante(cedula, idrol);
+                    if (objJSONSolicitante.length() > 2) {
+                        Tbusuariosentidad entidadRol = g.fromJson(objJSONSolicitante, Tbusuariosentidad.class);
+                        String auxRE = entidadRol.getTbroles().getDescripcion() + " de " + entidadRol.getTbentidad().getNombre();
+                        session.setAttribute("statusrolentidad", auxRE);
+                    }
+                }
+            }
+            response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
+            
+        } else if (opc.equals("generarPDFSolID")) {
+            String idSolicitud = (String) session.getAttribute("idSolicitud");
+            String objJSON = swSolicitudes.getSolicitudFullID(idSolicitud);
+            if (objJSON.length() > 2) {
+                SolicitudPDF pdf = g.fromJson(objJSON, SolicitudPDF.class);
+                session.setAttribute("solicitudfullPDF", pdf);
             }
         }
     } else {

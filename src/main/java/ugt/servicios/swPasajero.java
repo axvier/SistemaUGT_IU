@@ -122,7 +122,7 @@ public class swPasajero {
     public static String modificarPasajero(String cedula, String json) {
         String jsonResponse = "";
         try {
-            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tbseccionviajes/" + cedula);
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tbpasajeros/" + cedula);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
             connection.setDoOutput(true);

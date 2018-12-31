@@ -21,15 +21,37 @@ var fncConfirmarGenerarSolcitud = function (datos) {
         cancelButtonText: 'NO'
     }).then((valor) => {
         if (valor)
-            this.fncGenerarSOlcitud(); // this should execute now
-        else
-            this.fncNuevaSolicitud();
+            this.fncGenerarSOlcitud('modGestionSol', datos); // this should execute now
+    }, function (dismiss) {
+        this.fncNuevaSolicitud();
     });
 };
 
-var fncGenerarSOlcitud = function () {
-    alert("PDFGenerado");
-    fncNuevaSolicitud();
+var fncGenerarSOlcitud = function (idmodal, datos) {
+    $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modConfirmSolPDF&idSolicitud=' + datos.idSolicitud, function () {
+        $('#' + idmodal).modal({show: true});
+    });
+};
+
+var fncAddInfoSol = function (idform, idSolicitud) {
+    $("#modGestionSol").modal('hide');
+    swalTimerLoading("Procesando..", "Se esté generando su solicitud esto puede tardar", 9000);
+    var nom_apell = $('#' + idform + ' #addNombres_Apellidos').val();
+    var rol_entidad = $('#' + idform + ' #addRol_entidad').val();
+    $.ajax({
+        url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
+        type: "GET",
+        data: {opc: 'generarPDFSolID', idSolicitud: idSolicitud, nombre_apellido: nom_apell, rol_entidad: rol_entidad},
+        success: function (datos) {
+            swal.close();
+            fncNuevaSolicitud();
+            window.open(datos);
+        },
+        error: function (e) {
+            swal.close();
+            location.reload();
+        }
+    });
 };
 
 var fncGuardarSolicitud = function () {

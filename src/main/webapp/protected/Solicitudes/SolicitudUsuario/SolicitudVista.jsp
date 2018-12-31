@@ -3,6 +3,10 @@
     Created on : 8/12/2018, 01:31:18 PM
     Author     : Xavy PC
 --%>
+<%@page import="com.google.gson.GsonBuilder"%>
+<%@page import="java.io.ByteArrayOutputStream"%>
+<%@page import="java.io.OutputStream"%>
+<%@page import="ugt.solicitudes.SolicitudPDF"%>
 <%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
 <%@page import="ugt.entidades.Tbvehiculosdependencias"%>
 <%@page import="com.google.gson.Gson"%>
@@ -11,7 +15,7 @@
     Login login = (Login) session.getAttribute("login");
     if (login != null) {
         String accion = request.getParameter("accion");
-        Gson g = new Gson();
+        Gson g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
         if (accion.equals("jsonVacio")) {
             String datos = "{\"rows\":\"\"}";
             out.println(datos);
@@ -24,6 +28,26 @@
             session.setAttribute("listTerm", null);
             response.setContentType("text/plain");
             response.getWriter().write(json);
+        } else if (accion.equals("guardarStatusSol")) {
+            String respuesta = (String) session.getAttribute("statusGuardar");
+            String codigo = (String) session.getAttribute("statusCodigo");
+            String nombres_apellidos = (String) session.getAttribute("statusnombresapellidos");
+            String rol_entidad = (String) session.getAttribute("statusrolentidad");
+            String idSolicitud = (String) session.getAttribute("solicitudFull");
+            session.setAttribute("statusGuardar", null);
+            session.setAttribute("statusCodigo", null);
+            session.setAttribute("statusnombresapellidos", null);
+            session.setAttribute("statusrolentidad", null);
+            session.setAttribute("solicitudFull", idSolicitud);
+            String result = "{"
+                    + "\"respuesta\":\"" + respuesta + "\","
+                    + "\"nombres_apellidos\":\"" + nombres_apellidos + "\","
+                    + "\"rol_entidad\":\"" + rol_entidad + "\","
+                    + "\"idSolicitud\":\"" + idSolicitud + "\","
+                    + "\"codigo\":\"" + codigo + "\""
+                    + "}";
+            response.setContentType("text/plain");
+            response.getWriter().write(result);
         } else if (accion.equals("guardarStatus")) {
             String respuesta = (String) session.getAttribute("statusGuardar");
             String codigo = (String) session.getAttribute("statusCodigo");
@@ -35,6 +59,36 @@
                     + "}";
             response.setContentType("text/plain");
             response.getWriter().write(result);
+        } else if (accion.equals("generarPDFSolID")) {
+            String respuestaJSON = (String) session.getAttribute("solicitudFull");
+            String nombre_apellido = (String) session.getAttribute("nombre_apellido");
+            String rol_entidad = (String) session.getAttribute("rol_entidad");
+//            String idSolicitud = (String) session.getAttribute("idSolicitud");
+
+            SolicitudPDF respuesta = g.fromJson(respuestaJSON, SolicitudPDF.class);
+            session.setAttribute("solicitudFull", null);
+            session.setAttribute("nombre_apellido", null);
+            session.setAttribute("rol_entidad", null);
+            session.setAttribute("idSolicitud", null);
+
+            respuesta.setSolicitanteTitulos((nombre_apellido == null) ? "" : nombre_apellido);
+            respuesta.setSolicitantRolEntidad((rol_entidad == null) ? "" : rol_entidad);
+
+            ByteArrayOutputStream baos = respuesta.generarPDF();
+
+            // configuraciones para responder en el encabezado
+            response.setHeader("Expires", "0");
+            response.setHeader("Cache-Control","must-revalidate, post-check=0, pre-check=0");
+            response.setHeader("Pragma", "public");
+            //connfiguracion del tipo de contenido
+            response.setContentType("application/pdf");
+            // tamaño del contenido
+            response.setContentLength(baos.size());
+            // Escrbiir ByteArrayOutputStream del PDF en el ServletOutputStream de jsp
+            OutputStream os = response.getOutputStream();
+            baos.writeTo(os);
+            os.flush();
+            os.close();
         } else if (accion.equals("nuevaSolicitudU")) {
             String cedula = "";
             String nombres = "";
@@ -393,6 +447,22 @@
             if (!$.trim($('#dynamic_div_solicitud').html()).length) {
                 swalNormal("0 Pasajeros", "Debe ingresar al menos un pasajero", "error");
                 $(this).wizard('previous');
+            } else {
+                var encontrado = false;
+                var errortexto = fnObjSeccionPasajeros();
+                for (var i in errortexto) {
+                    if (errortexto.hasOwnProperty(i)) {
+                        errortexto[i].forEach(function (valor, indice, array) {
+                            if (valor.tipo === null) {
+                                encontrado = true;
+                            }
+                        });
+                    }
+                }
+                if (encontrado) {
+                    swalNormal("Error tipo pasajeros", "Debe especificar el tipo en cada uno de los pasajeros", "error");
+                    $(this).wizard('previous');
+                }
             }
         }
         if (data.step === 5 && data.direction === 'next') {
@@ -464,6 +534,42 @@
         });
     });
 </script>
+<%
+} else if (accion.equals("modConfirmSolPDF")) {
+    String nom_apell = (String) session.getAttribute("statusnombresapellidos");
+    String rol_entidad = (String) session.getAttribute("statusrolentidad");
+    String idSolicitud = (String) session.getAttribute("idSolicitud");
+    session.setAttribute("statusnombresapellidos", null);
+    session.setAttribute("statusrolentidad", null);
+    session.setAttribute("idSolicitud", null);
+%>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="modalLicenciaTitulo"> UGT | Generar pdf </h4>
+</div>
+<div class="modal-body">
+    <form id="formAddInfoSol" class="form-horizontal" role="form" onsubmit="fncAddInfoSol(this.id,<%=idSolicitud%>);
+            return false;">
+        <p>Para completar el informe puede editar la forma en que ud se dirige en el documento asi como a la entidad a la que pertence</p>
+        <label  class="control-label" for="addGRCharRol">Acrónimo y Nombre (Dr. Nombre1 Nombre2 Apellido1 Apellido2 Ph.D.)</label>
+        <div class="form-group">
+            <div class="col-sm-10">
+                <input type="text" value="<%=nom_apell%>" name="nombres_apellidos" class="form-control" id="addNombres_Apellidos" title="Dr. Nombre1 Nombre2 Apellido1 Apellido2 Ph.D." placeholder="Dr. Nombre1 Nombre2 Apellido1 Apellido2 Ph.D." required/>
+            </div>
+        </div>
+        <label class="control-label" for="addGRDescripcion" >En calidad de:</label>
+        <div class="form-group">
+            <div class="col-sm-10">
+                <input type="text" value="<%=rol_entidad%>" name="rol_entidad" class="form-control" id="addRol_entidad" title="Decano de la Facultad de Ciencias" placeholder="Decano de la Facultad de Ciencias" required/>
+            </div>
+        </div>
+        <hr>
+        <div class="container text-right">
+            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="fncNuevaSolicitud()"><i class="fa fa-times-circle"></i> Cerrar </button>
+            <button type="submit" class="btn btn-success" data-dismiss="modal" id="btnAddUsuario"><i class="fa fa-check-circle"></i> Guardar </button>
+        </div>
+    </form>
+</div>
 <%
         }
     } else {

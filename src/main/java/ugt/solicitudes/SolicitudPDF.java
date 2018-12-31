@@ -69,21 +69,22 @@ public class SolicitudPDF extends Solicitudesfull {
         this.entidadrol = entidadrol;
     }
 
-    public String generarPDF() {
+    public ByteArrayOutputStream generarPDF() {
+//    public String generarPDF() {
         FontFactory.register(CAMBRIA, "f-Cambria");
-        String result = "";
+//        String result = "";
         String espacion = "                                ";
+        //inicio para caso de servidor
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        //fin de caso de servidor
         try {
             Encabezado event = new Encabezado(new Paragraph(espacion + getEntidadSolicitante().toUpperCase(), fcambria_NormalWhite()));
             Document document = new Document(PageSize.A4, 60, 55, 20 + event.getTableHeight(), 45);
 //            Document document = new Document();
-            //inicio para caso de servidor
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            //fin de caso de servidor
             //inicio Para caso de prueba en consola
-            File myfile = new File("D:\\pdfs\\out.pdf");
-            result = myfile.getName();
-            FileOutputStream baos = new FileOutputStream(myfile);
+//            File myfile = new File("D:\\pdfs\\out.pdf");
+//            result = myfile.getName();
+//            FileOutputStream baos = new FileOutputStream(myfile);
             //fin de prueba de consola
             //instanciar el pdf con el file
             PdfWriter write = PdfWriter.getInstance(document, baos);
@@ -221,24 +222,24 @@ public class SolicitudPDF extends Solicitudesfull {
             document.add(new Paragraph("\n", fcambria_Normal()));
             document.add(new Paragraph("Justificación de requerimiento/motivo:", fcambria_Negrita()));
             document.add(new Paragraph("\n", fcambria_Normal()));
-            Paragraph motivo  = new Paragraph(getSolicitudMotivo(), fcambria_Normal());
+            Paragraph motivo = new Paragraph(getSolicitudMotivo(), fcambria_Normal());
             motivo.setAlignment(Element.ALIGN_JUSTIFIED);
             document.add(motivo);
             //fin motivo
-            
+
             //inicio favorable atencion
             document.add(new Paragraph("\n", fcambria_Normal()));
-            Paragraph favorableAtencion  = new Paragraph("Por la atención dada al presente, anticipo mi agradecimiento.", fcambria_Normal());
+            Paragraph favorableAtencion = new Paragraph("Por la atención dada al presente, anticipo mi agradecimiento.", fcambria_Normal());
             favorableAtencion.setAlignment(Element.ALIGN_JUSTIFIED);
             document.add(favorableAtencion);
             //fin favorable atencion
-            
+
             //inicio atentamente
             document.add(new Paragraph("\n", fcambria_Normal()));
-            Paragraph atentamente  = new Paragraph("Atentamente", fcambria_Normal());
+            Paragraph atentamente = new Paragraph("Atentamente", fcambria_Normal());
             atentamente.setAlignment(Element.ALIGN_JUSTIFIED);
             document.add(atentamente);
-            Paragraph atentamente2  = new Paragraph("\"SABER PARA SER\"", fcambria_Negrita());
+            Paragraph atentamente2 = new Paragraph("\"SABER PARA SER\"", fcambria_Negrita());
             atentamente2.setAlignment(Element.ALIGN_JUSTIFIED);
             document.add(atentamente2);
             document.add(new Paragraph("\n", fcambria_Normal()));
@@ -246,10 +247,10 @@ public class SolicitudPDF extends Solicitudesfull {
             document.add(new Paragraph("\n", fcambria_Normal()));
             //fin atentamente
             //INICIO FIRMA
-            Paragraph firma1  = new Paragraph(this.getYoSolicitante(), fcambria_Normal());
+            Paragraph firma1 = new Paragraph(this.getYoSolicitante(), fcambria_Normal());
             firma1.setAlignment(Element.ALIGN_JUSTIFIED);
             document.add(firma1);
-            Paragraph firmaEntidad  = new Paragraph(this.getRolentidadSolicitante().toUpperCase(), fcambria_Negrita());
+            Paragraph firmaEntidad = new Paragraph(this.getRolentidadSolicitante().toUpperCase(), fcambria_Negrita());
             firmaEntidad.setAlignment(Element.ALIGN_JUSTIFIED);
             document.add(firmaEntidad);
             //FIN FIRMA
@@ -258,14 +259,14 @@ public class SolicitudPDF extends Solicitudesfull {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en ejecutar el generador PDF Solicitud ", e.getClass().getName() + "****" + e.getMessage());
             System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
         }
-        return result;
+        return baos;
     }
-    
+
     private String getSolicitudMotivo() {
         String result = "";
         try {
-            if (this.getMotivo()!= null) {
-                if (this.getMotivo().getDescripcion()!= null) {
+            if (this.getMotivo() != null) {
+                if (this.getMotivo().getDescripcion() != null) {
                     result = this.getMotivo().getDescripcion();
                 }
             }
@@ -275,7 +276,7 @@ public class SolicitudPDF extends Solicitudesfull {
         }
         return result;
     }
-    
+
     private String getViajeComision() {
         String result = "";
         try {

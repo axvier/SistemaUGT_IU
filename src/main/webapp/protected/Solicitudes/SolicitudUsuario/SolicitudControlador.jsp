@@ -26,6 +26,18 @@
                 String term = request.getParameter("term");
                 session.setAttribute("term", term);
                 response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
+            } else if (opc.equals("generarPDFSolID")) {
+                String nombre_apellido = request.getParameter("nombre_apellido");
+                String rol_entidad = request.getParameter("rol_entidad");
+                String idSolicitud = request.getParameter("idSolicitud");
+                session.setAttribute("nombre_apellido", nombre_apellido);
+                session.setAttribute("rol_entidad", rol_entidad);
+                session.setAttribute("idSolicitud", idSolicitud);
+                response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
+            } else if (opc.equals("modConfirmSolPDF")) {
+                String idSolicitud = request.getParameter("idSolicitud");
+                session.setAttribute("idSolicitud", idSolicitud);
+                response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
             } else if (opc.equals("saveSolicitud")) {
                 if (ServletFileUpload.isMultipartContent(request)) {
                     try {

@@ -68,9 +68,9 @@ public class NewMain {
         solPDF.setEntidadrol(g.fromJson(entidadrol, Tbusuariosentidad.class));
         solPDF.setSolicitanteTitulos(solTitulos);
         solPDF.setSolicitantRolEntidad(solRolEntidad);
-        String ruta = solPDF.generarPDF();
-        System.out.println(ruta);
-        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
+//        String ruta = solPDF.generarPDF();
+//        System.out.println(ruta);
+//        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
 //        System.out.println("solicitudes full() => " + full.getSolicitud().getNumero());
         
     }
