@@ -27,30 +27,36 @@ var fncConfirmarGenerarSolcitud = function (datos) {
     });
 };
 
-var fncGenerarSOlcitud = function (idmodal, datos) {
+var fncGenerarSOlcitud = function (idmodal, datos, notfnccerrar, actionform) {
     $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modConfirmSolPDF&idSolicitud=' + datos.idSolicitud, function () {
-        $('#' + idmodal).modal({show: true});
+        if (typeof notfnccerrar !== 'undefined') {
+            $('#' + idmodal + ' .modal-body .btn-default').attr("onclick", null);
+        }
+        if (typeof actionform !== 'undefined') {
+            $('#' + idmodal + ' .modal-body #formAddInfoSol').attr("action", actionform);
+        }
+
+        $('#' + idmodal).modal({show: true, backdrop: 'static', keyboard: false});
     });
 };
 
-var fncAddInfoSol = function (idform, idSolicitud) {
+var fncAddInfoSolPDF = function (idform, idSolicitud) {
     $("#modGestionSol").modal('hide');
     swalTimerLoading("Procesando..", "Se esté generando su solicitud esto puede tardar", 9000);
     var nom_apell = $('#' + idform + ' #addNombres_Apellidos').val();
     var rol_entidad = $('#' + idform + ' #addRol_entidad').val();
     $.ajax({
         url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
-        type: "GET",
-        data: {opc: 'generarPDFSolID', idSolicitud: idSolicitud, nombre_apellido: nom_apell, rol_entidad: rol_entidad},
-        success: function (datos) {
-            swal.close();
-            fncNuevaSolicitud();
-            window.open(datos);
-        },
-        error: function (e) {
-            swal.close();
-            location.reload();
-        }
+        type: "POST",
+        data: {opc: 'generarPDFSolID', idSolicitud: idSolicitud, nombre_apellido: nom_apell, rol_entidad: rol_entidad}
+//        success: function () {
+//            swal.close();
+//            fncNuevaSolicitud();
+//        },
+//        error: function (e) {
+//            swal.close();
+//            location.reload();
+//        }
     });
 };
 
@@ -272,4 +278,359 @@ var fncCatchSelectS = function (idform) {
     $("#json_solicitud_pasajeros").val("");
     $("#search_solicitud_pasajeros_button").prop('disabled', true);
 
+};
+
+var verViajeSolicitudModal = function (idmodal, idtabla) {
+//    $("#modGeneralCondTitulo").html(" UGT | Asignados");
+    var $grid = $("#tbMisSolicitudes");
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        var data = $("#" + idtabla + " #" + selRowId).attr("data-json");
+        var dcodes = decodeURI(data);
+        var objeto = JSON.parse(dcodes);
+        var htmlc = "" +
+                "                <div class='modal-header'>" +
+                "    <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>" +
+                "    <h4 class='modal-title' id='modalLicenciaTitulo'> Solicitud " + objeto.numero + " | Viaje </h4>" +
+                "</div>" +
+                "<div class='modal-body'>" +
+                "    <form class='form-horizontal' role='form'>";
+        if (typeof objeto.viaje !== 'undefined') {
+            var obj = objeto.viaje;
+            var fecha_s = obj.fechasalida;
+            fecha_s = fecha_s.replace('-05:00', '');
+            var fecha_r = obj.fecharetorno;
+            fecha_r = fecha_r.replace('-05:00', '');
+            htmlc += "        <div class='form-group'>" +
+                    "            <label  class='col-sm-2 control-label' >Origen</label>" +
+                    "            <div class='col-sm-10'>" +
+                    "                <input type='text' class='form-control' value='" + obj.origen + "' readonly/>" +
+                    "            </div>" +
+                    "        </div>" +
+                    "        <div class='form-group'>" +
+                    "            <label class='col-sm-2 control-label' >Destino</label>" +
+                    "            <div class='col-sm-10'>" +
+                    "                <input type='text' class='form-control' value='" + obj.destino + "' readonly/>" +
+                    "            </div>" +
+                    "        </div>" +
+                    "        <div class='form-group'>" +
+                    "            <label class='col-sm-2 control-label' >Fecha salida</label>" +
+                    "            <div class='col-sm-10'>" +
+                    "                <input type='datetime-local' class='form-control' value='" + fecha_s + "' readonly/>" +
+                    "            </div>" +
+                    "        </div>" +
+                    "        <div class='form-group'>" +
+                    "            <label class='col-sm-2 control-label' >Fecha retorno</label>" +
+                    "            <div class='col-sm-10'>" +
+                    "                <input type='datetime-local' class='form-control' value='" + fecha_r + "' readonly/>" +
+                    "            </div>" +
+                    "        </div>" +
+                    "        <div class='form-group'>" +
+                    "            <label class='col-sm-2 control-label' >Telefono</label>" +
+                    "            <div class='col-sm-10'>" +
+                    "                <input type='text' class='form-control' value='" + obj.telefono + "' readonly/>" +
+                    "            </div>" +
+                    "        </div>";
+        } else {
+            htmlc += "   <p>No hay información del viaje</p>";
+        }
+        htmlc += "   </form>" +
+                "</div>" +
+                "<div class='modal-footer'>" +
+                "<button type='button' class='btn btn-default' data-dismiss='modal'><i class='fa fa-times-circle'></i> Close</button>" +
+                "</div>";
+        $("#" + idmodal + " .modal-content").html(htmlc);
+        $('#' + idmodal).modal({show: true});
+    } else
+        swalTimer("Solicitud", "Seleccione una solicitud", "error");
+};
+
+var verPasajerosSolModal = function (idmodal, idtabla) {
+//    $("#modGeneralCondTitulo").html(" UGT | Asignados");
+    var $grid = $("#tbMisSolicitudes");
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        var data = $("#" + idtabla + " #" + selRowId).attr("data-json");
+        var dcodes = decodeURI(data);
+        var objeto = JSON.parse(dcodes);
+        var divAtomatic = "<table class='table table-striped table-hover'>"
+                + "    <thead>"
+                + "        <tr>"
+                + "            <th>Tipo</th>         "
+                + "            <th>Cédula</th>         "
+                + "            <th>Nombres</th>          "
+                + "            <th>Apellidos</th>       "
+                + "            <th>Cargo</th>       "
+                + "            <th>Entidad</th>       "
+                + "         </tr>   "
+                + "    </thead> "
+                + "    <tbody>";
+        var pasajerosL = [];
+        pasajerosL = objeto.pasajeros;
+        if (typeof objeto.pasajeros !== "undefined") {
+            pasajerosL.forEach(function (e) {
+                var pasAux = e.tbpasajeros;
+                divAtomatic += "<tr>"
+                        + "         <td>" + e.tipo + "</td>"
+                        + "         <td>" + pasAux.cedula + "</td>"
+                        + "         <td>" + pasAux.nombres + "</td>"
+                        + "         <td>" + pasAux.apellidos + "</td>"
+                        + "         <td>" + pasAux.descripcion + "</td>"
+                        + "         <td>" + pasAux.entidad + "</td>"
+                        + "     </tr>";
+            });
+            divAtomatic += "</tbody></table>";
+        } else
+            divAtomatic += "</tbody></table> Sin Pasajeros";
+
+        $("#" + idmodal + " .modal-content").html("" +
+                "                <div class='modal-header'>" +
+                "    <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>" +
+                "    <h4 class='modal-title' id='modalLicenciaTitulo'> Solicitud " + objeto.numero + " | Pasajeros </h4>" +
+                "</div>" +
+                "<div class='modal-body'>" +
+                divAtomatic +
+                "</div>" +
+                "<div class='modal-footer'>" +
+                "<button type='button' class='btn btn-default' data-dismiss='modal'><i class='fa fa-times-circle'></i> Close</button>" +
+                "</div>");
+        $('#' + idmodal).modal({show: true});
+    } else
+        swalTimer("Solicitud", "Seleccione una solicitud", "error");
+};
+
+var ingInfoDescSolicitudModal = function (idmodal, idtabla) {
+    var $grid = $("#tbMisSolicitudes");
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        var data = $("#" + idtabla + " #" + selRowId).attr("data-json");
+        var dcodes = decodeURI(data);
+        var objeto = JSON.parse(dcodes);
+        fncGenerarSOlcitud(idmodal, {idSolicitud: objeto.numero}, true, "SolicitudPDFServelet");
+    } else
+        swalTimer("Solicitud", "Seleccione una solicitud", "error");
+};
+
+var verSolRequisitosPDF = function (idpdfreq, idtabla) {
+    var $grid = $("#" + idtabla);
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        var rowData = $grid.jqGrid('getRowData', selRowId);
+        swal({
+            title: "Requisitos de la solicitud " + rowData.numero,
+            text: "Desea ver los requisitos subidos a la solicutd",
+            type: "info",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'SI',
+            cancelButtonText: 'NO'
+        }).then((valor) => {
+            if (valor)
+                this.downloadReqSolicitud(idpdfreq); // this should execute now
+        }, function (dismiss) {
+            swal.close();
+        });
+    } else
+        swalTimer("Solicitud", "Seleccione una solicitud", "error");
+};
+
+var downloadReqSolicitud = function (idpdfreq) {
+    if (idpdfreq !== null)
+        $.ajax({
+            url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
+            type: "POST",
+            data: {opc: 'downloadReqSol', idSolicitud: idpdfreq},
+            success: function (data) {
+                let pdfWindow = window.open("");
+                pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + (data) + "'></iframe>");
+            },
+            error: function (e) {
+                location.reload();
+            }
+        });
+    else
+        swalNormal("Sin requisitos", "No tiene un pdf de requisitos asignados", "error");
+};
+
+var fncDibujarMisSolicitudes = function (idtabla) {
+    var $grid = $("#" + idtabla);
+    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudUsuario";
+    $grid.jqGrid({
+        url: urlbase + "/SolicitudControlador.jsp?opc=misSolicitudes",
+        editurl: urlbase + "/SolicitudControlador.jsp",
+        mtype: "POST",
+        datatype: "json",
+        colModel: [
+            {label: 'ID', name: 'numero', jsonmap: "solicitud.numero", key: true, width: 50, editable: false},
+            {label: 'fecha', name: 'fecha', jsonmap: "solicitud.fecha", width: 130, editable: false,
+                formatter: 'date',
+                formatoptions: {
+                    srcformat: "ISO8601Long",
+                    newformat: 'Y-m-d'
+                }
+            },
+            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: false},
+            {label: 'PDF', name: 'idpdf', jsonmap: "solicitud.idpdf", width: 40, editable: true},
+            {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 140, editable: true, search: false},
+            {label: 'Motivo', name: 'motivo', width: 130, jsonmap: "motivo", editable: false,
+                editrules: {
+                    required: true,
+                    edithidden: true
+                },
+                hidden: true,
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).attr("readonly", "readonly");
+                    }
+                }
+            },
+            {label: 'Pasajeros', name: 'pasajeros', width: 130, jsonmap: "pasajeros", editable: false,
+                editrules: {
+                    required: true,
+                    edithidden: true
+                },
+                hidden: true,
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).attr("readonly", "readonly");
+                    }
+                }
+            },
+            {label: 'Solicitante', name: 'solicitante', width: 130, jsonmap: "solicitante", editable: false,
+                editrules: {
+                    required: true,
+                    edithidden: true
+                },
+                hidden: true,
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).attr("readonly", "readonly");
+                    }
+                }
+            },
+            {label: 'Viaje', name: 'viaje', width: 130, jsonmap: "viaje", editable: false,
+                editrules: {
+                    required: true,
+                    edithidden: true
+                },
+                hidden: true,
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).attr("readonly", "readonly");
+                    }
+                }
+            },
+            {
+                label: "Opciones",
+                name: "actions",
+                sortable: false,
+                search: false,
+                width: 50,
+                formatter: "actions",
+                formatoptions: {
+                    keys: true,
+                    editbutton: false,
+                    onSuccess: function (jqXHR) {
+                        var datos = JSON.parse(jqXHR.responseText);
+                        swalTimer("Roles", "Estado : " + datos.codigo + " - " + datos.respuesta, "info");
+                        return true;
+                    },
+                    editOptions: {},
+                    addOptions: {},
+                    delOptions: {
+                        height: 150,
+                        width: 300,
+                        serializeDelData: function (postdata) {
+                            delete postdata.oper;
+                            return {opc: "eliminarRol", idrol: postdata.id};
+                        }
+                    }
+                }
+            }
+        ],
+        rowattr: function (rd) {
+            var json = JSON.stringify(rd);
+            var encodes = encodeURI(json);
+//            console.log(encodes);
+            return {"data-json": encodes};
+        },
+        rownumbers: true,
+        viewrecords: true,
+        width: 780,
+        height: 250,
+        loadtext: '<center><i class="fa fa-spinner fa-pulse fa-4x fa-fw"></i><span class="sr-only">Cargando...</span></center>',
+        rowNum: 10,
+        loadonce: true,
+        pager: "#" + idtabla + "_pager",
+        serializeRowData: function (postdata) {
+            delete postdata.oper;
+            delete postdata.gerarquia;
+            postdata.gerarquia = {
+                descripcion: $("#" + postdata.idrol + "_gerarquia").find(':selected').attr('data-descripcion'),
+                idtipo: $("#" + postdata.idrol + "_gerarquia").val()
+            };
+            return {opc: "modificarRol", jsonRol: JSON.stringify(postdata), idrol: postdata.idrol};
+        },
+        onSelectRow: function (rowid, selected) {
+            if (typeof rowid !== 'undefined') {
+                var rowData = $grid.jqGrid('getRowData', rowid);
+                if (typeof (rowData.estado) !== 'undefined') {
+                    if (rowData.estado === 'finalizado') {
+                        $(".list-inline #mnSolGenerar").addClass("inactive");
+                        $(".list-inline #mnSolGenerar").attr("onclick", null);
+                    } else {
+                        $(".list-inline #mnSolGenerar").removeClass("inactive");
+                        $(".list-inline #mnSolGenerar").attr("onclick", "ingInfoDescSolicitudModal('modGeneralMisSolicitudes','tbMisSolicitudes')");
+                    }
+                }
+                if (rowData.idpdf === "") {
+                    $(".list-inline #mnSolReqPDF").addClass("inactive");
+                    $(".list-inline #mnSolReqPDF").attr("onclick", null);
+                } else {
+                    $(".list-inline #mnSolReqPDF").removeClass("inactive");
+                    $(".list-inline #mnSolReqPDF").attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','tbMisSolicitudes')");
+                }
+            }
+        }
+    });
+
+    $grid.navGrid('#' + idtabla + '_pager', {edit: false, add: false, del: false, search: true, beforeRefresh: function () {
+            $grid.jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
+        }, view: false, position: "left"});
+
+    $(window).on("resize", function () {
+        var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
+        grid.jqGrid("setGridWidth", newWidth, true);
+    }).trigger('resize');
+
+    $("#search_cells").keyup(function () {
+        var rules = [], i, cm,
+                postData = $grid.jqGrid("getGridParam", "postData"),
+                colModel = $grid.jqGrid("getGridParam", "colModel"),
+                searchText = $("#search_cells").val(),
+                l = colModel.length;
+
+        for (i = 0; i < l; i++) {
+            cm = colModel[i];
+            if (cm.search !== false && (typeof cm.stype === "undefined" || cm.stype === "text")) {
+                rules.push({
+                    field: cm.name,
+                    op: "cn",
+                    data: searchText
+                });
+            }
+        }
+
+        $.extend(postData, {
+            filters: {
+                groupOp: "OR",
+                rules: rules
+            }
+        });
+
+        $grid.jqGrid("setGridParam", {search: true, postData: postData});
+        $grid.trigger("reloadGrid", [{page: 1, current: true}]);
+        return false;
+    });
 };

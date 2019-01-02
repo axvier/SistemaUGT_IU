@@ -38,6 +38,12 @@
                 String idSolicitud = request.getParameter("idSolicitud");
                 session.setAttribute("idSolicitud", idSolicitud);
                 response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
+            } else if (opc.equals("downloadReqSol")) {
+                String idSolicitud = request.getParameter("idSolicitud");
+                session.setAttribute("idSolicitud", idSolicitud);
+                response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
+            } else if (opc.equals("misSolicitudes")) {
+                response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
             } else if (opc.equals("saveSolicitud")) {
                 if (ServletFileUpload.isMultipartContent(request)) {
                     try {

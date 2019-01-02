@@ -3,6 +3,8 @@
     Created on : 8/12/2018, 01:31:07 PM
     Author     : Xavy PC
 --%>
+<%@page import="java.util.Arrays"%>
+<%@page import="ugt.solicitudes.SolicitudesfullLista"%>
 <%@page import="ugt.solicitudes.SolicitudPDF"%>
 <%@page import="ugt.servicios.swSeccionViaje"%>
 <%@page import="ugt.servicios.swViajePasajero"%>
@@ -87,7 +89,7 @@
             }
             response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
         } else if (opc.equals("saveSolicitud")) {
-            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             String status = "";
             byte[] bytes = (byte[]) session.getAttribute("byteSPDF");
             String jsonMotivo = (String) session.getAttribute("jsonMotivo");
@@ -245,13 +247,40 @@
                 }
             }
             response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
-            
+
         } else if (opc.equals("generarPDFSolID")) {
             String idSolicitud = (String) session.getAttribute("idSolicitud");
             String objJSON = swSolicitudes.getSolicitudFullID(idSolicitud);
             if (objJSON.length() > 2) {
                 SolicitudPDF pdf = g.fromJson(objJSON, SolicitudPDF.class);
                 session.setAttribute("solicitudfullPDF", pdf);
+            }
+            response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("misSolicitudes")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String objJSON = swSolicitudes.getSolicitudesFullCedula(login.getRolesEntity().get(0).getTbusuarios().getCedula());
+            if (objJSON.length() > 2) {
+                SolicitudesfullLista pdf = g.fromJson(objJSON, SolicitudesfullLista.class);
+                if (pdf.getLista().size() > 0) {
+                    session.setAttribute("arrayJSON", g.toJson(pdf.getLista()));
+                    response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=jsonSolicitudes");
+                } else {
+                    response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=jsonVacio");
+                }
+            }
+        } else if (opc.equals("downloadReqSol")) {
+            g = new Gson();
+            String idSolicitud = (String) session.getAttribute("idSolicitud");
+            session.setAttribute("idSolicitud", null);
+            String objJSON = swPDF.listarPDFID(idSolicitud);
+            if (objJSON.length() > 2) {
+                JSONObject obj = new JSONObject(objJSON);
+                String pdf64 = obj.getString("archivo");
+                if (pdf64.length() > 0) {
+                    byte[] bytes = Base64.getDecoder().decode(pdf64);
+                    session.setAttribute("pdf64", Base64.getEncoder().encodeToString(bytes));
+                }
+                response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
             }
         }
     } else {

@@ -28,6 +28,15 @@
             session.setAttribute("listTerm", null);
             response.setContentType("text/plain");
             response.getWriter().write(json);
+        } else if (accion.equals("downloadReqSol")) {
+            String result = (String) session.getAttribute("pdf64");
+            session.setAttribute("pdf64", null);
+            if (result != null) {
+                response.setContentType("text/plain");
+                response.getWriter().write(result);
+            } else {
+                response.sendError(300, "Error al retornnar pdf requisitos en base 64");
+            }
         } else if (accion.equals("guardarStatusSol")) {
             String respuesta = (String) session.getAttribute("statusGuardar");
             String codigo = (String) session.getAttribute("statusCodigo");
@@ -38,7 +47,7 @@
             session.setAttribute("statusCodigo", null);
             session.setAttribute("statusnombresapellidos", null);
             session.setAttribute("statusrolentidad", null);
-            session.setAttribute("solicitudFull", idSolicitud);
+            session.setAttribute("solicitudFull", null);
             String result = "{"
                     + "\"respuesta\":\"" + respuesta + "\","
                     + "\"nombres_apellidos\":\"" + nombres_apellidos + "\","
@@ -60,13 +69,12 @@
             response.setContentType("text/plain");
             response.getWriter().write(result);
         } else if (accion.equals("generarPDFSolID")) {
-            String respuestaJSON = (String) session.getAttribute("solicitudFull");
             String nombre_apellido = (String) session.getAttribute("nombre_apellido");
             String rol_entidad = (String) session.getAttribute("rol_entidad");
 //            String idSolicitud = (String) session.getAttribute("idSolicitud");
+            SolicitudPDF respuesta = (SolicitudPDF) session.getAttribute("solicitudfullPDF");
 
-            SolicitudPDF respuesta = g.fromJson(respuestaJSON, SolicitudPDF.class);
-            session.setAttribute("solicitudFull", null);
+            session.setAttribute("solicitudfullPDF", null);
             session.setAttribute("nombre_apellido", null);
             session.setAttribute("rol_entidad", null);
             session.setAttribute("idSolicitud", null);
@@ -78,7 +86,7 @@
 
             // configuraciones para responder en el encabezado
             response.setHeader("Expires", "0");
-            response.setHeader("Cache-Control","must-revalidate, post-check=0, pre-check=0");
+            response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
             response.setHeader("Pragma", "public");
             //connfiguracion del tipo de contenido
             response.setContentType("application/pdf");
@@ -539,17 +547,18 @@
     String nom_apell = (String) session.getAttribute("statusnombresapellidos");
     String rol_entidad = (String) session.getAttribute("statusrolentidad");
     String idSolicitud = (String) session.getAttribute("idSolicitud");
+    String cedula = login.getRolesEntity().get(0).getTbusuarios().getCedula();
+    String idrol = login.getRolActivo().getIdrol().toString();
     session.setAttribute("statusnombresapellidos", null);
     session.setAttribute("statusrolentidad", null);
     session.setAttribute("idSolicitud", null);
 %>
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h4 class="modal-title" id="modalLicenciaTitulo"> UGT | Generar pdf </h4>
+    <h4 class="modal-title" id="modalLicenciaTitulo"> Solicitud <%=idSolicitud%> | Generar pdf </h4>
 </div>
 <div class="modal-body">
-    <form id="formAddInfoSol" class="form-horizontal" role="form" onsubmit="fncAddInfoSol(this.id,<%=idSolicitud%>);
-            return false;">
+    <form id="formAddInfoSol" class="form-horizontal" role="form" method="POST">
         <p>Para completar el informe puede editar la forma en que ud se dirige en el documento asi como a la entidad a la que pertence</p>
         <label  class="control-label" for="addGRCharRol">Acrónimo y Nombre (Dr. Nombre1 Nombre2 Apellido1 Apellido2 Ph.D.)</label>
         <div class="form-group">
@@ -561,14 +570,95 @@
         <div class="form-group">
             <div class="col-sm-10">
                 <input type="text" value="<%=rol_entidad%>" name="rol_entidad" class="form-control" id="addRol_entidad" title="Decano de la Facultad de Ciencias" placeholder="Decano de la Facultad de Ciencias" required/>
+                <input type="hidden" value="<%=idSolicitud%>" name="idSolicitud" class="form-control" id="addidSolicitud"/>
+                <input type="hidden" value="<%=cedula%>" name="cedula" class="form-control" id="addcedula"/>
+                <input type="hidden" value="<%=idrol%>" name="idrol" class="form-control" id="addidrol"/>
             </div>
         </div>
         <hr>
         <div class="container text-right">
             <button type="button" class="btn btn-default" data-dismiss="modal" onclick="fncNuevaSolicitud()"><i class="fa fa-times-circle"></i> Cerrar </button>
-            <button type="submit" class="btn btn-success" data-dismiss="modal" id="btnAddUsuario"><i class="fa fa-check-circle"></i> Guardar </button>
+            <button type="submit" class="btn btn-success"><i class="fa fa-check-circle"></i> Generar </button>
         </div>
     </form>
+</div>
+<%
+} else if (accion.equals("tableMisSolicitudes")) {
+%>
+<div class="main-header">
+    <h2>UGT</h2>
+    <em>Mis solicitudes</em>
+</div>
+<div class="main-content">
+    <!-- MODAL DIALOG -->
+    <div class="modal fade" id="modGeneralMisSolicitudes" tabindex="-1" role="dialog" aria-labelledby="modGeneralMisSolicitudes" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+    <!-- END MODAL DIALOG -->
+    <div>
+        <ul class="list-inline file-main-menu mn_missol">
+            <li>
+                <a data-toggle="modal" onclick="verViajeSolicitudModal('modGeneralMisSolicitudes', 'tbMisSolicitudes')" style='cursor: pointer'>
+                    <span class="fa-stack fa-lg"><i class="fa fa-plane fa-stack-2x"></i></span> Detalles Viaje
+                </a>
+            </li>
+            <li>
+                <a id="mnCondOcup" href="#" onclick="verPasajerosSolModal('modGeneralMisSolicitudes', 'tbMisSolicitudes')">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-users fa-stack-2x"></i></span>Pasajeros
+                </a>
+            </li>
+            <li>
+                <a id="mnSolReqPDF" href="#" onclick="verSolRequisitosPDF('0', 'tbMisSolicitudes')">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-eye fa-stack-2x"></i></span>PDF requisitos
+                </a>
+            </li>
+            <li>
+                <a id="mnSolGenerar" href="#" onclick="ingInfoDescSolicitudModal('modGeneralMisSolicitudes', 'tbMisSolicitudes')">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-download fa-stack-2x"></i></span>Generar oficio
+                </a>
+            </li>
+            <li>
+                <a id="mnCondOcup" href="#" onclick="addModalEntidadRol('modGeneralMisSolicitudes', 'tbMisSolicitudes')">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-search fa-stack-2x"></i></span>Vehiculo-Conductor
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 pull-right">
+            <div class="input-group">
+                <input id="search_cells" type="text" class="form-control x-campaigns-filter">
+                <span class="input-group-btn">
+                    <button class="btn btn-custom-primary" type="button" disabled="disabled"><i class="fa fa-search"></i></button>
+                </span>
+            </div>
+        </div>
+    </div><br>
+    <div class="widget widget-table">
+        <div class="widget-header">
+            <h3><i class="fa fa-table"></i> Lista </h3><em>Solicitudes</em>
+        </div>
+        <div class="widget-content">
+            <div id="jqgrid-wrapper">
+                <table id="tbMisSolicitudes" class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>estado</th>
+                            <th>fecha</th>
+                            <th>Motivo</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+                <div id="tbMisSolicitudes_pager"></div>
+            </div>
+        </div>
+    </div> 
 </div>
 <%
         }

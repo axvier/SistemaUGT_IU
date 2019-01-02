@@ -37,8 +37,6 @@ import utils.Constantes;
  */
 public class SolicitudPDF extends Solicitudesfull {
 
-    public static final String CAMBRIA
-            = "src/main/resources/font/Cambria.ttf";
     private static final float FONTSIZEGENERAL = 10;
 
     private String solicitanteTitulos;
@@ -71,7 +69,7 @@ public class SolicitudPDF extends Solicitudesfull {
 
     public ByteArrayOutputStream generarPDF() {
 //    public String generarPDF() {
-        FontFactory.register(CAMBRIA, "f-Cambria");
+        FontFactory.register(Constantes.CAMBRIA, "f-Cambria");
 //        String result = "";
         String espacion = "                                ";
         //inicio para caso de servidor

@@ -68,7 +68,7 @@ public class Encabezado extends PdfPageEventHelper {
         espoch.setVerticalAlignment(Element.ALIGN_BOTTOM);
         // instancia de la imgen localicada en src
         Image imagen = Image.getInstance(Constantes.ENCABEZADOIMG);
-        // add imagen en la celda 
+        // add imagen en la celda
         espoch.setCellEvent(new ImageBackgroundEvent(imagen));
         espoch.setFixedHeight(580 * imagen.getScaledHeight() / imagen.getScaledWidth());
         //add celda en la tabla

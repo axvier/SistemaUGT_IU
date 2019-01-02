@@ -82,12 +82,12 @@
             <artifactId>cas-client-core</artifactId>
             <version>3.4.1</version>
             
-            <exclusions>
+<!--            <exclusions>
                 <exclusion>
                     <groupId>javax.servlet</groupId>
                     <artifactId>servlet-api</artifactId>
                 </exclusion>
-            </exclusions>
+            </exclusions>-->
         </dependency>
     </dependencies>
     <build>
