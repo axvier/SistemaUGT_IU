@@ -142,6 +142,7 @@ var fncAsignarRolOpcion = function () {
 };
 
 var fncNuevaSolicitud = function () {
+    
     $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
     $.ajax({
         url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",

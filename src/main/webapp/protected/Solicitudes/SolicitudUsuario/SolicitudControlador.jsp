@@ -48,6 +48,10 @@
                 String idSolicitud = request.getParameter("idSolicitud");
                 session.setAttribute("idSolicitud", idSolicitud);
                 response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
+            } else if (opc.equals("eliminarSolicitud")) {
+                String idSolicitud = request.getParameter("idSolicitud");
+                session.setAttribute("idSolicitud", idSolicitud);
+                response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
             } else if (opc.equals("saveSolicitud")) {
                 if (ServletFileUpload.isMultipartContent(request)) {
                     try {

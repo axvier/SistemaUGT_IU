@@ -290,9 +290,40 @@
             String objJSON = swDisponibilidadVC.getDisponibilidadVCSolicitud(idSolicitud);
             if (objJSON.length() > 2) {
                 Tbdisponibilidadvc disponibilidadVC = g.fromJson(objJSON, Tbdisponibilidadvc.class);
-                session.setAttribute("disponibilidadVC",disponibilidadVC);
+                session.setAttribute("disponibilidadVC", disponibilidadVC);
             }
             response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("eliminarSolicitud")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String idSolicitud = (String) session.getAttribute("idSolicitud");
+            session.setAttribute("idSolicitud", null);
+            String objJSON = swSolicitudes.listarSolicitudID(idSolicitud);
+            if (objJSON.length() > 2) {
+                String respuesta = "";
+                Tbsolicitudes sol = g.fromJson(objJSON, Tbsolicitudes.class);
+                String idPDF = (sol.getIdpdf() != null) ? sol.getIdpdf().toString() : "";
+                if (idPDF.length() > 0) {
+                    String deletePDF = swPDF.eliminarPDF(idPDF);
+                    if (deletePDF.equals("200") || deletePDF.equals("204") || deletePDF.equals("202")) {
+                        respuesta += "";
+                    }else{
+                        respuesta += "Pdf requistitos no eliminado, ";
+                    }
+                }
+                String deleteSolicitud = swSolicitudes.eliminarSolicitud(idSolicitud);
+                if (deleteSolicitud.equals("200") || deleteSolicitud.equals("204") || deleteSolicitud.equals("202")) {
+                    respuesta += "";
+                }else
+                    respuesta += "No se ha podido eliminar la solicitud";
+                if (respuesta.length() > 0) {
+                    session.setAttribute("statusCodigo", "KO");
+                } else {
+                    respuesta ="Se ha eliminado el registro";
+                    session.setAttribute("statusCodigo", "OK");
+                }
+                session.setAttribute("statusDelete", respuesta);
+            }
+            response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=eliminarStatus");
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

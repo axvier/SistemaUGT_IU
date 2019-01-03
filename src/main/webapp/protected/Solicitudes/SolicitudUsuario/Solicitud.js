@@ -21,16 +21,29 @@ var fncConfirmarGenerarSolcitud = function (datos) {
         cancelButtonText: 'NO'
     }).then((valor) => {
         if (valor)
-            this.fncGenerarSOlcitud('modGestionSol', datos); // this should execute now
+            this.fncGenerarSOlcitud('modGestionSol', datos, "fncNuevaSolicitud()", "SolicitudPDFServelet"); // this should execute now
     }, function (dismiss) {
         this.fncNuevaSolicitud();
     });
+};
+var modalcierre = function (idmodal,funcionCall) {
+    $('#' + idmodal).modal('hide');
+//    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+    if (funcionCall === 'fncNuevaSolicitud') {
+        fncNuevaSolicitud();
+    }
 };
 
 var fncGenerarSOlcitud = function (idmodal, datos, notfnccerrar, actionform) {
     $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modConfirmSolPDF&idSolicitud=' + datos.idSolicitud, function () {
         if (typeof notfnccerrar !== 'undefined') {
-            $('#' + idmodal + ' .modal-body .btn-default').attr("onclick", null);
+            if (notfnccerrar === "fncNuevaSolicitud()") {
+                $('#' + idmodal + ' .modal-body .btn-default').attr("onclick", "modalcierre('"+idmodal+"','fncNuevaSolicitud')");
+            }
+            if (notfnccerrar === "null") {
+                $('#' + idmodal + ' .modal-body .btn-default').attr("onclick", null);
+            }
         }
         if (typeof actionform !== 'undefined') {
             $('#' + idmodal + ' .modal-body #formAddInfoSol').attr("action", actionform);
@@ -406,7 +419,7 @@ var ingInfoDescSolicitudModal = function (idmodal, idtabla) {
         var data = $("#" + idtabla + " #" + selRowId).attr("data-json");
         var dcodes = decodeURI(data);
         var objeto = JSON.parse(dcodes);
-        fncGenerarSOlcitud(idmodal, {idSolicitud: objeto.numero}, true, "SolicitudPDFServelet");
+        fncGenerarSOlcitud(idmodal, {idSolicitud: objeto.numero}, "null", "SolicitudPDFServelet");
     } else
         swalTimer("Solicitud", "Seleccione una solicitud", "error");
 };
@@ -474,7 +487,7 @@ var fncDibujarMisSolicitudes = function (idtabla) {
         mtype: "POST",
         datatype: "json",
         colModel: [
-            {label: 'ID', name: 'numero', jsonmap: "solicitud.numero", key: true, width: 50, editable: false},
+            {label: 'ID', name: 'numero', jsonmap: "solicitud.numero", key: true, width: 50, editable: false, sorttype: 'integer'},
             {label: 'fecha', name: 'fecha', jsonmap: "solicitud.fecha", width: 130, editable: false,
                 formatter: 'date',
                 formatoptions: {
@@ -484,7 +497,7 @@ var fncDibujarMisSolicitudes = function (idtabla) {
             },
             {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: false},
             {label: 'PDF', name: 'idpdf', jsonmap: "solicitud.idpdf", width: 40, editable: true},
-            {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 140, editable: true, search: false},
+            {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 140, editable: true, search: false, sortable: false},
             {label: 'Motivo', name: 'motivo', width: 130, jsonmap: "motivo", editable: false,
                 editrules: {
                     required: true,
@@ -543,11 +556,6 @@ var fncDibujarMisSolicitudes = function (idtabla) {
                 formatoptions: {
                     keys: true,
                     editbutton: false,
-                    onSuccess: function (jqXHR) {
-                        var datos = JSON.parse(jqXHR.responseText);
-                        swalTimer("Eliminación", "Estado : " + datos.codigo + " - " + datos.respuesta, "info");
-                        return true;
-                    },
                     editOptions: {},
                     addOptions: {},
                     delOptions: {
@@ -555,7 +563,9 @@ var fncDibujarMisSolicitudes = function (idtabla) {
                         width: 300,
                         serializeDelData: function (postdata) {
                             delete postdata.oper;
-                            return {opc: "eliminarSolicitud", idSolicitud: postdata.id};
+//                            console.log({opc: "eliminarSolicitud", idSolicitud: postdata.id});
+                            var rowData = $grid.jqGrid('getRowData', postdata.id);
+                            return {opc: "eliminarSolicitud", idSolicitud: rowData.numero};
                         }
                     }
                 }
@@ -570,7 +580,7 @@ var fncDibujarMisSolicitudes = function (idtabla) {
         rownumbers: true,
         viewrecords: true,
         width: 780,
-        height: 250,
+        height: 400,
         loadtext: '<center><i class="fa fa-spinner fa-pulse fa-4x fa-fw"></i><span class="sr-only">Cargando...</span></center>',
         rowNum: 10,
         loadonce: true,
@@ -604,6 +614,19 @@ var fncDibujarMisSolicitudes = function (idtabla) {
                     $(".list-inline #mnSolReqPDF").attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','tbMisSolicitudes')");
                 }
             }
+        },
+        afterInsertRow: function (rowid, rowdata, rowelem) {
+            var selRowId = $(this).getGridParam('selrow'),
+                    tr = $("#" + rowid);
+            // you can use getCell or getRowData to examine the contain of
+            // the selected row to decide whether the row is editable or not
+            if (selRowId !== rowid && rowdata.estado === 'finalizado') {
+                // eneble the "Edit" button in the navigator
+//                console.log(rowdata.estado);
+//                console.log(this.id);
+                $("#" + idtabla + " #jDeleteButton_" + rowid).hide();
+            }
+            return true;
         }
     });
 

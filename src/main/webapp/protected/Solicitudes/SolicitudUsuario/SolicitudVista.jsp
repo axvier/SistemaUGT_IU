@@ -38,6 +38,17 @@
             } else {
                 response.sendError(300, "Error al retornnar pdf requisitos en base 64");
             }
+        } else if (accion.equals("eliminarStatus")) {
+            String respuesta = (String) session.getAttribute("statusDelete");
+            String codigo = (String) session.getAttribute("statusCodigo");
+            session.setAttribute("statusDelete", null);
+            session.setAttribute("statusCodigo", null);
+            String result = "{"
+                    + "\"respuesta\":\"" + respuesta + "\","
+                    + "\"codigo\":\"" + codigo + "\""
+                    + "}";
+            response.setContentType("text/plain");
+            response.getWriter().write(result);
         } else if (accion.equals("guardarStatusSol")) {
             String respuesta = (String) session.getAttribute("statusGuardar");
             String codigo = (String) session.getAttribute("statusCodigo");
