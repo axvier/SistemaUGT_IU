@@ -3,6 +3,8 @@
     Created on : 8/12/2018, 01:31:07 PM
     Author     : Xavy PC
 --%>
+<%@page import="ugt.entidades.Tbdisponibilidadvc"%>
+<%@page import="ugt.servicios.swDisponibilidadVC"%>
 <%@page import="java.util.Arrays"%>
 <%@page import="ugt.solicitudes.SolicitudesfullLista"%>
 <%@page import="ugt.solicitudes.SolicitudPDF"%>
@@ -282,6 +284,15 @@
                 }
                 response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
             }
+        } else if (opc.equals("modDisponibilidadV_C")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String idSolicitud = (String) session.getAttribute("idSolicitud");
+            String objJSON = swDisponibilidadVC.getDisponibilidadVCSolicitud(idSolicitud);
+            if (objJSON.length() > 2) {
+                Tbdisponibilidadvc disponibilidadVC = g.fromJson(objJSON, Tbdisponibilidadvc.class);
+                session.setAttribute("disponibilidadVC",disponibilidadVC);
+            }
+            response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

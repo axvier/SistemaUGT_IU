@@ -453,6 +453,18 @@ var downloadReqSolicitud = function (idpdfreq) {
         swalNormal("Sin requisitos", "No tiene un pdf de requisitos asignados", "error");
 };
 
+var verSolDisponV_C = function (idmodal, idtabla) {
+    var $grid = $("#" + idtabla);
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        var rowData = $grid.jqGrid('getRowData', selRowId);
+        $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + rowData.numero, function () {
+            $('#' + idmodal).modal({show: true});
+        });
+    } else
+        swalTimer("Solicitud", "Seleccione una solicitud", "error");
+};
+
 var fncDibujarMisSolicitudes = function (idtabla) {
     var $grid = $("#" + idtabla);
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudUsuario";
@@ -533,7 +545,7 @@ var fncDibujarMisSolicitudes = function (idtabla) {
                     editbutton: false,
                     onSuccess: function (jqXHR) {
                         var datos = JSON.parse(jqXHR.responseText);
-                        swalTimer("Roles", "Estado : " + datos.codigo + " - " + datos.respuesta, "info");
+                        swalTimer("Eliminación", "Estado : " + datos.codigo + " - " + datos.respuesta, "info");
                         return true;
                     },
                     editOptions: {},
@@ -543,7 +555,7 @@ var fncDibujarMisSolicitudes = function (idtabla) {
                         width: 300,
                         serializeDelData: function (postdata) {
                             delete postdata.oper;
-                            return {opc: "eliminarRol", idrol: postdata.id};
+                            return {opc: "eliminarSolicitud", idSolicitud: postdata.id};
                         }
                     }
                 }

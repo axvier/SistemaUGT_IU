@@ -26,6 +26,8 @@
                 String term = request.getParameter("term");
                 session.setAttribute("term", term);
                 response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
+            } else if (opc.equals("misSolicitudes")) {
+                response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
             } else if (opc.equals("generarPDFSolID")) {
                 String nombre_apellido = request.getParameter("nombre_apellido");
                 String rol_entidad = request.getParameter("rol_entidad");
@@ -42,7 +44,9 @@
                 String idSolicitud = request.getParameter("idSolicitud");
                 session.setAttribute("idSolicitud", idSolicitud);
                 response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
-            } else if (opc.equals("misSolicitudes")) {
+            } else if (opc.equals("modDisponibilidadV_C")) {
+                String idSolicitud = request.getParameter("idSolicitud");
+                session.setAttribute("idSolicitud", idSolicitud);
                 response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
             } else if (opc.equals("saveSolicitud")) {
                 if (ServletFileUpload.isMultipartContent(request)) {

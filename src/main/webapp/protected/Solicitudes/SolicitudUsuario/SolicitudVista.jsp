@@ -3,6 +3,7 @@
     Created on : 8/12/2018, 01:31:18 PM
     Author     : Xavy PC
 --%>
+<%@page import="ugt.entidades.Tbdisponibilidadvc"%>
 <%@page import="com.google.gson.GsonBuilder"%>
 <%@page import="java.io.ByteArrayOutputStream"%>
 <%@page import="java.io.OutputStream"%>
@@ -622,7 +623,7 @@
                 </a>
             </li>
             <li>
-                <a id="mnCondOcup" href="#" onclick="addModalEntidadRol('modGeneralMisSolicitudes', 'tbMisSolicitudes')">
+                <a id="mnCondOcup" href="#" onclick="verSolDisponV_C('modGeneralMisSolicitudes', 'tbMisSolicitudes')">
                     <span class="fa-stack fa-lg"></i><i class="fa fa-search fa-stack-2x"></i></span>Vehiculo-Conductor
                 </a>
             </li>
@@ -661,7 +662,82 @@
     </div> 
 </div>
 <%
+} else if (accion.equals("modDisponibilidadV_C")) {
+    String idSolicitud = (String) session.getAttribute("idSolicitud");
+    Tbdisponibilidadvc disponibilidadVC = (Tbdisponibilidadvc) session.getAttribute("disponibilidadVC");
+    session.setAttribute("idSolicitud", null);
+    session.setAttribute("disponibilidadVC", null);
+%>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="modalLicenciaTitulo"><b> Solicitud <%=idSolicitud%> | Vehículo y conductor asignado </b></h4>
+</div>
+<div class="modal-body">
+    <%  if (disponibilidadVC == null) {
+            out.println("<h4>La Unidad de Gestión de Trasnporte, aún no ha asignado, a un conductor ni a un vehículo</h4>");
+        } else {
+    %>
+    <h4>Datos del conductor</h4>
+    <table class="table table-striped table-hover">
+        <thead>        
+            <tr>            
+                <th>Cedula</th>         
+                <th>Nombre</th>          
+                <th>Apellidos</th>       
+            </tr>   
+        </thead> 
+        <tbody>
+            <%
+                if (disponibilidadVC.getCedulaCond() != null) {
+                    out.println((disponibilidadVC.getCedulaCond().getCedula() != null) ? "<td>" + disponibilidadVC.getCedulaCond().getCedula() + "</td>" : "");
+                    out.println((disponibilidadVC.getCedulaCond().getNombres() != null) ? "<td>" + disponibilidadVC.getCedulaCond().getNombres() + "</td>" : "");
+                    out.println((disponibilidadVC.getCedulaCond().getApellidos() != null) ? "<td>" + disponibilidadVC.getCedulaCond().getApellidos() + "</td>" : "");
+                }
+            %>
+        </tbody>
+    </table>
+    <%
+        if (disponibilidadVC.getCedulaCond() == null) {
+            out.println("<h4>La Unidad de Gestión de Trasnporte, aún no ha asignado, a un conductor</h4>");
         }
+    %>
+    <hr>
+    <h4>Datos del vehículo</h4>
+    <table class="table table-striped table-hover">
+        <thead>        
+            <tr>            
+                <th>Placa</th>         
+                <th>Disco</th>         
+                <th>Marca</th>          
+                <th>Modelo</th>       
+                <th>Color</th>       
+                <th>Año</th>       
+            </tr>   
+        </thead> 
+        <tbody>
+            <%
+                if (disponibilidadVC.getMatricula() != null) {
+                    out.println((disponibilidadVC.getMatricula().getPlaca() != null) ? "<td>" + disponibilidadVC.getMatricula().getPlaca() + "</td>" : "");
+                    out.println((disponibilidadVC.getMatricula().getDisco() > 0) ? "<td>" + disponibilidadVC.getMatricula().getDisco()+ "</td>" : "");
+                    out.println((disponibilidadVC.getMatricula().getMarca()!= null) ? "<td>" + disponibilidadVC.getMatricula().getMarca()+ "</td>" : "");
+                    out.println((disponibilidadVC.getMatricula().getModelo()!= null) ? "<td>" + disponibilidadVC.getMatricula().getModelo()+ "</td>" : "");
+                    out.println((disponibilidadVC.getMatricula().getColor()!= null) ? "<td>" + disponibilidadVC.getMatricula().getColor()+ "</td>" : "");
+                    out.println((disponibilidadVC.getMatricula().getAnio()!= null) ? "<td>" + disponibilidadVC.getMatricula().getAnio()+ "</td>" : "");
+                }
+            %>
+        </tbody>
+    </table>
+    <%
+            if (disponibilidadVC.getMatricula() == null) {
+                out.println("<h4>La Unidad de Gestión de Trasnporte, aún no ha asignado un vehículo</h4>");
+            }
+        }
+    %>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> Close</button>
+</div>
+<%        }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");
     }
