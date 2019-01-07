@@ -334,5 +334,6 @@
         <script src="protected/SuperAdministrador/Usuarios/Usuarios.js" type="text/javascript"></script>
         <script src="protected/SuperAdministrador/Roles/Roles.js" type="text/javascript"></script>
         <script src="protected/Solicitudes/SolicitudUsuario/Solicitud.js" type="text/javascript"></script>
+        <script src="protected/Solicitudes/SolicitudesGestion/Solicitudes.js" type="text/javascript"></script>
     </body>
 </html>

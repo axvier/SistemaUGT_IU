@@ -11,7 +11,7 @@
 <%
     Login login = (Login) session.getAttribute("login");
     if (login != null) {
-        if (login.getRolActivo().getCharrol().equals("Admin")) {
+        if (login.getRolActivo().getCharrol().equals("Admin") || login.getRolActivo().getCharrol().equals("Vrtor")) {
 %>
 <link href="assets/css/skins/fulldark.css" rel="stylesheet" type="text/css"/>
 <%} else if (login.getRolActivo().getCharrol().equals("Sadmi")) {
@@ -52,11 +52,11 @@
                     <i class="fa fa-registered fa-fw"></i><span class="text">Roles</span>
                 </a>
             </li>
-<!--            <li style='cursor: pointer'>
-                <a onclick="fncGestionOpciones();">
-                    <i class="fa fa-puzzle-piece fa-fw"></i><span class="text">Opciones</span>
-                </a>
-            </li>-->
+            <!--            <li style='cursor: pointer'>
+                            <a onclick="fncGestionOpciones();">
+                                <i class="fa fa-puzzle-piece fa-fw"></i><span class="text">Opciones</span>
+                            </a>
+                        </li>-->
             <%
                 }
                 if (opc.getIdopcion().equals(2) && opc.getEstado().equals("Habilitado")) {//Menu Gestión Entidades
@@ -128,7 +128,7 @@
                     </li>
                     <li style='cursor: pointer'>
                         <a onclick="fncGestionSProcesadasAdmin()">
-                            <i class="fa fa-sticky-note"></i><span class="text">Solicitudes en proceso</span>
+                            <i class="fa fa-sticky-note"></i><span class="text">Solicitudes procesadas</span>
                         </a>
                     </li>
                 </ul>
@@ -207,6 +207,25 @@
                 <a onclick="fncPDFrequisitos();">
                     <i class="fa fa-file-pdf-o fa-fw"></i><span class="text">Gestion PDF Requisitos</span>
                 </a>
+            </li>
+            <%
+                }
+                if (opc.getIdopcion().equals(12) && opc.getEstado().equals("Habilitado")) {//Menu Gestión Solicitudes para vicerrectorado
+            %>
+            <li id="<%=opc.getIdopcion()%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-briefcase fa-fw"></i><span class="text">Gestión solicitudes</span>
+                    <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
+                <ul id="submenu1" class="sub-menu ">
+                    <li style='cursor: pointer'>
+                        <a onclick="fncGestionSolicitudesVR()">
+                            <i class="fa fa-list-ul"></i><span class="text">Solicitudes visto bueno</span>
+                        </a>
+                    </li>
+                    <li style='cursor: pointer'>
+                        <a onclick="fncGestionSAprobadasVR()">
+                            <i class="fa fa-sticky-note"></i><span class="text">Solicitudes aprobadas</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
             <%
                         }

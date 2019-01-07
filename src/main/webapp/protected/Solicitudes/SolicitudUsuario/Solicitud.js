@@ -26,7 +26,7 @@ var fncConfirmarGenerarSolcitud = function (datos) {
         this.fncNuevaSolicitud();
     });
 };
-var modalcierre = function (idmodal,funcionCall) {
+var modalcierre = function (idmodal, funcionCall) {
     $('#' + idmodal).modal('hide');
 //    $('body').removeClass('modal-open');
     $('.modal-backdrop').remove();
@@ -39,7 +39,7 @@ var fncGenerarSOlcitud = function (idmodal, datos, notfnccerrar, actionform) {
     $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modConfirmSolPDF&idSolicitud=' + datos.idSolicitud, function () {
         if (typeof notfnccerrar !== 'undefined') {
             if (notfnccerrar === "fncNuevaSolicitud()") {
-                $('#' + idmodal + ' .modal-body .btn-default').attr("onclick", "modalcierre('"+idmodal+"','fncNuevaSolicitud')");
+                $('#' + idmodal + ' .modal-body .btn-default').attr("onclick", "modalcierre('" + idmodal + "','fncNuevaSolicitud')");
             }
             if (notfnccerrar === "null") {
                 $('#' + idmodal + ' .modal-body .btn-default').attr("onclick", null);
@@ -449,12 +449,14 @@ var verSolRequisitosPDF = function (idpdfreq, idtabla) {
 };
 
 var downloadReqSolicitud = function (idpdfreq) {
-    if (idpdfreq !== null)
+    if (idpdfreq !== null) {
+        swalTimerLoading("Consultando requisitos", "Esto puede tardar un momento...", 9000);
         $.ajax({
             url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
             type: "POST",
             data: {opc: 'downloadReqSol', idSolicitud: idpdfreq},
             success: function (data) {
+                swal.close();
                 let pdfWindow = window.open("");
                 pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + (data) + "'></iframe>");
             },
@@ -462,7 +464,7 @@ var downloadReqSolicitud = function (idpdfreq) {
                 location.reload();
             }
         });
-    else
+    } else
         swalNormal("Sin requisitos", "No tiene un pdf de requisitos asignados", "error");
 };
 
@@ -476,6 +478,16 @@ var verSolDisponV_C = function (idmodal, idtabla) {
         });
     } else
         swalTimer("Solicitud", "Seleccione una solicitud", "error");
+};
+
+var fnccvalidarfecharetorno = function (idorigen, iddestino) {
+    var value = $("#form2 #" + idorigen).val();
+    $("#form2 #" + iddestino).attr("min", value);
+};
+
+var fnccvalidarfechasalida = function (idorigen, iddestino) {
+    var value = $("#form2 #" + idorigen).val();
+    $("#form2 #" + iddestino).attr("max", value);
 };
 
 var fncDibujarMisSolicitudes = function (idtabla) {
@@ -598,7 +610,7 @@ var fncDibujarMisSolicitudes = function (idtabla) {
             if (typeof rowid !== 'undefined') {
                 var rowData = $grid.jqGrid('getRowData', rowid);
                 if (typeof (rowData.estado) !== 'undefined') {
-                    if (rowData.estado === 'finalizado') {
+                    if (rowData.estado === 'finalizado' || rowData.estado === 'asignada') {
                         $(".list-inline #mnSolGenerar").addClass("inactive");
                         $(".list-inline #mnSolGenerar").attr("onclick", null);
                     } else {

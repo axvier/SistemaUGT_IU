@@ -9,14 +9,14 @@ var fncambiarRol = function (rol) {
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#left-sidebar").html(datos);
-            if (rol === "Admin")
+            if (rol === "Admin" || rol === "Vrtor")
                 $("#left-sidebar").css("background-color", "#304A54");
             else
                 $("#left-sidebar").css("background-color", "#ececec");
             $("#contenidoDinamico").html("<div class='main-header'><h2>UGT</h2><em>ESPOCH</em></div><div id='contenidoInferior' class='main-content'><p class='lead'>Bienvenido.</p></div>");
         },
         error: function (error) {
-            alert("Error al cambiar Rol" + error.toString());
+//            alert("Error al cambiar Rol" + error.toString());
             location.reload();
         }
     });
@@ -142,7 +142,7 @@ var fncAsignarRolOpcion = function () {
 };
 
 var fncNuevaSolicitud = function () {
-    
+
     $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
     $.ajax({
         url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
@@ -159,6 +159,7 @@ var fncNuevaSolicitud = function () {
         }
     });
 };
+
 var fncMisSolicitudes = function () {
     $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
     $.ajax({
@@ -169,6 +170,23 @@ var fncMisSolicitudes = function () {
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
             fncDibujarMisSolicitudes("tbMisSolicitudes");
+        },
+        error: function (error) {
+            location.reload();
+        }
+    });
+};
+
+var fncGestionSolicitudesAdmin = function () {
+    $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
+    $.ajax({
+        url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+        type: "GET",
+        data: {opc: "mostrar", accion: "tableSolicitudesNuevas"},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            $("#contenidoDinamico").html(datos);
+            fncDibujarSolicitudesNuevas("tbSolicitudesNuevas");
         },
         error: function (error) {
             location.reload();

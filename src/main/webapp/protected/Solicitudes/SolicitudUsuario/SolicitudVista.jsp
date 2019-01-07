@@ -265,7 +265,7 @@
                                     <div class="form-group">
                                         <label for="addFechaSalida" class="col-md-3 control-label">Fecha salida</label>
                                         <div class="input-group">
-                                            <input type="datetime-local" class="form-control" id="addFechaSalida" placeholder="Fecha salida" required data-parsley-errors-container="#error-step2_3">
+                                            <input type="datetime-local" class="form-control" id="addFechaSalida" placeholder="Fecha salida" required data-parsley-errors-container="#error-step2_3" onchange="fnccvalidarfecharetorno(this.id, 'addFechaRetorno')">
                                             <!--<input type="datetime-local" class="form-control" id="addFechaSalida" placeholder="Fecha salida">-->
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                         </div>
@@ -276,7 +276,7 @@
                                     <div class="form-group">
                                         <label for="addFechaRetorno" class="col-md-3 control-label">Fecha retorno</label>
                                         <div class="input-group">
-                                            <input type="datetime-local" class="form-control" id="addFechaRetorno" title="Fecha retorno" required data-parsley-errors-container="#error-step2_4">
+                                            <input type="datetime-local" class="form-control" id="addFechaRetorno" title="Fecha retorno" required data-parsley-errors-container="#error-step2_4" onchange="fnccvalidarfechasalida(this.id, 'addFechaSalida')">
                                             <!--<input type="datetime-local" class="form-control" id="addFechaRetorno" title="Fecha retorno">-->
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                         </div>
@@ -505,13 +505,55 @@
     });
 
     $(document).ready(function () {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; //January is 0!
+        var hh = today.getHours();
+        var mim = today.getMinutes();
+        var ss = today.getSeconds();
+        var yyyy = today.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        if(mim <10){
+            mim = '0'+mim;
+        }
+        if(hh <10){
+            hh = '0'+hh;
+        }
+        today = yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mim;
+        document.getElementById("addFechaSalida").setAttribute("min", today);
+        document.getElementById("addFechaRetorno").setAttribute("min", today);
+        today = (yyyy+2) + '-' + mm + '-' + dd + 'T' + hh + ':' + mim;
+        document.getElementById("addFechaSalida").setAttribute("max", today);
+        document.getElementById("addFechaRetorno").setAttribute("max", today);
+
+        $("#addTelefono").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape and enter
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
+                    // Allow: Ctrl+A
+                            (e.keyCode == 65 && e.ctrlKey === true) ||
+                            // Allow: home, end, left, right
+                                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                    }
+                    // Ensure that it is a number and stop the keypress
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                    }
+                });
+
         Dropzone.autoDiscover = false;
         dropFile = $("#drop_pdfs").dropzone({
             url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=saveSolicitud",
             paramName: "file",
             uploadMultiple: true,
             maxFiles: 1,
-            maxFilesize: 5242880,
+//            maxFilesize: 5242880,
             acceptedFiles: "application/pdf",
             autoProcessQueue: false,
             addRemoveLinks: true,
@@ -519,12 +561,6 @@
                 var datos = JSON.parse(response);
                 console.log("Mensaje servidor :" + response);
                 fncConfirmarGenerarSolcitud(datos);
-            },
-            error: function (file, response) {
-                response = JSON.parse(response);
-                var tipo = (response.codigo === "KO") ? "warning" : "info";
-                swalNormal(" Solicitud ", "[" + response.codigo + "] " + response.respuesta, tipo);
-                console.log("error uploaded D: :" + response);
             }
         });
 
@@ -729,11 +765,11 @@
             <%
                 if (disponibilidadVC.getMatricula() != null) {
                     out.println((disponibilidadVC.getMatricula().getPlaca() != null) ? "<td>" + disponibilidadVC.getMatricula().getPlaca() + "</td>" : "");
-                    out.println((disponibilidadVC.getMatricula().getDisco() > 0) ? "<td>" + disponibilidadVC.getMatricula().getDisco()+ "</td>" : "");
-                    out.println((disponibilidadVC.getMatricula().getMarca()!= null) ? "<td>" + disponibilidadVC.getMatricula().getMarca()+ "</td>" : "");
-                    out.println((disponibilidadVC.getMatricula().getModelo()!= null) ? "<td>" + disponibilidadVC.getMatricula().getModelo()+ "</td>" : "");
-                    out.println((disponibilidadVC.getMatricula().getColor()!= null) ? "<td>" + disponibilidadVC.getMatricula().getColor()+ "</td>" : "");
-                    out.println((disponibilidadVC.getMatricula().getAnio()!= null) ? "<td>" + disponibilidadVC.getMatricula().getAnio()+ "</td>" : "");
+                    out.println((disponibilidadVC.getMatricula().getDisco() > 0) ? "<td>" + disponibilidadVC.getMatricula().getDisco() + "</td>" : "");
+                    out.println((disponibilidadVC.getMatricula().getMarca() != null) ? "<td>" + disponibilidadVC.getMatricula().getMarca() + "</td>" : "");
+                    out.println((disponibilidadVC.getMatricula().getModelo() != null) ? "<td>" + disponibilidadVC.getMatricula().getModelo() + "</td>" : "");
+                    out.println((disponibilidadVC.getMatricula().getColor() != null) ? "<td>" + disponibilidadVC.getMatricula().getColor() + "</td>" : "");
+                    out.println((disponibilidadVC.getMatricula().getAnio() != null) ? "<td>" + disponibilidadVC.getMatricula().getAnio() + "</td>" : "");
                 }
             %>
         </tbody>
