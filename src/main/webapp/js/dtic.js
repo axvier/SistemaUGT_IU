@@ -260,3 +260,7 @@ var swalNormal = function (titulo, mensaje, tipo) {
         text: mensaje
     });
 };
+
+var fnccerraralert = function (idalert) {
+  $("#"+idalert).html("");
+};

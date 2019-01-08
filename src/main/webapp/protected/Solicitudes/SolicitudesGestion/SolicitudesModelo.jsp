@@ -4,6 +4,11 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.servicios.swVehiculo"%>
+<%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
+<%@page import="ugt.servicios.swVehiculoConductor"%>
+<%@page import="ugt.entidades.Tbvehiculosdependencias"%>
+<%@page import="ugt.servicios.swVehiculoDependencia"%>
 <%@page import="com.google.gson.GsonBuilder"%>
 <%@page import="ugt.entidades.Tbusuariosentidad"%>
 <%@page import="ugt.servicios.swSeccionSolicitante"%>
@@ -55,10 +60,33 @@
             g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             String cedula = (String) session.getAttribute("cedulaSolicitante");
             session.setAttribute("cedulaSolicitante", null);
+            //extraer entidad a la que pertenece el usuario
             String objJSON = swSeccionSolicitante.buscarEntidadUsuarioOpc(cedula, "9");
             if (objJSON.length() > 2) {
                 Tbusuariosentidad userSol = g.fromJson(objJSON, Tbusuariosentidad.class);
+                Integer entid = userSol.getTbusuariosentidadPK().getIdrol();
                 session.setAttribute("userSol", userSol);
+                //extraer la entidad con un vehiculo asignado
+                String objJSONDpendencia = swVehiculoDependencia.listarVehiculoDependenciaMatricula(entid.toString(), "dependencia");
+                if (objJSONDpendencia.length() > 2) {
+                    Tbvehiculosdependencias vehiculodependencia = g.fromJson(objJSONDpendencia, Tbvehiculosdependencias.class);
+                    //extraer vehiculo con su conductor asignado
+                    String objJSONV_C = swVehiculoConductor.listarVehiculoConductorPlaca(vehiculodependencia.getTbvehiculos().getPlaca());
+                    if (objJSONV_C.length() > 2) {
+                        VehiculosConductoresIU vehiculoConductor = new VehiculosConductoresIU();
+                        vehiculoConductor.setListaJSON(objJSONV_C);
+                        if (vehiculoConductor.getLista().size() > 0 && vehiculoConductor.getLista().size() < 2) {
+                            session.setAttribute("vehiculoConductor", vehiculoConductor.getLista().get(0));
+                        }
+                    }
+                    session.setAttribute("vehiculodependencia", vehiculodependencia);
+                }
+            }
+            String arrayJSONVehiculos = swVehiculoConductor.VehiculosDependenciasNullorNot();
+            if (arrayJSONVehiculos.length() > 2) {
+                VehiculosConductoresIU listaV_C = new VehiculosConductoresIU();
+                listaV_C.setListaJSON(arrayJSONVehiculos);
+                session.setAttribute("listaV_C", listaV_C);
             }
             response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=" + opc);
         }

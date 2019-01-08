@@ -218,6 +218,10 @@
             <!-- END LEFT SIDEBAR -->
             <!-- MAIN CONTENT WRAPPER -->
             <div id="main-content-wrapper" class="content-wrapper">
+                <div id="alertgeneral">
+<!--                    <span>If you <strong>can't see the logo</strong> on the top left, please reset the style on right style switcher (for upgraded theme only).</span>
+                    <button type="button" class="close">x</button>-->
+                </div>
                 <div class="row">
                     <div class="col-lg-12 ">
                         <ul id='divSeguimiento' class="breadcrumb">
@@ -299,8 +303,8 @@
         <script src="assets/js/king-chart-stat.js"></script>
         <script src="assets/js/king-table.js"></script>
         <script src="assets/js/king-components.js"></script>
-<!--        <link href="js/dropzone/dropzone.css" rel="stylesheet" type="text/css"/>
-        <script src="js/dropzone/dropzone.js" type="text/javascript"></script>-->
+        <!--        <link href="js/dropzone/dropzone.css" rel="stylesheet" type="text/css"/>
+                <script src="js/dropzone/dropzone.js" type="text/javascript"></script>-->
 
         <script src="assets/js/jquery-ui/jquery-ui-1.10.4.custom.js" type="text/javascript"></script>
         <link href="js/css/selectbox.css" rel="stylesheet" type="text/css"/>
@@ -320,6 +324,14 @@
         <script src="alertify/alertify.js" type="text/javascript"></script>
         <link href="alertify/css/alertify.css" crossorigin="anonymous" rel="stylesheet" />
         <link href="alertify/css/themes/semantic.css" rel="stylesheet" >
+
+        <!--para que funcione el calendar-->
+        <link href='js/fullcalendar3.9.0/fullcalendar.min.css' rel='stylesheet' />
+        <link href='js/fullcalendar3.9.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+        <script src='js/fullcalendar3.9.0/lib/moment.min.js'></script>
+        <!--<script src='js/fullcalendar3.9.0/lib/jquery.min.js'></script>-->
+        <script src='js/fullcalendar3.9.0/fullcalendar.min.js'></script>
+        <script src="js/fullcalendar3.9.0/locale-all.js" type="text/javascript"></script>
 
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.css">

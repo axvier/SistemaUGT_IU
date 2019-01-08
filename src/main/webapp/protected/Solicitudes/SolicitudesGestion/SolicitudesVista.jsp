@@ -4,6 +4,11 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.entidades.Tbvehiculos"%>
+<%@page import="com.google.gson.GsonBuilder"%>
+<%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
+<%@page import="ugt.entidades.Tbvehiculosdependencias"%>
+<%@page import="ugt.entidades.Tbvehiculosconductores"%>
 <%@page import="ugt.entidades.Tbroles"%>
 <%@page import="ugt.entidades.Tbentidad"%>
 <%@page import="ugt.entidades.Tbusuarios"%>
@@ -101,36 +106,38 @@
             </li>
         </ul>
     </div>
-    <div class="row">
-        <div class="col-lg-6 pull-right">
-            <div class="input-group">
-                <input id="search_cells" type="text" class="form-control x-campaigns-filter">
-                <span class="input-group-btn">
-                    <button class="btn btn-custom-primary" type="button" disabled="disabled"><i class="fa fa-search"></i></button>
-                </span>
+    <div class="main-content" id="gSolicitudes_body">
+        <div class="row">
+            <div class="col-lg-6 pull-right">
+                <div class="input-group">
+                    <input id="search_cells" type="text" class="form-control x-campaigns-filter">
+                    <span class="input-group-btn">
+                        <button class="btn btn-custom-primary" type="button" disabled="disabled"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
             </div>
-        </div>
-    </div><br>
-    <div class="widget widget-table" id="gSolicitudes_body">
-        <div class="widget-header">
-            <h3><i class="fa fa-table"></i> Sección </h3><em>Lista nuevas solicitudes</em>
-        </div>
-        <div class="widget-content">
-            <div id="jqgrid-wrapper">
-                <table id="tbSolicitudesNuevas" class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>estado</th>
-                            <th>fecha</th>
-                            <th>Motivo</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                </table>
-                <div id="tbSolicitudesNuevas_pager"></div>
+        </div><br>
+        <div class="widget widget-table" >
+            <div class="widget-header">
+                <h3><i class="fa fa-table"></i> Sección </h3><em>Lista nuevas solicitudes</em>
             </div>
-        </div>
+            <div class="widget-content">
+                <div id="jqgrid-wrapper">
+                    <table id="tbSolicitudesNuevas" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>estado</th>
+                                <th>fecha</th>
+                                <th>Motivo</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div id="tbSolicitudesNuevas_pager"></div>
+                </div>
+            </div>
+        </div> 
     </div> 
 </div>
 <%
@@ -139,6 +146,7 @@
     String idSolicitud = (String) session.getAttribute("idSolicitud");
     session.setAttribute("userSol", null);
     session.setAttribute("idSolicitud", null);
+    G = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
 %>
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -206,31 +214,124 @@
 <%
 } else if (accion.equals("disponibilidadVehiculoConductor")) {
     Tbusuariosentidad userSol = (Tbusuariosentidad) session.getAttribute("userSol");
-    String idSolicitud = (String) session.getAttribute("idSolicitud");
+    Tbvehiculosconductores vehiculoConductor = (Tbvehiculosconductores) session.getAttribute("vehiculoConductor");
+    Tbvehiculosdependencias vehiculodependencia = (Tbvehiculosdependencias) session.getAttribute("vehiculodependencia");
+    VehiculosConductoresIU listaV_C = (VehiculosConductoresIU) session.getAttribute("listaV_C");
+
     session.setAttribute("userSol", null);
-    session.setAttribute("idSolicitud", null);
+    session.setAttribute("vehiculoConductor", null);
+    session.setAttribute("vehiculodependencia", null);
+    session.setAttribute("listaV_C", null);
+
 %>
-<div class="widget-header">
-    <h3><i class="fa fa-table"></i> Sección </h3><em>Lista nuevas solicitudes</em>
-</div>
-<div class="widget-content">
-    <div id="jqgrid-wrapper">
-        <table id="tbSolicitudesNuevas" class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>id</th>
-                    <th>estado</th>
-                    <th>fecha</th>
-                    <th>Motivo</th>
-                    <th></th>
-                </tr>
-            </thead>
-        </table>
-        <div id="tbSolicitudesNuevas_pager"></div>
+
+<div class="row">
+    <div class="col-lg-4 pull-right">
+        <div class="input-group">
+            <input type="text" id="search_solicitud_pasajeros" name="search" class="form-control searchbox" />
+            <input type=hidden id="json_solicitud_pasajeros" name="search"/>
+            <span class="input-group-btn">
+                <button id="search_solicitud_pasajeros_button" class="btn btn-custom-secondary" type="button" disabled="disabled" onclick="fncCatchSelectS('form3')"><i class="fa fa-plus"></i></button>
+            </span>
+        </div>
+    </div>
+</div><br>
+<div class="widget" >
+    <div class="widget-header">
+        <h3><i class="fa fa-table"></i> Sección </h3><em>Lista nuevas solicitudes</em>
+    </div>
+    <div class="widget-content">
+        <!-- external events -->
+        <div id="external-events">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Vehiculo: </h3></div>
+                        <div class="panel-body">
+                            <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Disponibles</label>
+                            <div class="col-sm-10">
+                                <select name="vehiculo" class="form-control selectpicker" id="addGUEntidad" data-live-search="true" required>
+                                    <%                                        //lista de vehiculos
+                                        String valor = "";
+                                        if (listaV_C != null) {
+                                            valor += "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
+                                            for (Tbvehiculosconductores itemList : listaV_C.getLista()) {
+                                                //extraemos solo el vehiculo
+                                                Tbvehiculos itemVehiculo = itemList.getTbvehiculos();
+                                                //si el vehiculo conductor es diferente a vacio
+                                                if (vehiculoConductor != null) {
+                                                    // pregutnar si el vehiculo conductor es igual al item list para seleccionarlo
+                                                    if (vehiculoConductor.getTbvehiculosconductoresPK().getMatricula().equals(itemVehiculo.getPlaca())) {
+                                                        valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculoConductor)
+                                                                + "' selected='selected'>"
+                                                                + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
+                                                                + "</option>\n";
+                                                    } //si no lo imprimimos sin seleccionado
+                                                    else {
+                                                        valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList) + "'>"
+                                                                + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
+                                                                + "</option>\n";
+                                                    }
+                                                    // si no preguntar si el vehiculo dependencia es diferente a null
+                                                } else if (vehiculodependencia != null) {
+                                                    //preguntamos si el vehichulo dependencia es igual al item list para seleccinarlo
+                                                    if (vehiculodependencia.getTbvehiculos().getPlaca().equals(itemVehiculo.getPlaca())) {
+                                                        valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList)
+                                                                + "' selected='selected'>"
+                                                                + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
+                                                                + "</option>\n";
+                                                    }//imprimimos sin seleccionar vehiculo depednencia
+                                                    else {
+                                                        valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList) + "'>"
+                                                                + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
+                                                                + "</option>\n";
+                                                    }
+                                                } else {
+                                                    valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList) + "'>"
+                                                            + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
+                                                            + "</option>\n";
+                                                }
+                                            }
+                                        }
+                                        out.println(valor);
+                                    %>
+                                </select>
+                            </div>
+                            <div class="col-sm-12">
+                                <button type="button" id="btn-quick-event" class="btn btn-custom-primary btn-block"><i class="fa fa-eye"></i> ver Agenda</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Draggable Events</h3></div>
+                        <div class="panel-body">
+                            <div id="event1" class="external-event ui-">Seminar</div>
+                            <div id="event2" class="external-event">Jane's Birthday</div>
+                            <div id="event3" class="external-event">Coffee Break</div>
+                            <div id="event4" class="external-event">Fitness</div>
+                            <div id="event5" class="external-event">Buy Some Foods</div>
+                            <div id="event6" class="external-event">Weekly Meeting</div>
+                            <div id="event7" class="external-event">Monthly Meeting</div>
+                            <br />
+                            <label class="control-inline fancy-checkbox">
+                                <input type="checkbox" id="drop-remove">
+                                <span>Remove event after drop</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end external events -->
+        <div id='loading'>Seleccione un vehiculo para comenzar con la agenda...</div>
+        <div class="calendar" id="calendarVehiculo"></div>
     </div>
 </div>
-<%
-        }
+<%        }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");
     }

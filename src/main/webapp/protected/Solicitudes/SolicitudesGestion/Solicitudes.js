@@ -157,19 +157,69 @@ var gDisponibilidadVC = function (idmodal, idtabla, data) {
         $.ajax({
             url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
             type: "GET",
-            data: {opc: "disponibilidadVehiculoConductor", cedulaSolicitante: solicitanteCedula},
+            data: {opc: "disponibilidadVehiculoConductor", cedulaSolicitante:solicitanteCedula},
             contentType: "application/json ; charset=UTF-8",
             success: function (datos) {
                 $("#gSolicitudes_body").html(datos);
                 $(".list-inline #mnListarSolG").removeClass("inactive");
                 $(".list-inline #mnListarSolG").attr("onclick", "fncGestionSolicitudesAdmin()");
-                return true;
+//                fncIniciarCalendar();
             },
             error: function (error) {
                 location.reload();
             }
         });
     }
+};
+
+var fncIniciarCalendar = function () {
+    var initialLocaleCode = 'es';
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; //January is 0!
+    var hh = today.getHours();
+    var mim = today.getMinutes();
+    var ss = today.getSeconds();
+    var yyyy = today.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+    if (mim < 10) {
+        mim = '0' + mim;
+    }
+    if (hh < 10) {
+        hh = '0' + hh;
+    }
+//    today = yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mim;
+    today = yyyy + '-' + mm + '-' + dd ;
+    var calendario = $('.calendar').fullCalendar({
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay,listMonth'
+        },
+        defaultDate: today,
+        locale: initialLocaleCode,
+        buttonIcons: false, // show the prev/next text
+        weekNumbers: true,
+        navLinks: true, // can click day/week names to navigate views
+        editable: true,
+        eventLimit: true, // allow "more" link when too many events
+//        events: {
+//            url: 'protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp',
+//            data: {opc: "nus"},
+//            error: function (xmlResponse) {
+//                console.log(xmlResponse);
+//                $('#alertgeneral').html("<div class='alert alert-danger alert-dismissable'><a href='#' class='close' onclick=\"fnccerraralert('alertgeneral')\">X</a><strong>Oh no!</strong> Ha ocurrido un error con la agenda.</div>");
+//            }
+//        },
+        loading: function (bool) {
+            $('#loading').toggle(bool);
+        }
+    });
 };
 
 //var fncRefreshGNewSolicitudes = function (idtabla) {

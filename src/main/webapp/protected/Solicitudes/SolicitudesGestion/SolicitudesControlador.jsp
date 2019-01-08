@@ -22,6 +22,10 @@
                 session.setAttribute("cedulaSolicitante", cedula);
                 session.setAttribute("idSolicitud", idSolicitud);
                 response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("disponibilidadVehiculoConductor")) {
+                String cedula = request.getParameter("cedulaSolicitante");
+                session.setAttribute("cedulaSolicitante", cedula);
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
             }
         }
     } else {
