@@ -4,6 +4,8 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.entidades.Tbconductores"%>
+<%@page import="ugt.conductores.iu.ConductoresIU"%>
 <%@page import="ugt.entidades.Tbvehiculos"%>
 <%@page import="com.google.gson.GsonBuilder"%>
 <%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
@@ -25,6 +27,10 @@
             String datos = "{\"rows\":\"\"}";
             out.println(datos);
         } else if (accion.equals("jsonSolicitudesEnviados")) {
+            String json = (String) session.getAttribute("arrayJSON");
+            session.setAttribute("arrayJSON", null);
+            out.print(json);
+        } else if (accion.equals("arrayJSON")) {
             String json = (String) session.getAttribute("arrayJSON");
             session.setAttribute("arrayJSON", null);
             out.print(json);
@@ -217,6 +223,7 @@
     Tbvehiculosconductores vehiculoConductor = (Tbvehiculosconductores) session.getAttribute("vehiculoConductor");
     Tbvehiculosdependencias vehiculodependencia = (Tbvehiculosdependencias) session.getAttribute("vehiculodependencia");
     VehiculosConductoresIU listaV_C = (VehiculosConductoresIU) session.getAttribute("listaV_C");
+    ConductoresIU listaConductores = (ConductoresIU) session.getAttribute("listaConductores");
 
     session.setAttribute("userSol", null);
     session.setAttribute("vehiculoConductor", null);
@@ -225,7 +232,7 @@
 
 %>
 
-<div class="row">
+<!--<div class="row">
     <div class="col-lg-4 pull-right">
         <div class="input-group">
             <input type="text" id="search_solicitud_pasajeros" name="search" class="form-control searchbox" />
@@ -235,7 +242,7 @@
             </span>
         </div>
     </div>
-</div><br>
+</div><br>-->
 <div class="widget" >
     <div class="widget-header">
         <h3><i class="fa fa-table"></i> Sección </h3><em>Lista nuevas solicitudes</em>
@@ -249,9 +256,9 @@
                         <div class="panel-heading">
                             <h3 class="panel-title">Vehiculo: </h3></div>
                         <div class="panel-body">
-                            <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Disponibles</label>
+                            <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Lista</label>
                             <div class="col-sm-10">
-                                <select name="vehiculo" class="form-control selectpicker" id="addGUEntidad" data-live-search="true" required>
+                                <select name="vehiculo" class="form-control selectpicker" id="addDVehiculoC" data-live-search="true" onchange="fncSelectConductorDVC()" required>
                                     <%                                        //lista de vehiculos
                                         String valor = "";
                                         if (listaV_C != null) {
@@ -299,7 +306,8 @@
                                 </select>
                             </div>
                             <div class="col-sm-12">
-                                <button type="button" id="btn-quick-event" class="btn btn-custom-primary btn-block"><i class="fa fa-eye"></i> ver Agenda</button>
+                                </br>
+                                <button type="button" id="btn-quick-event" class="btn btn-custom-primary" onclick="fncVerAgendaPlaca()"><i class="fa fa-eye"></i> ver Agenda</button>
                             </div>
                         </div>
                     </div>
@@ -307,20 +315,41 @@
                 <div class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Draggable Events</h3></div>
+                            <h3 class="panel-title">Conductor</h3></div>
                         <div class="panel-body">
-                            <div id="event1" class="external-event ui-">Seminar</div>
-                            <div id="event2" class="external-event">Jane's Birthday</div>
-                            <div id="event3" class="external-event">Coffee Break</div>
-                            <div id="event4" class="external-event">Fitness</div>
-                            <div id="event5" class="external-event">Buy Some Foods</div>
-                            <div id="event6" class="external-event">Weekly Meeting</div>
-                            <div id="event7" class="external-event">Monthly Meeting</div>
-                            <br />
-                            <label class="control-inline fancy-checkbox">
-                                <input type="checkbox" id="drop-remove">
-                                <span>Remove event after drop</span>
-                            </label>
+                            <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Lista</label>
+                            <div class="col-sm-10">
+                                <select name="conductor" class="form-control selectpicker" id="addDVConductor" data-live-search="true" required>
+                                    <%//lista de conductores
+                                        valor = "";
+                                        if (listaConductores != null) {
+                                            valor += "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
+                                            for (Tbconductores itemConductor : listaConductores.getListaconductores()) {
+                                                if (vehiculoConductor != null) {
+                                                    // pregutnar si el vehiculo conductor es igual al item conductor list para seleccionarlo
+                                                    if (vehiculoConductor.getTbvehiculosconductoresPK().getCedula().equals(itemConductor.getCedula())) {
+                                                        valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor)
+                                                                + "' selected='selected'>"
+                                                                + itemConductor.getNombres() + " " + itemConductor.getApellidos()
+                                                                + "</option>\n";
+                                                    } //si no lo imprimimos sin seleccionado
+                                                    else {
+                                                        valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor) + "'>"
+                                                                + itemConductor.getNombres() + " " + itemConductor.getApellidos()
+                                                                + "</option>\n";
+                                                    }
+                                                    // si no, lsitamos normalmente la opcion
+                                                } else {
+                                                    valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor) + "'>"
+                                                            + itemConductor.getNombres() + " " + itemConductor.getApellidos()
+                                                            + "</option>\n";
+                                                }
+                                            }
+                                        }
+                                        out.println(valor);
+                                    %>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>

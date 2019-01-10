@@ -55,17 +55,17 @@
                     pk = aux.getTbentidad().getIdentidad().toString();
                 }
             }
-            String objJSON = swVehiculoDependencia.listarVehiculoDependenciaMatricula(pk, "dependencia");
-            if (objJSON.length() > 2) {
-                Tbvehiculosdependencias vehiculodependencia = g.fromJson(objJSON, Tbvehiculosdependencias.class);
-                String ojb2JSON = swVehiculoConductor.listarVehiculoConductorPlaca(vehiculodependencia.getTbvehiculos().getPlaca());
-                if (ojb2JSON.length() > 2) {
-                    VehiculosConductoresIU vehiculoConductor = new VehiculosConductoresIU();
-                    vehiculoConductor.setListaJSON(ojb2JSON);
-                    session.setAttribute("vehiculoConductor", vehiculoConductor);
-                }
-                session.setAttribute("vehiculodependencia", vehiculodependencia);
-            }
+//            String objJSON = swVehiculoDependencia.listarVehiculoDependenciaMatricula(pk, "dependencia");
+//            if (objJSON.length() > 2) {
+//                Tbvehiculosdependencias vehiculodependencia = g.fromJson(objJSON, Tbvehiculosdependencias.class);
+//                String ojb2JSON = swVehiculoConductor.listarVehiculoConductorPlaca(vehiculodependencia.getTbvehiculos().getPlaca());
+//                if (ojb2JSON.length() > 2) {
+//                    VehiculosConductoresIU vehiculoConductor = new VehiculosConductoresIU();
+//                    vehiculoConductor.setListaJSON(ojb2JSON);
+//                    session.setAttribute("vehiculoConductor", vehiculoConductor);
+//                }
+//                session.setAttribute("vehiculodependencia", vehiculodependencia);
+//            }
             response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
         } else if (opc.equals("pasajeroAutocomplete")) {
             String termino = (String) session.getAttribute("term");

@@ -342,15 +342,15 @@
                                         <label for="addOrigen" class="col-md-3 control-label">Vehículo:</label>
                                         <div class="input-group">
                                             <%
-                                                if (vehiculodependencia != null) {
-                                                    if (vehiculodependencia.getTbvehiculos() != null) {
-                                                        out.println("<input type='text' class='form-control' id='addOrigen' placeholder='vehiculo' value='El vehiculo " + vehiculodependencia.getTbvehiculos().getDisco() + " placa " + vehiculodependencia.getTbvehiculos().getPlaca() + " esta asignado por defecto");
-                                                    } else {
-                                                        out.println("<input type='text' class='form-control' id='addOrigen' placeholder='vehiculo' value='El vehiculo será asignado en la unidad (UGT)' readonly>");
-                                                    }
-                                                } else {
+//                                                if (vehiculodependencia != null) {
+//                                                    if (vehiculodependencia.getTbvehiculos() != null) {
+//                                                        out.println("<input type='text' class='form-control' id='addOrigen' placeholder='vehiculo' value='El vehiculo " + vehiculodependencia.getTbvehiculos().getDisco() + " placa " + vehiculodependencia.getTbvehiculos().getPlaca() + " esta asignado por defecto");
+//                                                    } else {
+//                                                        out.println("<input type='text' class='form-control' id='addOrigen' placeholder='vehiculo' value='El vehiculo será asignado en la unidad (UGT)' readonly>");
+//                                                    }
+//                                                } else {
                                                     out.println("<input type='text' class='form-control' id='addOrigen' placeholder='vehiculo' value='El vehiculo será asignado en la unidad (UGT)' readonly>");
-                                                }
+//                                                }
                                             %>
                                             <span class="input-group-addon"><i class="fa fa-home"></i></span>
                                         </div>
@@ -364,15 +364,15 @@
                                         <label for="addDestino" class="col-md-3 control-label">Conductor:</label>
                                         <div class="input-group">
                                             <%
-                                                if (vehiculoConductor != null) {
-                                                    if (vehiculoConductor.getLista().get(0).getTbconductores() != null) {
-                                                        out.println("<input type='text' class='form-control' id='addDestino' placeholder='Condcutor' value='El conductor " + vehiculoConductor.getLista().get(0).getTbconductores().getApellidos() + " " + vehiculoConductor.getLista().get(0).getTbconductores().getNombres() + " esta asignado por defecto' readonly>");
-                                                    } else {
-                                                        out.println("<input type='text' class='form-control' id='addDestino' placeholder='Condcutor' value='El conductor será asignado en la unidad (UGT)' readonly>");
-                                                    }
-                                                } else {
+//                                                if (vehiculoConductor != null) {
+//                                                    if (vehiculoConductor.getLista().get(0).getTbconductores() != null) {
+//                                                        out.println("<input type='text' class='form-control' id='addDestino' placeholder='Condcutor' value='El conductor " + vehiculoConductor.getLista().get(0).getTbconductores().getApellidos() + " " + vehiculoConductor.getLista().get(0).getTbconductores().getNombres() + " esta asignado por defecto' readonly>");
+//                                                    } else {
+//                                                        out.println("<input type='text' class='form-control' id='addDestino' placeholder='Condcutor' value='El conductor será asignado en la unidad (UGT)' readonly>");
+//                                                    }
+//                                                } else {
                                                     out.println("<input type='text' class='form-control' id='addDestino' placeholder='Condcutor' value='El conductor será asignado en la unidad (UGT)' readonly>");
-                                                }
+//                                                }
                                             %>
                                             <span class="input-group-addon"><i class="fa fa-plane"></i></span>
                                         </div>

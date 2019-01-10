@@ -4,6 +4,8 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.conductores.iu.ConductoresIU"%>
+<%@page import="ugt.servicios.swConductor"%>
 <%@page import="ugt.servicios.swVehiculo"%>
 <%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
 <%@page import="ugt.servicios.swVehiculoConductor"%>
@@ -56,6 +58,15 @@
                 session.setAttribute("userSol", userSol);
             }
             response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("AgendaVehiculo")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String placaAgenda = (String) session.getAttribute("placaAgenda");
+            session.setAttribute("placaAgenda", null);
+            String arrayJSON = swVehiculo.buscarVehiculoAgenda(placaAgenda);
+            if (arrayJSON.length() > 2) {
+                session.setAttribute("arrayJSON", arrayJSON);
+            }
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=arrayJSON");
         } else if (opc.equals("disponibilidadVehiculoConductor")) {
             g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             String cedula = (String) session.getAttribute("cedulaSolicitante");
@@ -64,7 +75,7 @@
             String objJSON = swSeccionSolicitante.buscarEntidadUsuarioOpc(cedula, "9");
             if (objJSON.length() > 2) {
                 Tbusuariosentidad userSol = g.fromJson(objJSON, Tbusuariosentidad.class);
-                Integer entid = userSol.getTbusuariosentidadPK().getIdrol();
+                Integer entid = userSol.getTbusuariosentidadPK().getIdentidad();
                 session.setAttribute("userSol", userSol);
                 //extraer la entidad con un vehiculo asignado
                 String objJSONDpendencia = swVehiculoDependencia.listarVehiculoDependenciaMatricula(entid.toString(), "dependencia");
@@ -87,6 +98,12 @@
                 VehiculosConductoresIU listaV_C = new VehiculosConductoresIU();
                 listaV_C.setListaJSON(arrayJSONVehiculos);
                 session.setAttribute("listaV_C", listaV_C);
+            }
+            String arrayJSONConductores = swConductor.listarConductoresDiferenteEstado("Jubilado");
+            if (arrayJSONConductores.length() > 2) {
+                ConductoresIU listaConductores  = new ConductoresIU();
+                listaConductores.setListaJSON(arrayJSONConductores);
+                session.setAttribute("listaConductores",listaConductores);
             }
             response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=" + opc);
         }

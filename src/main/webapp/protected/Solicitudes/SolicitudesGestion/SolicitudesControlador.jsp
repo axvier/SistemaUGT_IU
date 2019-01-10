@@ -26,6 +26,10 @@
                 String cedula = request.getParameter("cedulaSolicitante");
                 session.setAttribute("cedulaSolicitante", cedula);
                 response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("AgendaVehiculo")) {
+                String placaAgenda = request.getParameter("placaAgenda");
+                session.setAttribute("placaAgenda", placaAgenda);
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
             }
         }
     } else {

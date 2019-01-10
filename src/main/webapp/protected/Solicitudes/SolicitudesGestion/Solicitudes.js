@@ -1,3 +1,4 @@
+var contagenda = 0;
 var viajeSolicitudModal = function (idmodal, idtabla, data) {
 //    var data = $("#" + idtabla + " #" + selRowId).attr("data-json");
     var objeto = JSON.parse(decodeURI(data));
@@ -153,11 +154,10 @@ var gDisponibilidadVC = function (idmodal, idtabla, data) {
                 if (typeof objeto.solicitante.cedulau.cedula !== "undefined")
                     solicitanteCedula = objeto.solicitante.cedulau.cedula;
 
-        console.log(solicitanteCedula);
         $.ajax({
             url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
             type: "GET",
-            data: {opc: "disponibilidadVehiculoConductor", cedulaSolicitante:solicitanteCedula},
+            data: {opc: "disponibilidadVehiculoConductor", cedulaSolicitante: solicitanteCedula},
             contentType: "application/json ; charset=UTF-8",
             success: function (datos) {
                 $("#gSolicitudes_body").html(datos);
@@ -172,7 +172,29 @@ var gDisponibilidadVC = function (idmodal, idtabla, data) {
     }
 };
 
-var fncIniciarCalendar = function () {
+var fncVerAgendaPlaca = function () {
+    if (typeof $("#addDVehiculoC").val() !== "undefined") {
+        var selectVehiculo = $("#addDVehiculoC").val();
+        if (contagenda < 1) {
+            fncIniciarCalendar(selectVehiculo);
+        } else {
+            var events = {
+                url: 'protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=AgendaVehiculo',
+                type: "POST",
+                data: {// a function that returns an object
+                    placaAgenda: selectVehiculo
+                }
+            };
+
+            $('.calendar').fullCalendar('removeEventSource', events);
+            $('.calendar').fullCalendar('addEventSource', events);
+            $('.calendar').fullCalendar('refetchEvents');
+        }
+    }
+};
+
+var fncIniciarCalendar = function (selectVehiculo) {
+    contagenda++;
     var initialLocaleCode = 'es';
     var today = new Date();
     var dd = today.getDate();
@@ -194,8 +216,8 @@ var fncIniciarCalendar = function () {
         hh = '0' + hh;
     }
 //    today = yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mim;
-    today = yyyy + '-' + mm + '-' + dd ;
-    var calendario = $('.calendar').fullCalendar({
+    today = yyyy + '-' + mm + '-' + dd;
+    $('.calendar').fullCalendar({
         header: {
             left: 'prev,next today',
             center: 'title',
@@ -208,18 +230,29 @@ var fncIniciarCalendar = function () {
         navLinks: true, // can click day/week names to navigate views
         editable: true,
         eventLimit: true, // allow "more" link when too many events
-//        events: {
-//            url: 'protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp',
-//            data: {opc: "nus"},
-//            error: function (xmlResponse) {
-//                console.log(xmlResponse);
-//                $('#alertgeneral').html("<div class='alert alert-danger alert-dismissable'><a href='#' class='close' onclick=\"fnccerraralert('alertgeneral')\">X</a><strong>Oh no!</strong> Ha ocurrido un error con la agenda.</div>");
-//            }
-//        },
+        events: {
+            url: 'protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=AgendaVehiculo',
+            data: {
+                placaAgenda: selectVehiculo
+            },
+            error: function (xmlResponse) {
+                console.log(xmlResponse);
+                $('#alertgeneral').html("<div class='alert alert-danger alert-dismissable'><a href='#' class='close' onclick=\"fnccerraralert('alertgeneral')\">X</a><strong>Oh no!</strong> Ha ocurrido un error con la agenda.</div>");
+            }
+        },
         loading: function (bool) {
             $('#loading').toggle(bool);
         }
     });
+};
+
+var fncSelectConductorDVC = function () {
+    var obj = JSON.parse($("#addDVehiculoC").find(':selected').attr("data-jsonvehiculo"));
+    if (typeof obj.tbconductores !== "undefined") {
+        $('#addDVConductor option[value="' + obj.tbconductores.cedula + '"]').prop('selected', true);
+    } else {
+        $('#addDVConductor option').eq(0).prop('selected', true);
+    }
 };
 
 //var fncRefreshGNewSolicitudes = function (idtabla) {
@@ -235,6 +268,7 @@ var fncIniciarCalendar = function () {
 
 
 var fncDibujarSolicitudesNuevas = function (idtabla) {
+    contagenda =0;
     var $grid = $("#" + idtabla);
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
     $grid.jqGrid({
