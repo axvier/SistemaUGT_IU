@@ -24,11 +24,7 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                 }
             },
             {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 140, editable: false, search: false, sortable: false},
-            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: false,
-                edittype: 'select',
-                editoptions: {
-                    value: 'enviado:Enviado;cancelado:cancelado'
-                }
+            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: false, search: false
             },
             {label: 'Observación', name: 'observacion', jsonmap: "solicitud.observacion", width: 140, editable: true, search: false, sortable: false,
                 edittype: 'textarea',
@@ -73,6 +69,18 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                 }
             },
             {label: 'Viaje', name: 'viaje', width: 130, jsonmap: "viaje", editable: false,
+                editrules: {
+                    required: true,
+                    edithidden: true
+                },
+                hidden: true,
+                editoptions: {
+                    dataInit: function (element) {
+                        $(element).attr("readonly", "readonly");
+                    }
+                }
+            },
+            {label: 'DisponibilidadVC', name: 'disponibilidadvc', width: 130, jsonmap: "disponibilidadvc", editable: false,
                 editrules: {
                     required: true,
                     edithidden: true
@@ -138,6 +146,7 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
             if (typeof rowid !== 'undefined') {
                 var data = $("#" + idtabla + " #" + rowid).attr("data-json");
                 var rowData = JSON.parse(decodeURI(data));
+                console.log(rowData);
                 var idviajemn = "mnViajeSol";
                 var idpasajmn = "mnPasjerosSol";
                 var idpdfmn = "mnReqPDF";
@@ -176,6 +185,13 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                         $(".list-inline #" + idUsuarioSolmn).removeClass("inactive");
                         $(".list-inline #" + idUsuarioSolmn).attr("onclick", "usuarioSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");
                     }
+                }
+                if (typeof rowData.disponibilidadvc === "undefined") {
+                    $(".list-inline #" + idasigVCmn).addClass("inactive");
+                    $(".list-inline #" + idasigVCmn).attr("onclick", null);
+                } else {
+                    $(".list-inline #" + idasigVCmn).removeClass("inactive");
+                    $(".list-inline #" + idasigVCmn).attr("onclick", "disponibilidadVCSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");
                 }
             }
         },

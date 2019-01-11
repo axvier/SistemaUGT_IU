@@ -141,6 +141,14 @@ var pasajerosSolModal = function (idmodal, idtabla, data) {
 //        swalTimer("Solicitud", "Seleccione una solicitud", "error");
 };
 
+var disponibilidadVCSolModal = function (idmodal, idtabla, data) {
+    var dcodes = decodeURI(data);
+    var objeto = JSON.parse(dcodes);
+    $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + objeto.numero, function () {
+        $('#' + idmodal).modal({show: true});
+    });
+};
+
 var gDisponibilidadVC = function (idmodal, idtabla, data) {
     $("#gSolicitudes_body").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
     var $grid = $("#" + idtabla);
@@ -191,15 +199,60 @@ var fncFechaRecibidoSolicitud = function (idmodal, idtabla, data) {
             data: {opc: "fechaRecividoSol", solicitudRecib: JSON.stringify(solicitud)},
             contentType: "application/json ; charset=UTF-8",
             success: function (datos) {
-                console.log(datos);
-                var $grid = $("#" + idtabla);
-                $(window).on("resize", function () {
-                    var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
-                    grid.jqGrid("setGridWidth", newWidth, true);
-                }).trigger('resize');
-                var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
-                $grid.jqGrid('clearGridData');
-                $grid.jqGrid('setGridParam', {url: urlbase + "/SolicitudesControlador.jsp?opc=jsonSolicitudesEnviados", datatype: "json"}).trigger("reloadGrid");
+                datos = JSON.parse(datos);
+                if (datos.codigo === "OK") {
+                    swalNormal("Estado Solicitud", datos.codigo + " " + datos.respuesta, "success");
+                    var $grid = $("#" + idtabla);
+                    $(window).on("resize", function () {
+                        var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
+                        grid.jqGrid("setGridWidth", newWidth, true);
+                    }).trigger('resize');
+                    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
+                    $grid.jqGrid('clearGridData');
+                    $grid.jqGrid('setGridParam', {url: urlbase + "/SolicitudesControlador.jsp?opc=jsonSolicitudesEnviados", datatype: "json"}).trigger("reloadGrid");
+                } else {
+                    swalNormal("Estado Solicitud", datos.codigo + " " + datos.respuesta, "error");
+                }
+            },
+            error: function (error) {
+                location.reload();
+            }
+        });
+    }
+};
+
+var fnVistoBuenoSolicitud = function (idmodal, idtabla, data) {
+    var dcode = decodeURI(data);
+    var objeto = JSON.parse(dcode);
+    if (typeof objeto !== "undefined") {
+        var solicitud = {};
+        solicitud.estado = objeto.estado;
+        solicitud.fecha = objeto.fecha;
+        solicitud.numero = objeto.numero;
+        if (typeof objeto.idpdf !== "undefined")
+            solicitud.idpdf = objeto.idpdf;
+        if (typeof objeto.observacion !== "undefined")
+            solicitud.observacion = objeto.observacion;
+        $.ajax({
+            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            type: "GET",
+            data: {opc: "vistoBuenoSol", solicitudRecib: JSON.stringify(solicitud)},
+            contentType: "application/json ; charset=UTF-8",
+            success: function (datos) {
+                datos = JSON.parse(datos);
+                if (datos.codigo === "OK") {
+                    swalNormal("Estado Solicitud", datos.codigo + " " + datos.respuesta, "success");
+                    var $grid = $("#" + idtabla);
+                    $(window).on("resize", function () {
+                        var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
+                        grid.jqGrid("setGridWidth", newWidth, true);
+                    }).trigger('resize');
+                    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
+                    $grid.jqGrid('clearGridData');
+                    $grid.jqGrid('setGridParam', {url: urlbase + "/SolicitudesControlador.jsp?opc=jsonSolicitudesEnviados", datatype: "json"}).trigger("reloadGrid");
+                } else {
+                    swalNormal("Estado Solicitud", datos.codigo + " " + datos.respuesta, "error");
+                }
             },
             error: function (error) {
                 location.reload();
@@ -501,7 +554,7 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                 name: "actions",
                 sortable: false,
                 search: false,
-                width: 80,
+                width: 100,
                 formatter: "actions",
                 formatoptions: {
                     keys: true,
@@ -557,6 +610,7 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                 var idasigVCmn = "mnAsignarV_C";
                 var idUsuarioSolmn = "mnUsuarioSol";
 
+
                 if (typeof rowData.idpdf === "undefined") {
                     $(".list-inline #" + idpdfmn).addClass("inactive");
                     $(".list-inline #" + idpdfmn).attr("onclick", null);
@@ -590,6 +644,8 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                         $(".list-inline #" + idUsuarioSolmn).attr("onclick", "usuarioSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");
                     }
                 }
+                $(".list-inline #" + idasigVCmn).removeClass("inactive");
+                $(".list-inline #" + idasigVCmn).attr("onclick", "disponibilidadVCSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");
             }
         },
         loadComplete: function () {
@@ -606,7 +662,6 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                                     id: "nwbtn_" + i,
                                     onmouseover: "jQuery(this).addClass('ui-state-hover');",
                                     onmouseout: "jQuery(this).removeClass('ui-state-hover');",
-//                                    onclick: "gDisponibilidadVC('modGeneralSolicitudes', '"+idtabla+"')"
                                     click: function (e) {
                                         gDisponibilidadVC('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json"));
                                     }
@@ -623,7 +678,6 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                                     id: "btnRecibido_" + i,
                                     onmouseover: "jQuery(this).addClass('ui-state-hover');",
                                     onmouseout: "jQuery(this).removeClass('ui-state-hover');",
-//                                    onclick: "gDisponibilidadVC('modGeneralSolicitudes', '"+idtabla+"')"
                                     click: function (e) {
                                         fncFechaRecibidoSolicitud('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json"));
                                     }
@@ -632,6 +686,22 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                         ).css({"margin-left": "15px", "margin-top": "2px", float: "left", cursor: "pointer"})
                                 .addClass("ui-pg-div ui-inline-edit")
                                 .append('<span class="fa fa-thumb-tack fa-2x"></span>')
+                                .appendTo($(this).children("div"));
+
+                        $("<div>",
+                                {
+                                    title: "VISTO BUENO",
+                                    id: "btnVistoBueno_" + i,
+                                    onmouseover: "jQuery(this).addClass('ui-state-hover');",
+                                    onmouseout: "jQuery(this).removeClass('ui-state-hover');",
+                                    click: function (e) {
+                                        fnVistoBuenoSolicitud('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json"));
+                                    }
+                                }
+
+                        ).css({"margin-left": "15px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                                .addClass("ui-pg-div ui-inline-edit")
+                                .append('<span class="fa fa-check-square fa-2x"></span>')
                                 .appendTo($(this).children("div"));
                         i++;
                     });

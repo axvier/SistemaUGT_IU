@@ -34,6 +34,10 @@
                 String json = request.getParameter("solicitudRecib");
                 session.setAttribute("solicitudRecib", json);
                 response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("vistoBuenoSol")) {
+                String json = request.getParameter("solicitudRecib");
+                session.setAttribute("solicitudRecib", json);
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
             } else if (opc.equals("filtrarGrupoAuto")) {
                 String idgrupov = request.getParameter("idgrupov");
                 session.setAttribute("idgrupov", idgrupov);

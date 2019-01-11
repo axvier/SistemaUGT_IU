@@ -476,8 +476,10 @@ var verSolDisponV_C = function (idmodal, idtabla) {
     var $grid = $("#" + idtabla);
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
+        swalTimerLoading("Consultado datos","Esto puede tardar un momento...",9000);
         var rowData = $grid.jqGrid('getRowData', selRowId);
         $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + rowData.numero, function () {
+            swal.close();
             $('#' + idmodal).modal({show: true});
         });
     } else
