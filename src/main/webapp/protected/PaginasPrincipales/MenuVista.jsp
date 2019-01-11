@@ -212,9 +212,9 @@
                 }
                 if (opc.getIdopcion().equals(12) && opc.getEstado().equals("Habilitado")) {//Menu Gestión Solicitudes para vicerrectorado
             %>
-            <li id="<%=opc.getIdopcion()%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-briefcase fa-fw"></i><span class="text">Gestión solicitudes</span>
+            <li id="<%=opc.getIdopcion()%>" class="active"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-briefcase fa-fw"></i><span class="text">Gestión solicitudes</span>
                     <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
-                <ul id="submenu1" class="sub-menu ">
+                <ul id="submenu1" class="sub-menu open">
                     <li style='cursor: pointer'>
                         <a onclick="fncGestionSolicitudesVR()">
                             <i class="fa fa-list-ul"></i><span class="text">Solicitudes visto bueno</span>

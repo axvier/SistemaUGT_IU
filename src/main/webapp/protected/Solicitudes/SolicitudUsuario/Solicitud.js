@@ -434,7 +434,7 @@ var verSolRequisitosPDF = function (idpdfreq, idtabla) {
     if (selRowId !== null) {
         var rowData = $grid.jqGrid('getRowData', selRowId);
         swal({
-            title: "Requisitos de la solicitud " + idpdfreq,
+            title: "Requisitos de la solicitud " + rowData.numero,
             text: "Desea ver los requisitos subidos a la solicutd",
             type: "info",
             showCancelButton: true,

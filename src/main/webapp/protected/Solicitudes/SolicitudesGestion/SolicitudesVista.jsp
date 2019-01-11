@@ -4,6 +4,9 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.vehiculos.iu.VehiculosIU"%>
+<%@page import="ugt.entidades.Tbgrupovehiculos"%>
+<%@page import="ugt.gruposvehiculos.iu.GruposVehiculosIU"%>
 <%@page import="ugt.entidades.Tbconductores"%>
 <%@page import="ugt.conductores.iu.ConductoresIU"%>
 <%@page import="ugt.entidades.Tbvehiculos"%>
@@ -103,6 +106,11 @@
             <li>
                 <a id="mnReqPDF" href="#" onclick="" class="inactive">
                     <span class="fa-stack fa-lg"></i><i class="fa fa-eye fa-stack-2x"></i></span>PDF requisitos
+                </a>
+            </li>
+            <li>
+                <a id="mnAsignarV_C" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-bus fa-stack-2x"></i><i class="fa fa-group fa-stack-1x"></i></span>Vehículo-Conductor
                 </a>
             </li>
             <li>
@@ -224,11 +232,14 @@
     Tbvehiculosdependencias vehiculodependencia = (Tbvehiculosdependencias) session.getAttribute("vehiculodependencia");
     VehiculosConductoresIU listaV_C = (VehiculosConductoresIU) session.getAttribute("listaV_C");
     ConductoresIU listaConductores = (ConductoresIU) session.getAttribute("listaConductores");
+    GruposVehiculosIU grupovehiculo = (GruposVehiculosIU) session.getAttribute("grupovehiculo");
 
     session.setAttribute("userSol", null);
     session.setAttribute("vehiculoConductor", null);
     session.setAttribute("vehiculodependencia", null);
     session.setAttribute("listaV_C", null);
+    session.setAttribute("listaConductores", null);
+    session.setAttribute("grupovehiculo", null);
 
 %>
 
@@ -251,104 +262,126 @@
         <!-- external events -->
         <div id="external-events">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h3 class="panel-title">Vehiculo: </h3></div>
+                            <h3 class="panel-title">Opciones vehículo-conductor </h3></div>
                         <div class="panel-body">
-                            <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Lista</label>
-                            <div class="col-sm-10">
-                                <select name="vehiculo" class="form-control selectpicker" id="addDVehiculoC" data-live-search="true" onchange="fncSelectConductorDVC()" required>
-                                    <%                                        //lista de vehiculos
-                                        String valor = "";
-                                        if (listaV_C != null) {
-                                            valor += "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
-                                            for (Tbvehiculosconductores itemList : listaV_C.getLista()) {
-                                                //extraemos solo el vehiculo
-                                                Tbvehiculos itemVehiculo = itemList.getTbvehiculos();
-                                                //si el vehiculo conductor es diferente a vacio
-                                                if (vehiculoConductor != null) {
-                                                    // pregutnar si el vehiculo conductor es igual al item list para seleccionarlo
-                                                    if (vehiculoConductor.getTbvehiculosconductoresPK().getMatricula().equals(itemVehiculo.getPlaca())) {
-                                                        valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculoConductor)
-                                                                + "' selected='selected'>"
-                                                                + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
-                                                                + "</option>\n";
-                                                    } //si no lo imprimimos sin seleccionado
-                                                    else {
-                                                        valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList) + "'>"
-                                                                + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
-                                                                + "</option>\n";
+                            <div class="col-md-6 form-horizontal">
+                                <div class="form-group">
+                                    <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Lista vehículos</label>
+                                    <div class="col-sm-10">
+                                        <select name="vehiculo" class="form-control selectpicker" id="addDVehiculoC" data-live-search="true" onchange="fncSelectConductorDVC()" required>
+                                            <%                                        //lista de vehiculos
+                                                String valor = "";
+                                                if (listaV_C != null) {
+                                                    valor += "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
+                                                    for (Tbvehiculosconductores itemList : listaV_C.getLista()) {
+                                                        //extraemos solo el vehiculo
+                                                        Tbvehiculos itemVehiculo = itemList.getTbvehiculos();
+                                                        //si el vehiculo conductor es diferente a vacio
+                                                        if (vehiculoConductor != null) {
+                                                            // pregutnar si el vehiculo conductor es igual al item list para seleccionarlo
+                                                            if (vehiculoConductor.getTbvehiculosconductoresPK().getMatricula().equals(itemVehiculo.getPlaca())) {
+                                                                valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(vehiculoConductor)
+                                                                        + "' selected='selected'>"
+                                                                        + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
+                                                                        + "</option>\n";
+                                                            } //si no lo imprimimos sin seleccionado
+                                                            else {
+                                                                valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList) + "'>"
+                                                                        + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
+                                                                        + "</option>\n";
+                                                            }
+                                                            // si no preguntar si el vehiculo dependencia es diferente a null
+                                                        } else if (vehiculodependencia != null) {
+                                                            //preguntamos si el vehichulo dependencia es igual al item list para seleccinarlo
+                                                            if (vehiculodependencia.getTbvehiculos().getPlaca().equals(itemVehiculo.getPlaca())) {
+                                                                valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList)
+                                                                        + "' selected='selected'>"
+                                                                        + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
+                                                                        + "</option>\n";
+                                                            }//imprimimos sin seleccionar vehiculo depednencia
+                                                            else {
+                                                                valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList) + "'>"
+                                                                        + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
+                                                                        + "</option>\n";
+                                                            }
+                                                        } else {
+                                                            valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList) + "'>"
+                                                                    + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
+                                                                    + "</option>\n";
+                                                        }
                                                     }
-                                                    // si no preguntar si el vehiculo dependencia es diferente a null
-                                                } else if (vehiculodependencia != null) {
-                                                    //preguntamos si el vehichulo dependencia es igual al item list para seleccinarlo
-                                                    if (vehiculodependencia.getTbvehiculos().getPlaca().equals(itemVehiculo.getPlaca())) {
-                                                        valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList)
-                                                                + "' selected='selected'>"
-                                                                + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
-                                                                + "</option>\n";
-                                                    }//imprimimos sin seleccionar vehiculo depednencia
-                                                    else {
-                                                        valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList) + "'>"
-                                                                + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
-                                                                + "</option>\n";
-                                                    }
-                                                } else {
-                                                    valor += "<option class='disponibles' value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList) + "'>"
-                                                            + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
-                                                            + "</option>\n";
                                                 }
-                                            }
-                                        }
-                                        out.println(valor);
-                                    %>
-                                </select>
+                                                out.println(valor);
+                                            %>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Filtros vehículos</label>
+                                    <div class="col-sm-10">
+                                        <select name="fitlroVehiculo" class="form-control" id="filtroAuto" data-live-search="true" onchange="fncFiltrarAutos(this.id,'addDVehiculoC')" required>
+                                            <optgroup label="Tipo Vehículo">
+                                                <option value="0" selected="selected"> Todos </option>
+                                                <%
+                                                    if (grupovehiculo != null) {
+                                                        for (Tbgrupovehiculos grupo : grupovehiculo.getLista()) {
+                                                            out.println("<option value='" + grupo.getIdgrupo() + "' data-tipo='g'>" + grupo.getNombre() + " </option>");
+                                                        }
+                                                    }
+                                                %>
+                                            </optgroup>
+                                        </select>
+                                    </div>    
+                                </div>    
+                                <div class="form-group">
+                                    <button type="button" id="btn-aprobarDVC" class="btn btn-success" onclick="fncAprobarVehiculoConductor()"><i class="fa fa-check fa-2x"></i> Aprobar </button>
+                                    <button type="button" id="btn-quick-event" class="btn btn-custom-primary" onclick="fncVerAgendaPlaca()"><i class="fa fa-eye fa-2x"></i> Agenda </button>
+                                    <input type="hidden" value="" id="inputHSolititud">
+                                </div>
+                                <!--</div>-->
+                                <!--</div>-->
                             </div>
-                            <div class="col-sm-12">
-                                </br>
-                                <button type="button" id="btn-quick-event" class="btn btn-custom-primary" onclick="fncVerAgendaPlaca()"><i class="fa fa-eye"></i> ver Agenda</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Conductor</h3></div>
-                        <div class="panel-body">
-                            <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Lista</label>
-                            <div class="col-sm-10">
-                                <select name="conductor" class="form-control selectpicker" id="addDVConductor" data-live-search="true" required>
-                                    <%//lista de conductores
-                                        valor = "";
-                                        if (listaConductores != null) {
-                                            valor += "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
-                                            for (Tbconductores itemConductor : listaConductores.getListaconductores()) {
-                                                if (vehiculoConductor != null) {
-                                                    // pregutnar si el vehiculo conductor es igual al item conductor list para seleccionarlo
-                                                    if (vehiculoConductor.getTbvehiculosconductoresPK().getCedula().equals(itemConductor.getCedula())) {
-                                                        valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor)
-                                                                + "' selected='selected'>"
-                                                                + itemConductor.getNombres() + " " + itemConductor.getApellidos()
-                                                                + "</option>\n";
-                                                    } //si no lo imprimimos sin seleccionado
-                                                    else {
+                            <div class="col-md-6 form-horizontal">
+                                <!--                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h3 class="panel-title">Conductor</h3></div>
+                                                        <div class="panel-body">-->
+                                <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Lista conductores</label>
+                                <div class="col-sm-10">
+                                    <select name="conductor" class="form-control selectpicker" id="addDVConductor" data-live-search="true" required>
+                                        <%//lista de conductores
+                                            valor = "";
+                                            if (listaConductores != null) {
+                                                valor += "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
+                                                for (Tbconductores itemConductor : listaConductores.getListaconductores()) {
+                                                    if (vehiculoConductor != null) {
+                                                        // pregutnar si el vehiculo conductor es igual al item conductor list para seleccionarlo
+                                                        if (vehiculoConductor.getTbvehiculosconductoresPK().getCedula().equals(itemConductor.getCedula())) {
+                                                            valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor)
+                                                                    + "' selected='selected'>"
+                                                                    + itemConductor.getNombres() + " " + itemConductor.getApellidos()
+                                                                    + "</option>\n";
+                                                        } //si no lo imprimimos sin seleccionado
+                                                        else {
+                                                            valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor) + "'>"
+                                                                    + itemConductor.getNombres() + " " + itemConductor.getApellidos()
+                                                                    + "</option>\n";
+                                                        }
+                                                        // si no, lsitamos normalmente la opcion
+                                                    } else {
                                                         valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor) + "'>"
                                                                 + itemConductor.getNombres() + " " + itemConductor.getApellidos()
                                                                 + "</option>\n";
                                                     }
-                                                    // si no, lsitamos normalmente la opcion
-                                                } else {
-                                                    valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor) + "'>"
-                                                            + itemConductor.getNombres() + " " + itemConductor.getApellidos()
-                                                            + "</option>\n";
                                                 }
                                             }
-                                        }
-                                        out.println(valor);
-                                    %>
-                                </select>
+                                            out.println(valor);
+                                        %>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -360,7 +393,25 @@
         <div class="calendar" id="calendarVehiculo"></div>
     </div>
 </div>
-<%        }
+<%        } else if (accion.equals("filtrarGrupoAuto")) {
+            VehiculosConductoresIU filtroV_C = (VehiculosConductoresIU) session.getAttribute("filtroV_C");
+            session.setAttribute("filtroV_C", null);
+            String valor = "";
+            if (filtroV_C != null) {
+                valor += "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
+                for (Tbvehiculosconductores itemList : filtroV_C.getLista()) {
+                    //extraemos solo el vehiculo
+                    Tbvehiculos itemVehiculo = itemList.getTbvehiculos();
+                    //imprimimos el valor del vehiculo con o sin conductor
+                    valor += "<option value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList) + "'>"
+                            + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
+                            + "</option>\n";
+                }
+            } else {
+                valor += "<option disabled value='' selected hidden>--No existen vehiculos --</option>\n";
+            }
+            out.println(valor);
+        }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");
     }

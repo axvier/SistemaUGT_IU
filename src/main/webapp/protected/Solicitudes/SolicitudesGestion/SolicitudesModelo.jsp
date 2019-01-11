@@ -4,6 +4,13 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.servicios.swDisponibilidadVC"%>
+<%@page import="ugt.vehiculos.iu.VehiculosIU"%>
+<%@page import="ugt.gruposvehiculos.iu.GruposVehiculosIU"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="ugt.entidades.Tbsolicitudes"%>
 <%@page import="ugt.conductores.iu.ConductoresIU"%>
 <%@page import="ugt.servicios.swConductor"%>
 <%@page import="ugt.servicios.swVehiculo"%>
@@ -67,6 +74,86 @@
                 session.setAttribute("arrayJSON", arrayJSON);
             }
             response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=arrayJSON");
+        } else if (opc.equals("filtrarGrupoAuto")) {
+            String idgrupov = (String) session.getAttribute("idgrupov");
+            session.setAttribute("idgrupov", null);
+            String arrayJSON = "";
+            if (idgrupov.equals("0")) {
+                arrayJSON = swVehiculoConductor.VehiculosDependenciasNullorNot();
+            } else {
+                arrayJSON = swVehiculoConductor.filtrarVehiculosConductoresGrupo(idgrupov);
+            }
+            if (arrayJSON.length() > 2) {
+                VehiculosConductoresIU listaV_C = new VehiculosConductoresIU();
+                listaV_C.setListaJSON(arrayJSON);
+                session.setAttribute("filtroV_C", listaV_C);
+            }
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("fechaRecividoSol")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String json = (String) session.getAttribute("solicitudRecib");
+            session.setAttribute("solicitudRecib", null);
+            Tbsolicitudes solActualizar = g.fromJson(json, Tbsolicitudes.class);
+
+            Calendar today = Calendar.getInstance();
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00-05:00");
+            Date date = sf.parse(sf.format(today.getTime()));
+
+            solActualizar.setFecha(date);
+
+            String jsonObject = swSolicitudes.modificarSolicitudID(solActualizar.getNumero().toString(), g.toJson(solActualizar));
+            if (jsonObject.length() > 2) {
+                session.setAttribute("statusGuardar", "Fehca solicitud actualzido");
+                session.setAttribute("statusCodigo", "OK");
+            } else {
+                session.setAttribute("statusGuardar", "ERROR NO SE HA PODIDO actualizar la fecha de la solicitud");
+                session.setAttribute("statusCodigo", "KO");
+            }
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=guardarStatus");
+        } else if (opc.equals("modificarSolicitud")) {
+            String jsonSolicitud = (String) session.getAttribute("jsonSolicitud");
+            String idSolicitud = (String) session.getAttribute("idSolicitud");
+            session.setAttribute("jsonSolicitud", null);
+            session.setAttribute("idSolicitud", null);
+            String jsonObject = swSolicitudes.modificarSolicitudID(idSolicitud, jsonSolicitud);
+            if (jsonObject.length() > 2) {
+                session.setAttribute("statusGuardar", "Solicitud actualzido");
+                session.setAttribute("statusCodigo", "OK");
+            } else {
+                session.setAttribute("statusGuardar", "ERROR NO SE HA PODIDO actualizar la solicitud");
+                session.setAttribute("statusCodigo", "KO");
+            }
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=guardarStatus");
+        } else if (opc.equals("addDisponivilidadVC")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String jsonDisponVC = (String) session.getAttribute("jsonDisponVC");
+            String jsonSolicitud = (String) session.getAttribute("jsonSolicitud");
+            session.setAttribute("jsonDisponVC", null);
+            session.setAttribute("jsonSolicitud", null);
+            Tbsolicitudes solActualizar = g.fromJson(jsonSolicitud, Tbsolicitudes.class);
+
+            String jsonObject = swDisponibilidadVC.insertDisponibilidadVC(jsonDisponVC);
+            String respuesta = "";
+            if (jsonObject.length() > 2) {
+                session.setAttribute("statusCodigo", "OK");
+                solActualizar.setEstado("asignada");
+                jsonObject = swSolicitudes.modificarSolicitudID(solActualizar.getNumero().toString(), g.toJson(solActualizar));
+                if (jsonObject.length() > 2) {
+                    session.setAttribute("statusCodigo", "OK");
+                } else {
+                    respuesta += "Error al momento de actualizar estado solicitud " + solActualizar.getNumero();
+                    session.setAttribute("statusCodigo", "KO");
+                }
+            } else {
+                respuesta += "Error al momento de asignar el vehículo-conductor";
+                session.setAttribute("statusCodigo", "KO");
+            }
+            if (respuesta.length() > 5) {
+                session.setAttribute("statusGuardar", respuesta);
+            } else {
+                session.setAttribute("statusGuardar", "Solicitud procesada, la solicitud sera enviada a Vicerrectorado Administrativo");
+            }
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=guardarStatus");
         } else if (opc.equals("disponibilidadVehiculoConductor")) {
             g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             String cedula = (String) session.getAttribute("cedulaSolicitante");
@@ -101,9 +188,15 @@
             }
             String arrayJSONConductores = swConductor.listarConductoresDiferenteEstado("Jubilado");
             if (arrayJSONConductores.length() > 2) {
-                ConductoresIU listaConductores  = new ConductoresIU();
+                ConductoresIU listaConductores = new ConductoresIU();
                 listaConductores.setListaJSON(arrayJSONConductores);
-                session.setAttribute("listaConductores",listaConductores);
+                session.setAttribute("listaConductores", listaConductores);
+            }
+            String arrayJSONTipoVehiculo = swVehiculo.listarGrupoVehiculo();
+            if (arrayJSONTipoVehiculo.length() > 2) {
+                GruposVehiculosIU grupovehiculo = new GruposVehiculosIU();
+                grupovehiculo.setListaJSON(arrayJSONTipoVehiculo);
+                session.setAttribute("grupovehiculo", grupovehiculo);
             }
             response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=" + opc);
         }

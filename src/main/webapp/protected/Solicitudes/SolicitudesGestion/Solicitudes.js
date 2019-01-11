@@ -163,6 +163,7 @@ var gDisponibilidadVC = function (idmodal, idtabla, data) {
                 $("#gSolicitudes_body").html(datos);
                 $(".list-inline #mnListarSolG").removeClass("inactive");
                 $(".list-inline #mnListarSolG").attr("onclick", "fncGestionSolicitudesAdmin()");
+                $("#gSolicitudes_body #inputHSolititud").val(data);
 //                fncIniciarCalendar();
             },
             error: function (error) {
@@ -170,6 +171,147 @@ var gDisponibilidadVC = function (idmodal, idtabla, data) {
             }
         });
     }
+};
+
+var fncFechaRecibidoSolicitud = function (idmodal, idtabla, data) {
+    var dcode = decodeURI(data);
+    var objeto = JSON.parse(dcode);
+    if (typeof objeto !== "undefined") {
+        var solicitud = {};
+        solicitud.estado = objeto.estado;
+        solicitud.fecha = objeto.fecha;
+        solicitud.numero = objeto.numero;
+        if (typeof objeto.idpdf !== "undefined")
+            solicitud.idpdf = objeto.idpdf;
+        if (typeof objeto.observacion !== "undefined")
+            solicitud.observacion = objeto.observacion;
+        $.ajax({
+            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            type: "GET",
+            data: {opc: "fechaRecividoSol", solicitudRecib: JSON.stringify(solicitud)},
+            contentType: "application/json ; charset=UTF-8",
+            success: function (datos) {
+                console.log(datos);
+                var $grid = $("#" + idtabla);
+                $(window).on("resize", function () {
+                    var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
+                    grid.jqGrid("setGridWidth", newWidth, true);
+                }).trigger('resize');
+                var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
+                $grid.jqGrid('clearGridData');
+                $grid.jqGrid('setGridParam', {url: urlbase + "/SolicitudesControlador.jsp?opc=jsonSolicitudesEnviados", datatype: "json"}).trigger("reloadGrid");
+            },
+            error: function (error) {
+                location.reload();
+            }
+        });
+    }
+};
+
+var fncFiltrarAutos = function (idfiltro, iddestino) {
+    var idgrupo = $("#" + idfiltro).val();
+//    console.log(idgrupo);
+    if (typeof idgrupo !== "undefined") {
+        $.ajax({
+            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            type: "GET",
+            data: {opc: "filtrarGrupoAuto", idgrupov: idgrupo},
+            contentType: "application/json ; charset=UTF-8",
+            success: function (datos) {
+//                console.log(datos);
+                $("#" + iddestino).html(datos);
+            },
+            error: function (error) {
+                location.reload();
+            }
+        });
+    }
+};
+
+var fncAprobarVehiculoConductor = function () {
+    var objJSONDV_C = fncJSONDisponibilidadV_C();
+    if (typeof objJSONDV_C !== "undefined") {
+        var data = $("#inputHSolititud").val();
+        var dcode = decodeURI(data);
+        var objSolFull = JSON.parse(dcode);
+        console.log(objSolFull);
+        var viaje = (typeof objSolFull.viaje !== "undefined") ? " con el viaje " + objSolFull.viaje.origen + " hacia " + objSolFull.viaje.destino : "";
+        swal({
+            title: "Notificación de asignación",
+            text: "Esta seguro de asignar el vehículo " + objJSONDV_C.matricula.marca + " " + objJSONDV_C.matricula.modelo
+                    + " con el conductor(ra) " + objJSONDV_C.cedulaCond.nombres + " " + objJSONDV_C.cedulaCond.apellidos
+                    + " a la solicitud " + objJSONDV_C.solicitud.numero
+                    + viaje,
+            type: "info",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'SI',
+            cancelButtonText: 'NO'
+        }).then((valor) => {
+            if (valor) {
+                $.ajax({
+                    url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+                    type: "GET",
+                    data: {opc: "addDisponivilidadVC", jsonDisponVC: JSON.stringify(objJSONDV_C), jsonSolicitud: JSON.stringify(objJSONDV_C.solicitud)},
+                    contentType: "application/json ; charset=UTF-8",
+                    success: function (datos) {
+                        datos = JSON.parse(datos);
+                        if (datos.codigo === "OK")
+                            swalNormal("Estado asginacion", datos.codigo + " " + datos.respuesta, "success");
+                        else
+                            swalNormal("Estado asginacion", datos.codigo + " " + datos.respuesta, "error");
+                        fncGestionSolicitudesAdmin();
+                    },
+                    error: function (error) {
+                        location.reload();
+                    }
+                });
+            }
+        }, function (dismiss) {
+            return true;
+        });
+    }
+
+};
+
+var fncJSONDisponibilidadV_C = function () {
+//    console.log($("#addDVehiculoC").val());
+//    console.log($("#addDVConductor").val());
+//    console.log($("#inputHSolititud").val());
+    if ($("#addDVehiculoC").val() === null) {
+        swalNormal("Error Selección", "No ha seleccionado un vehiculo", "error");
+        return null;
+    }
+    if ($("#addDVConductor").val() === null) {
+        swalNormal("Error Selección", "No ha seleccionado un conductor", "error");
+        return null;
+    }
+    if (typeof $("#inputHSolititud").val() === "undefined") {
+        swalNormal("Error solicitud", "No ha encontrado los datos de la solicitud", "error");
+        return null;
+    }
+    var objVehiculo = JSON.parse($("#addDVehiculoC").find(':selected').attr("data-jsonvehiculo"));
+    var objConductor = JSON.parse($("#addDVConductor").find(':selected').attr("data-jsonconductor"));
+    var data = $("#inputHSolititud").val();
+    var dcode = decodeURI(data);
+    var objSolFull = JSON.parse(dcode);
+    var solicitud = {};
+    solicitud.estado = objSolFull.estado;
+    solicitud.fecha = objSolFull.fecha;
+    solicitud.numero = objSolFull.numero;
+    if (typeof objSolFull.idpdf !== "undefined")
+        solicitud.idpdf = objSolFull.idpdf;
+    if (typeof objSolFull.observacion !== "undefined")
+        solicitud.observacion = objSolFull.observacion;
+
+    var json = {
+        cedulaCond: objConductor,
+        matricula: objVehiculo.tbvehiculos,
+        solicitud: solicitud
+    };
+
+    return json;
 };
 
 var fncVerAgendaPlaca = function () {
@@ -268,12 +410,12 @@ var fncSelectConductorDVC = function () {
 
 
 var fncDibujarSolicitudesNuevas = function (idtabla) {
-    contagenda =0;
+    contagenda = 0;
     var $grid = $("#" + idtabla);
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
     $grid.jqGrid({
         url: urlbase + "/SolicitudesControlador.jsp?opc=jsonSolicitudesEnviados",
-        editurl: urlbase + "/SolicitudControlador.jsp",
+        editurl: urlbase + "/SolicitudesControlador.jsp",
         mtype: "POST",
         datatype: "json",
         colModel: [
@@ -294,8 +436,18 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                 }
             },
             {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 140, editable: false, search: false, sortable: false},
-            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: false, search: false},
-            {label: 'Observación', name: 'observacion', jsonmap: "solicitud.observacion", width: 140, editable: true, search: false, sortable: false},
+            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: false,
+                edittype: 'select',
+                editoptions: {
+                    value: 'enviado:Enviado;cancelado:cancelado'
+                }
+            },
+            {label: 'Observación', name: 'observacion', jsonmap: "solicitud.observacion", width: 140, editable: true, search: false, sortable: false,
+                edittype: 'textarea',
+                editoptions: {
+                    cols: 30
+                }
+            },
             {label: 'Motivo', name: 'motivo', width: 130, jsonmap: "motivo", editable: false,
                 editrules: {
                     required: true,
@@ -383,13 +535,17 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
         loadonce: true,
         pager: "#" + idtabla + "_pager",
         serializeRowData: function (postdata) {
-            delete postdata.oper;
-            delete postdata.gerarquia;
-            postdata.gerarquia = {
-                descripcion: $("#" + postdata.idrol + "_gerarquia").find(':selected').attr('data-descripcion'),
-                idtipo: $("#" + postdata.idrol + "_gerarquia").val()
+            var data = $("#" + idtabla + " #" + postdata.numero).attr("data-json");
+            var rowData = JSON.parse(decodeURI(data));
+            var solicitud = {
+                estado: postdata.estado,
+                fecha: rowData.fecha,
+                observacion: postdata.observacion,
+                idpdf: rowData.idpdf,
+                numero: rowData.numero
             };
-            return {opc: "modificarRol", jsonRol: JSON.stringify(postdata), idrol: postdata.idrol};
+            console.log(JSON.stringify(solicitud));
+            return {opc: "modificarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero};
         },
         onSelectRow: function (rowid, selected) {
             if (typeof rowid !== 'undefined') {
@@ -447,7 +603,7 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                         $("<div>",
                                 {
                                     title: "Asignacion",
-                                    id: "nwbtn_" + i++,
+                                    id: "nwbtn_" + i,
                                     onmouseover: "jQuery(this).addClass('ui-state-hover');",
                                     onmouseout: "jQuery(this).removeClass('ui-state-hover');",
 //                                    onclick: "gDisponibilidadVC('modGeneralSolicitudes', '"+idtabla+"')"
@@ -456,10 +612,28 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                                     }
                                 }
 
-                        ).css({"margin-left": "15px", "margin-top": "8px", float: "left", cursor: "pointer"})
+                        ).css({"margin-left": "15px", "margin-top": "2px", float: "left", cursor: "pointer"})
                                 .addClass("ui-pg-div ui-inline-edit")
-                                .append('<span class="fa fa-car fa-3"></span>')
+                                .append('<span class="fa fa-car fa-2x"></span>')
                                 .appendTo($(this).children("div"));
+
+                        $("<div>",
+                                {
+                                    title: "Fecha recibido",
+                                    id: "btnRecibido_" + i,
+                                    onmouseover: "jQuery(this).addClass('ui-state-hover');",
+                                    onmouseout: "jQuery(this).removeClass('ui-state-hover');",
+//                                    onclick: "gDisponibilidadVC('modGeneralSolicitudes', '"+idtabla+"')"
+                                    click: function (e) {
+                                        fncFechaRecibidoSolicitud('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json"));
+                                    }
+                                }
+
+                        ).css({"margin-left": "15px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                                .addClass("ui-pg-div ui-inline-edit")
+                                .append('<span class="fa fa-thumb-tack fa-2x"></span>')
+                                .appendTo($(this).children("div"));
+                        i++;
                     });
         }
 //        afterInsertRow: function (rowid, rowdata, rowelem) {

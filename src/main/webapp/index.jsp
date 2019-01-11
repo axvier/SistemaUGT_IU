@@ -347,5 +347,6 @@
         <script src="protected/SuperAdministrador/Roles/Roles.js" type="text/javascript"></script>
         <script src="protected/Solicitudes/SolicitudUsuario/Solicitud.js" type="text/javascript"></script>
         <script src="protected/Solicitudes/SolicitudesGestion/Solicitudes.js" type="text/javascript"></script>
+        <script src="protected/Solicitudes/SolicitudesGestionVA/SolicitudesVA.js" type="text/javascript"></script>
     </body>
 </html>

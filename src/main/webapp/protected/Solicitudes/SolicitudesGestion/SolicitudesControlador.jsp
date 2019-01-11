@@ -30,6 +30,26 @@
                 String placaAgenda = request.getParameter("placaAgenda");
                 session.setAttribute("placaAgenda", placaAgenda);
                 response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("fechaRecividoSol")) {
+                String json = request.getParameter("solicitudRecib");
+                session.setAttribute("solicitudRecib", json);
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("filtrarGrupoAuto")) {
+                String idgrupov = request.getParameter("idgrupov");
+                session.setAttribute("idgrupov", idgrupov);
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("addDisponivilidadVC")) {
+                String jsonDisponVC = request.getParameter("jsonDisponVC");
+                session.setAttribute("jsonDisponVC", jsonDisponVC);
+                String jsonSolicitud = request.getParameter("jsonSolicitud");
+                session.setAttribute("jsonSolicitud", jsonSolicitud);
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("modificarSolicitud")) {
+                String jsonSolicitud = request.getParameter("jsonSolicitud");
+                session.setAttribute("jsonSolicitud", jsonSolicitud);
+                String idSolicitud = request.getParameter("idSolicitud");
+                session.setAttribute("idSolicitud", idSolicitud);
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
             }
         }
     } else {

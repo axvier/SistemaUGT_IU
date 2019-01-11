@@ -103,12 +103,12 @@
             session.setAttribute("jsonMotivo", null);
             session.setAttribute("jsonViaje", null);
             session.setAttribute("jsonPasajeros", null);
-            Calendar today = Calendar.getInstance();
-            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00-05:00");
-            Date date = sf.parse(sf.format(today.getTime()));
+//            Calendar today = Calendar.getInstance();
+//            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00-05:00");
+//            Date date = sf.parse(sf.format(today.getTime()));
             Tbsolicitudes solicitud = new Tbsolicitudes();
             solicitud.setEstado("enviado");
-            solicitud.setFecha(date);
+//            solicitud.setFecha(date);
             solicitud.setNumero(0);
             String objJSON = swSolicitudes.insertSolicitud(g.toJson(solicitud));
             if (objJSON.length() > 2) {
