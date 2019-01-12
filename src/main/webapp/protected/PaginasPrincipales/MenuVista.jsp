@@ -11,16 +11,21 @@
 <%
     Login login = (Login) session.getAttribute("login");
     if (login != null) {
-        if (login.getRolActivo().getCharrol().equals("Admin") || login.getRolActivo().getCharrol().equals("Vrtor")) {
+        if (login.getRolActivo().getCharrol().equals("Admin")) {
 %>
 <link href="assets/css/skins/fulldark.css" rel="stylesheet" type="text/css"/>
 <%} else if (login.getRolActivo().getCharrol().equals("Sadmi")) {
 %>
 <link href="assets/css/skins/slategray.css" rel="stylesheet" type="text/css"/>
-<%} else {
+<%} else if(login.getRolActivo().getCharrol().equals("Vrora")|| login.getRolActivo().getCharrol().equals("Vrtor")){
+%>
+<!--<link href="assets/css/skins/darkblue.css" rel="stylesheet" type="text/css"/>-->
+<link href="assets/css/skins/lightgreen.css" rel="stylesheet" type="text/css"/>
+<%}else{
 %>
 <link href="assets/css/skins/darkblue.css" rel="stylesheet" type="text/css"/>
-<%}%>
+<%
+}%>
 <!--<script src="assets/js/jquery/jquery-2.1.0.min.js"></script>-->
 <script src="assets/js/king-common.js"></script>
 

@@ -476,7 +476,7 @@ var verSolDisponV_C = function (idmodal, idtabla) {
     var $grid = $("#" + idtabla);
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
-        swalTimerLoading("Consultado datos","Esto puede tardar un momento...",9000);
+        swalTimerLoading("Consultado datos", "Esto puede tardar un momento...", 9000);
         var rowData = $grid.jqGrid('getRowData', selRowId);
         $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + rowData.numero, function () {
             swal.close();
@@ -513,9 +513,23 @@ var fncDibujarMisSolicitudes = function (idtabla) {
                     newformat: 'Y-m-d'
                 }
             },
-            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: false},
+            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: true,
+                formatter: function (cellvalue, options, rowObject) {
+                    if (cellvalue === "asignada")
+                        return '<span style="background-color: #C0E7FB; display: block; width: 100%; height: 100%; ">' + cellvalue + '</span>';
+                    else if(cellvalue === 'rechazada')
+                        return '<span style="background-color: #FBC9C0; display: block; width: 100%; height: 100%; ">' + cellvalue + '</span>';
+                    else if(cellvalue === 'aprobada')
+                        return '<span style="background-color: #E2FBC0; display: block; width: 100%; height: 100%; ">' + cellvalue + '</span>';
+                    else if(cellvalue === 'finalizada')
+                        return '<span style="background-color: #F3DAB0; display: block; width: 100%; height: 100%; ">' + cellvalue + '</span>';
+                    else
+                        return cellvalue;
+                }
+            },
             {label: 'PDF', name: 'idpdf', jsonmap: "solicitud.idpdf", width: 40, editable: true},
             {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 140, editable: true, search: false, sortable: false},
+            {label: 'Observacion', name: 'observacion', jsonmap: "solicitud.observacion", width: 140, editable: true, search: false, sortable: false, resizable: true},
             {label: 'Motivo', name: 'motivo', width: 130, jsonmap: "motivo", editable: false,
                 editrules: {
                     required: true,

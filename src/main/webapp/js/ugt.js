@@ -9,7 +9,7 @@ var fncambiarRol = function (rol) {
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#left-sidebar").html(datos);
-            if (rol === "Admin" || rol === "Vrtor")
+            if (rol === "Admin")
                 $("#left-sidebar").css("background-color", "#304A54");
             else
                 $("#left-sidebar").css("background-color", "#ececec");

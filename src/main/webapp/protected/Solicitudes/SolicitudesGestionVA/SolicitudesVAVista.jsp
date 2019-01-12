@@ -92,6 +92,11 @@
                     <span class="fa-stack fa-lg"></i><i class="fa fa-bus fa-stack-2x"></i><i class="fa fa-group fa-stack-1x"></i></span>Vehículo-Conductor
                 </a>
             </li>
+            <li>
+                <a id="mnRefresh" href="#" onclick="fncRecargarJQGSolicitud('tbSolicitudesAsignadas')">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-refresh fa-stack-2x"></i></span>Recargar
+                </a>
+            </li>
 <!--            <li>
                 <a id="mnListarSolG" href="#" onclick="" class="inactive">
                     <span class="fa-stack fa-lg"></i><i class="fa fa-navicon fa-stack-2x"></i></span>Lista

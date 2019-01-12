@@ -142,11 +142,18 @@ var pasajerosSolModal = function (idmodal, idtabla, data) {
 };
 
 var disponibilidadVCSolModal = function (idmodal, idtabla, data) {
-    var dcodes = decodeURI(data);
-    var objeto = JSON.parse(dcodes);
-    $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + objeto.numero, function () {
-        $('#' + idmodal).modal({show: true});
-    });
+    var $grid = $("#" + idtabla);
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        swalTimerLoading("Consultado datos", "Esto puede tardar un momento...", 9000);
+        var dcodes = decodeURI(data);
+        var objeto = JSON.parse(dcodes);
+        $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + objeto.numero, function () {
+            swal.close();
+            $('#' + idmodal).modal({show: true});
+        });
+    } else
+        swalTimer("Solicitud", "Seleccione una solicitud", "error");
 };
 
 var gDisponibilidadVC = function (idmodal, idtabla, data) {
@@ -656,22 +663,7 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                     .children("td:nth-child(" + (iCol + 1) + ")")
                     .each(function () {
                         var i = 0;
-                        $("<div>",
-                                {
-                                    title: "Asignacion",
-                                    id: "nwbtn_" + i,
-                                    onmouseover: "jQuery(this).addClass('ui-state-hover');",
-                                    onmouseout: "jQuery(this).removeClass('ui-state-hover');",
-                                    click: function (e) {
-                                        gDisponibilidadVC('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json"));
-                                    }
-                                }
-
-                        ).css({"margin-left": "15px", "margin-top": "2px", float: "left", cursor: "pointer"})
-                                .addClass("ui-pg-div ui-inline-edit")
-                                .append('<span class="fa fa-car fa-2x"></span>')
-                                .appendTo($(this).children("div"));
-
+                        /**creación y asignación del botón para asignar la fecha de recibido*/
                         $("<div>",
                                 {
                                     title: "Fecha recibido",
@@ -685,9 +677,25 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
 
                         ).css({"margin-left": "15px", "margin-top": "2px", float: "left", cursor: "pointer"})
                                 .addClass("ui-pg-div ui-inline-edit")
-                                .append('<span class="fa fa-thumb-tack fa-2x"></span>')
+                                .append('<span class="fa fa-thumb-tack fa-2x text-primary"></span>')
                                 .appendTo($(this).children("div"));
+                        /**Creación del botón para llamar a la funcion gDisponibilidadVC*/
+                        $("<div>",
+                                {
+                                    title: "Asignacion",
+                                    id: "nwbtn_" + i,
+                                    onmouseover: "jQuery(this).addClass('ui-state-hover');",
+                                    onmouseout: "jQuery(this).removeClass('ui-state-hover');",
+                                    click: function (e) {
+                                        gDisponibilidadVC('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json"));
+                                    }
+                                }
 
+                        ).css({"margin-left": "15px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                                .addClass("ui-pg-div ui-inline-edit")
+                                .append('<span class="fa fa-car fa-2x text-warning"></span>')
+                                .appendTo($(this).children("div"));
+                        /**Creación del botón para asignar el visto bueno a la solicitud*/
                         $("<div>",
                                 {
                                     title: "VISTO BUENO",
@@ -701,7 +709,7 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
 
                         ).css({"margin-left": "15px", "margin-top": "2px", float: "left", cursor: "pointer"})
                                 .addClass("ui-pg-div ui-inline-edit")
-                                .append('<span class="fa fa-check-square fa-2x"></span>')
+                                .append('<span class="fa fa-check-square fa-2x text-success"></span>')
                                 .appendTo($(this).children("div"));
                         i++;
                     });

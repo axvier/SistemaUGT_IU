@@ -46,7 +46,7 @@
         } else if (opc.equals("modificarSolicitud")) {
             String idSolicitud = (String) session.getAttribute("idSolicitud");
             String jsonsSolicitud = (String) session.getAttribute("jsonSolicitud");
-            session.setAttribute("iSolicitudd", null);
+            session.setAttribute("idSolicitud", null);
             session.setAttribute("jsonSolicitud", null);
             String jsonMod = swSolicitudes.modificarSolicitudID(idSolicitud, jsonsSolicitud);
             if (jsonMod.length() > 2) {

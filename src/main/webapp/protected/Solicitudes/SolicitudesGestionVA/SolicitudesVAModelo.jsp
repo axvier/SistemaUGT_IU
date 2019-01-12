@@ -4,6 +4,9 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="com.google.gson.GsonBuilder"%>
+<%@page import="ugt.entidades.Tbsolicitudes"%>
+<%@page import="org.json.JSONObject"%>
 <%@page import="ugt.servicios.swSolicitudes"%>
 <%@page import="com.google.gson.Gson"%>
 <%@page import="utg.login.Login"%>
@@ -26,9 +29,43 @@
         } else if (opc.equals("modificarSolicitud")) {
             String idSolicitud = (String) session.getAttribute("idSolicitud");
             String jsonsSolicitud = (String) session.getAttribute("jsonSolicitud");
-            session.setAttribute("iSolicitudd", null);
+            session.setAttribute("idSolicitud", null);
             session.setAttribute("jsonSolicitud", null);
             String jsonMod = swSolicitudes.modificarSolicitudID(idSolicitud, jsonsSolicitud);
+            if (jsonMod.length() > 2) {
+                session.setAttribute("statusMod", "Se ha actualizado los datos");
+                session.setAttribute("statusCodigo", "OK");
+            } else {
+                session.setAttribute("statusMod", "Error al intentar acuatlizar los datos - contacte con el proveedor");
+                session.setAttribute("statusCodigo", "KO");
+            }
+            response.sendRedirect("SolicitudesVAControlador.jsp?opc=mostrar&accion=modificarStatus");
+        } else if (opc.equals("aprobarSolicitud")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String idSolicitud = (String) session.getAttribute("idSolicitud");
+            String jsonsSolicitud = (String) session.getAttribute("jsonSolicitud");
+            session.setAttribute("idSolicitud", null);
+            session.setAttribute("jsonSolicitud", null);
+            Tbsolicitudes solicitud = g.fromJson(jsonsSolicitud, Tbsolicitudes.class);
+            solicitud.setEstado("aprobada");
+            String jsonMod = swSolicitudes.modificarSolicitudID(idSolicitud, g.toJson(solicitud));
+            if (jsonMod.length() > 2) {
+                session.setAttribute("statusMod", "Se ha actualizado los datos");
+                session.setAttribute("statusCodigo", "OK");
+            } else {
+                session.setAttribute("statusMod", "Error al intentar acuatlizar los datos - contacte con el proveedor");
+                session.setAttribute("statusCodigo", "KO");
+            }
+            response.sendRedirect("SolicitudesVAControlador.jsp?opc=mostrar&accion=modificarStatus");
+        } else if (opc.equals("rechazarSolicitud")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String idSolicitud = (String) session.getAttribute("idSolicitud");
+            String jsonsSolicitud = (String) session.getAttribute("jsonSolicitud");
+            session.setAttribute("idSolicitud", null);
+            session.setAttribute("jsonSolicitud", null);
+            Tbsolicitudes solicitud = g.fromJson(jsonsSolicitud, Tbsolicitudes.class);
+            solicitud.setEstado("rechazada");
+            String jsonMod = swSolicitudes.modificarSolicitudID(idSolicitud, g.toJson(solicitud));
             if (jsonMod.length() > 2) {
                 session.setAttribute("statusMod", "Se ha actualizado los datos");
                 session.setAttribute("statusCodigo", "OK");

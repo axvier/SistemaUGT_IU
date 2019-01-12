@@ -1,3 +1,79 @@
+var fncAprobarSolictud = function (idmodal, idtabla, rowid) {
+    var data = $("#" + idtabla + " #" + rowid).attr("data-json");
+    var objeto = JSON.parse(decodeURI(data));
+    if (typeof objeto !== "undefined") {
+        var solicitud = {};
+        solicitud.estado = objeto.estado;
+        solicitud.fecha = objeto.fecha;
+        solicitud.numero = objeto.numero;
+        if (typeof objeto.idpdf !== "undefined")
+            solicitud.idpdf = objeto.idpdf;
+        if (typeof objeto.observacion !== "undefined")
+            solicitud.observacion = objeto.observacion;
+        $.ajax({
+            url: "protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
+            type: "GET",
+            data: {opc: "aprobarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero},
+            contentType: "application/json ; charset=UTF-8",
+            success: function (datos) {
+                datos = JSON.parse(datos);
+                if (datos.codigo === "OK") {
+                    swalNormal("Solicitud " + solicitud.numero, datos.codigo + " la solicitud ha sido aprobada, esta se envíara a UGT para su salvoconducto ", "success");
+                    fncRecargarJQGSolicitud(idtabla);
+                } else {
+                    swalNormal("Estado Solicitud", datos.codigo + " " + datos.respuesta, "error");
+                }
+            },
+            error: function (error) {
+                location.reload();
+            }
+        });
+    }
+};
+
+var fncRechazarSolicitud = function (idmodal, idtabla, rowid) {
+    var data = $("#" + idtabla + " #" + rowid).attr("data-json");
+    var objeto = JSON.parse(decodeURI(data));
+    if (typeof objeto !== "undefined") {
+        var solicitud = {};
+        solicitud.estado = objeto.estado;
+        solicitud.fecha = objeto.fecha;
+        solicitud.numero = objeto.numero;
+        if (typeof objeto.idpdf !== "undefined")
+            solicitud.idpdf = objeto.idpdf;
+        if (typeof objeto.observacion !== "undefined") {
+            solicitud.observacion = objeto.observacion;
+            $.ajax({
+                url: "protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
+                type: "GET",
+                data: {opc: "rechazarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero},
+                contentType: "application/json ; charset=UTF-8",
+                success: function (datos) {
+                    datos = JSON.parse(datos);
+                    if (datos.codigo === "OK") {
+                        swalNormal("Solicitud " + solicitud.numero, datos.codigo + " Se ha rechazado la solicitud esta sera enviada de nuevo al usuario que la solcito", "success");
+                        fncRecargarJQGSolicitud(idtabla);
+                    } else {
+                        swalNormal("Estado Solicitud", datos.codigo + " " + datos.respuesta, "error");
+                    }
+                },
+                error: function (error) {
+                    location.reload();
+                }
+            });
+        } else {
+            swalNormal("Sin observación", "Debe especificar el motivo del por el cual, se rechaza la solicitud.", "info");
+        }
+    }
+};
+
+var fncRecargarJQGSolicitud = function (idtabla) {
+    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestionVA";
+    var urltabla = "/SolicitudesVAControlador.jsp?opc=jsonSolicitudesAsignada";
+    fncRecargarJQG(idtabla, urlbase, urltabla);
+};
+
+
 var fncDibujarSolicitudesAsignadas = function (idtabla) {
     var $grid = $("#" + idtabla);
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestionVA";
@@ -24,12 +100,12 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                 }
             },
             {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 140, editable: false, search: false, sortable: false},
-            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: false, search: false
-            },
+            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: false, search: true},
             {label: 'Observación', name: 'observacion', jsonmap: "solicitud.observacion", width: 140, editable: true, search: false, sortable: false,
                 edittype: 'textarea',
                 editoptions: {
-                    cols: 30
+                    cols: 38,
+                    rows: 5
                 }
             },
             {label: 'Motivo', name: 'motivo', width: 130, jsonmap: "motivo", editable: false,
@@ -80,18 +156,6 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                     }
                 }
             },
-            {label: 'DisponibilidadVC', name: 'disponibilidadvc', width: 130, jsonmap: "disponibilidadvc", editable: false,
-                editrules: {
-                    required: true,
-                    edithidden: true
-                },
-                hidden: true,
-                editoptions: {
-                    dataInit: function (element) {
-                        $(element).attr("readonly", "readonly");
-                    }
-                }
-            },
             {
                 label: "Accion",
                 name: "actions",
@@ -101,6 +165,7 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                 formatter: "actions",
                 formatoptions: {
                     keys: true,
+                    delbutton: false,
                     editOptions: {},
                     addOptions: {},
                     delOptions: {
@@ -130,23 +195,23 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
         loadonce: true,
         pager: "#" + idtabla + "_pager",
         serializeRowData: function (postdata) {
+            var rowDatajqg = $grid.jqGrid('getRowData', postdata.numero);
             var data = $("#" + idtabla + " #" + postdata.numero).attr("data-json");
             var rowData = JSON.parse(decodeURI(data));
             var solicitud = {
-                estado: postdata.estado,
+                estado: rowDatajqg.estado,
                 fecha: rowData.fecha,
                 observacion: postdata.observacion,
                 idpdf: rowData.idpdf,
                 numero: rowData.numero
             };
-            console.log(JSON.stringify(solicitud));
             return {opc: "modificarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero};
         },
         onSelectRow: function (rowid, selected) {
             if (typeof rowid !== 'undefined') {
                 var data = $("#" + idtabla + " #" + rowid).attr("data-json");
                 var rowData = JSON.parse(decodeURI(data));
-                console.log(rowData);
+//                console.log(rowData);
                 var idviajemn = "mnViajeSol";
                 var idpasajmn = "mnPasjerosSol";
                 var idpdfmn = "mnReqPDF";
@@ -186,37 +251,49 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                         $(".list-inline #" + idUsuarioSolmn).attr("onclick", "usuarioSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");
                     }
                 }
-                if (typeof rowData.disponibilidadvc === "undefined") {
-                    $(".list-inline #" + idasigVCmn).addClass("inactive");
-                    $(".list-inline #" + idasigVCmn).attr("onclick", null);
-                } else {
-                    $(".list-inline #" + idasigVCmn).removeClass("inactive");
-                    $(".list-inline #" + idasigVCmn).attr("onclick", "disponibilidadVCSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");
-                }
+                $(".list-inline #" + idasigVCmn).removeClass("inactive");
+                $(".list-inline #" + idasigVCmn).attr("onclick", "disponibilidadVCSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");
             }
         },
         loadComplete: function () {
             var grid = $grid,
-                    iCol = 11; // 'act' - name of the actions column
+                    iCol = 11; // 'act' - columna donde esta los botones de acciones
             grid.children("tbody")
                     .children("tr.jqgrow")
-                    .children("td:nth-child(" + (iCol + 1) + ")")
+                    .children("td:nth-child(" + (iCol + 1) + ")") //buscamos los elementos en el dom de la columna accion
                     .each(function () {
                         var i = 0;
+                        /** Creación de un boton para aprobar la solicitud con las funciones para dar click*/
                         $("<div>",
                                 {
                                     title: "APROBAR",
                                     id: "btnAprobar_" + i,
-                                    onmouseover: "jQuery(this).addClass('ui-state-hover');",
-                                    onmouseout: "jQuery(this).removeClass('ui-state-hover');",
                                     click: function (e) {
-                                        gDisponibilidadVC('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json"));
+                                        fncAprobarSolictud('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("id")),
+                                                onmouseover = jQuery(this).addClass('ui-state-hover'),
+                                                onmouseout = jQuery(this).removeClass('ui-state-hover');
                                     }
                                 }
 
                         ).css({"margin-left": "15px", "margin-top": "2px", float: "left", cursor: "pointer"})
                                 .addClass("ui-pg-div ui-inline-edit")
-                                .append('<span class="fa fa-check fa-2x"></span>')
+                                .append('<span class="fa fa-check-circle fa-2x text-success"></span>')
+                                .appendTo($(this).children("div"));
+                        /**Creación del boton para rechazar la solicitud con las funciones al dar click*/
+                        $("<div>",
+                                {
+                                    title: "RECHAZAR",
+                                    id: "btnRechazado_" + i,
+                                    click: function (e) {
+                                        fncRechazarSolicitud('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("id")),
+                                                onmouseover = jQuery(this).addClass('ui-state-hover'),
+                                                onmouseout = jQuery(this).removeClass('ui-state-hover');
+                                    }
+                                }
+
+                        ).css({"margin-left": "15px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                                .addClass("ui-pg-div ui-inline-edit")
+                                .append('<span class="fa fa-ban fa-2x text-danger"></span>')
                                 .appendTo($(this).children("div"));
                         i++;
                     });
