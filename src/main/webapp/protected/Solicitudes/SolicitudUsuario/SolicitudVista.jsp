@@ -674,6 +674,11 @@
                     <span class="fa-stack fa-lg"></i><i class="fa fa-search fa-stack-2x"></i></span>Vehiculo-Conductor
                 </a>
             </li>
+            <li>
+                <a id="mnobservacion" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"><i class="fa fa-commenting fa-stack-2x"></i></span>Observación
+                </a>
+            </li>
         </ul>
     </div>
     <div class="row">

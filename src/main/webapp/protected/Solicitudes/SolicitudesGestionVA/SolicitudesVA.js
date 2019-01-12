@@ -275,7 +275,7 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                                     }
                                 }
 
-                        ).css({"margin-left": "15px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                        ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
                                 .addClass("ui-pg-div ui-inline-edit")
                                 .append('<span class="fa fa-check-circle fa-2x text-success"></span>')
                                 .appendTo($(this).children("div"));
@@ -291,7 +291,7 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                                     }
                                 }
 
-                        ).css({"margin-left": "15px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                        ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
                                 .addClass("ui-pg-div ui-inline-edit")
                                 .append('<span class="fa fa-ban fa-2x text-danger"></span>')
                                 .appendTo($(this).children("div"));

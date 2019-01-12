@@ -16,6 +16,8 @@
                 response.sendRedirect("SolicitudesVista.jsp?accion=" + accion);
             } else if (opc.equals("jsonSolicitudesEnviados")) {
                 response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("jsonSolicitudesProcesadas")) {
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
             } else if (opc.equals("modSolicitanteInfo")) {
                 String cedula = request.getParameter("cedulaSolicitante");
                 String idSolicitud = request.getParameter("idSolicitud");

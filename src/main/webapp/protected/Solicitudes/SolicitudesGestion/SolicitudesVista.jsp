@@ -155,6 +155,107 @@
     </div> 
 </div>
 <%
+} else if (accion.equals("tableSolicitudesProcesadas")) {
+%>
+<!--<div class="main-header">
+    <h2>UGT</h2>
+    <em>Solicitudes nuevas recividas</em>
+</div>-->
+<div class="main-content">
+    <!-- MODAL DIALOG -->
+    <div class="modal fade" id="modGeneralSolicitudes" tabindex="-1" role="dialog" aria-labelledby="modGeneralSolicitudes" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+    <!-- END MODAL DIALOG -->
+    <div>
+        <ul class="list-inline file-main-menu">
+            <li>
+                <a id="mnUsuarioSol" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"><i class="fa fa-user fa-stack-2x"></i></span> Solictante
+                </a>
+            </li>
+            <li>
+                <a id="mnViajeSol" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"><i class="fa fa-plane fa-stack-2x"></i></span> Detalles Viaje
+                </a>
+            </li>
+            <li>
+                <a id="mnPasjerosSol" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"><i class="fa fa-users fa-stack-2x"></i></span>Pasajeros
+                </a>
+            </li>
+            <li>
+                <a id="mnReqPDF" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"><i class="fa fa-eye fa-stack-2x"></i></span>PDF requisitos
+                </a>
+            </li>
+            <li>
+                <a id="mnAsignarV_C" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"><i class="fa fa-bus fa-stack-2x"></i><i class="fa fa-group fa-stack-1x"></i></span>Vehículo-Conductor
+                </a>
+            </li>
+            <li>
+                <a id="mnobservacion" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"><i class="fa fa-commenting fa-stack-2x"></i></span>Observación
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="main-content" id="gSolicitudes_body">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Filtro solicitud</label>
+                    <div class="col-sm-10">
+                        <select name="filtroSolicitud" class="form-control" id="filtroSolicitudEstado" data-live-search="true">
+                            <!--<optgroup label="Tipo Vehículo">-->
+                            <option value="asignada">Asignadas (Visto bueno UGT )</option>
+                            <option value="aprobada">Aprobadas (Visto bueno VA)</option>
+                            <option value="finalizada">Finalizadas</option>
+                            <option value="rechazada">Rechazadas</option>
+                            <option value="procesadas" selected="selected">Todas (UGT - VA)</option>
+                            <!--</optgroup>-->
+                        </select>
+                    </div>    
+                </div>    
+            </div>
+            <div class="col-lg-6 pull-right">
+                <div class="input-group">
+                    <input id="search_cells" type="text" class="form-control x-campaigns-filter">
+                    <span class="input-group-btn">
+                        <button class="btn btn-custom-primary" type="button" disabled="disabled"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div><br>
+        <div class="widget widget-table" >
+            <div class="widget-header">
+                <h3><i class="fa fa-table"></i> Sección </h3><em>Lista solicitudes</em>
+            </div>
+            <div class="widget-content">
+                <div id="jqgrid-wrapper">
+                    <table id="tbSolicitudesNuevas" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>estado</th>
+                                <th>fecha</th>
+                                <th>Motivo</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div id="tbSolicitudesNuevas_pager"></div>
+                </div>
+            </div>
+        </div> 
+    </div> 
+</div>
+<%
 } else if (accion.equals("modSolicitanteInfo")) {
     Tbusuariosentidad userSol = (Tbusuariosentidad) session.getAttribute("userSol");
     String idSolicitud = (String) session.getAttribute("idSolicitud");
@@ -322,7 +423,7 @@
                                 <div class="form-group">
                                     <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Filtros vehículos</label>
                                     <div class="col-sm-10">
-                                        <select name="fitlroVehiculo" class="form-control" id="filtroAuto" data-live-search="true" onchange="fncFiltrarAutos(this.id,'addDVehiculoC')" required>
+                                        <select name="fitlroVehiculo" class="form-control" id="filtroAuto" data-live-search="true" onchange="fncFiltrarAutos(this.id, 'addDVehiculoC')" required>
                                             <optgroup label="Tipo Vehículo">
                                                 <option value="0" selected="selected"> Todos </option>
                                                 <%

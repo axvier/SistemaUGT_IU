@@ -308,10 +308,21 @@ var verViajeSolicitudModal = function (idmodal, idtabla) {
         var htmlc = "" +
                 "                <div class='modal-header'>" +
                 "    <button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button>" +
-                "    <h4 class='modal-title' id='modalLicenciaTitulo'> Solicitud " + objeto.numero + " | Viaje </h4>" +
+                "    <h4 class='modal-title' id='modalLicenciaTitulo'> Solicitud " + objeto.numero + " | Detalles viaje </h4>" +
                 "</div>" +
                 "<div class='modal-body'>" +
                 "    <form class='form-horizontal' role='form'>";
+        if (typeof objeto.motivo !== 'undefined') {
+            var motivo = (typeof objeto.motivo.descripcion === "undefined") ? "No tiene motivo" : objeto.motivo.descripcion;
+            htmlc += "<div class='form-group'>" +
+                    "            <label class='col-sm-2 control-label' >Motivo</label>" +
+                    "            <div class='col-sm-10'>" +
+                    "                <p align='justify'>" + motivo + "' </p>" +
+                    "            </div>" +
+                    "        </div>";
+        } else {
+            htmlc += "   <p>No hay información del motivo</p>";
+        }
         if (typeof objeto.viaje !== 'undefined') {
             var obj = objeto.viaje;
             var fecha_s = obj.fechasalida;
@@ -505,7 +516,7 @@ var fncDibujarMisSolicitudes = function (idtabla) {
         mtype: "POST",
         datatype: "json",
         colModel: [
-            {label: 'ID', name: 'numero', jsonmap: "solicitud.numero", key: true, width: 50, editable: false, sorttype: 'integer'},
+            {label: 'ID', name: 'numero', jsonmap: "solicitud.numero", key: true, width: 50, editable: false, sorttype: 'integer', align: 'center', sorttype: 'integer'},
             {label: 'fecha', name: 'fecha', jsonmap: "solicitud.fecha", width: 130, editable: false,
                 formatter: 'date',
                 formatoptions: {
@@ -513,21 +524,28 @@ var fncDibujarMisSolicitudes = function (idtabla) {
                     newformat: 'Y-m-d'
                 }
             },
-            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: true,
+            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: true, align: 'center',
                 formatter: function (cellvalue, options, rowObject) {
                     if (cellvalue === "asignada")
                         return '<span style="background-color: #C0E7FB; display: block; width: 100%; height: 100%; ">' + cellvalue + '</span>';
-                    else if(cellvalue === 'rechazada')
-                        return '<span style="background-color: #FBC9C0; display: block; width: 100%; height: 100%; ">' + cellvalue + '</span>';
-                    else if(cellvalue === 'aprobada')
+                    else if (cellvalue === 'rechazada')
+                        return '<span style="background-color: #FE948C; display: block; width: 100%; height: 100%; ">' + cellvalue + '</span>';
+                    else if (cellvalue === 'aprobada')
                         return '<span style="background-color: #E2FBC0; display: block; width: 100%; height: 100%; ">' + cellvalue + '</span>';
-                    else if(cellvalue === 'finalizada')
+                    else if (cellvalue === 'finalizada')
                         return '<span style="background-color: #F3DAB0; display: block; width: 100%; height: 100%; ">' + cellvalue + '</span>';
                     else
                         return cellvalue;
                 }
             },
-            {label: 'PDF', name: 'idpdf', jsonmap: "solicitud.idpdf", width: 40, editable: true},
+            {label: 'PDF', name: 'idpdf', jsonmap: "solicitud.idpdf", width: 40, editable: true, align: 'center',
+                formatter: function (cellvalue, opts) {
+                    if (typeof cellvalue !== "undefined")
+                        return 'SI';
+                    else
+                        return 'No';
+                }
+            },
             {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 140, editable: true, search: false, sortable: false},
             {label: 'Observacion', name: 'observacion', jsonmap: "solicitud.observacion", width: 140, editable: true, search: false, sortable: false, resizable: true},
             {label: 'Motivo', name: 'motivo', width: 130, jsonmap: "motivo", editable: false,
@@ -629,6 +647,8 @@ var fncDibujarMisSolicitudes = function (idtabla) {
         onSelectRow: function (rowid, selected) {
             if (typeof rowid !== 'undefined') {
                 var rowData = $grid.jqGrid('getRowData', rowid);
+                var idObservacionSolmn = "mnobservacion";
+
                 if (typeof (rowData.estado) !== 'undefined') {
                     if (rowData.estado === 'finalizado' || rowData.estado === 'asignada') {
                         $(".list-inline #mnSolGenerar").addClass("inactive");
@@ -638,12 +658,22 @@ var fncDibujarMisSolicitudes = function (idtabla) {
                         $(".list-inline #mnSolGenerar").attr("onclick", "ingInfoDescSolicitudModal('modGeneralMisSolicitudes','tbMisSolicitudes')");
                     }
                 }
-                if (rowData.idpdf === "") {
+                var data = $("#" + idtabla + " #" + rowid).attr("data-json");
+                var rowData2 = JSON.parse(decodeURI(data));
+                if (rowData2.idpdf === "") {
                     $(".list-inline #mnSolReqPDF").addClass("inactive");
                     $(".list-inline #mnSolReqPDF").attr("onclick", null);
                 } else {
                     $(".list-inline #mnSolReqPDF").removeClass("inactive");
-                    $(".list-inline #mnSolReqPDF").attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','tbMisSolicitudes')");
+                    $(".list-inline #mnSolReqPDF").attr("onclick", "verSolRequisitosPDF('" + rowData2.idpdf + "','tbMisSolicitudes')");
+                }
+
+                if (typeof rowData.observacion === "undefined" || rowData.observacion === "" || rowData.observacion === null) {
+                    $(".list-inline #" + idObservacionSolmn).addClass("inactive");
+                    $(".list-inline #" + idObservacionSolmn).attr("onclick", null);
+                } else {
+                    $(".list-inline #" + idObservacionSolmn).removeClass("inactive");
+                    $(".list-inline #" + idObservacionSolmn).attr("onclick", "observacionSolModal('modGeneralMisSolicitudes','" + idtabla + "','" + rowid + "')");
                 }
             }
         },
@@ -652,7 +682,7 @@ var fncDibujarMisSolicitudes = function (idtabla) {
                     tr = $("#" + rowid);
             // you can use getCell or getRowData to examine the contain of
             // the selected row to decide whether the row is editable or not
-            if (selRowId !== rowid && rowdata.estado === 'finalizado') {
+            if (selRowId !== rowid && rowdata.estado === 'finalizada' || selRowId !== rowid && rowdata.estado === 'aprobada' || selRowId !== rowid && rowdata.estado === 'asignada') {
                 // eneble the "Edit" button in the navigator
 //                console.log(rowdata.estado);
 //                console.log(this.id);

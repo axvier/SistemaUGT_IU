@@ -194,6 +194,23 @@ var fncGestionSolicitudesAdmin = function () {
     });
 };
 
+var fncGestionSProcesadasAdmin = function () {
+    $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
+    $.ajax({
+        url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+        type: "GET",
+        data: {opc: "mostrar", accion: "tableSolicitudesProcesadas"},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            $("#contenidoDinamico").html(datos);
+            fncDibujarSolicitudesProcesadas("tbSolicitudesNuevas");
+        },
+        error: function (error) {
+            location.reload();
+        }
+    });
+};
+
 var fncGestionSolicitudesVR = function () {
     $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
     $.ajax({

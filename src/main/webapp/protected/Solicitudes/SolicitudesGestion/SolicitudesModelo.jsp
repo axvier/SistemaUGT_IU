@@ -43,6 +43,16 @@
             } else {
                 response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=jsonVacio");
             }
+        }else if (opc.equals("jsonSolicitudesProcesadas")) {
+            String estado = "enviado";
+            session.setAttribute("estadoSolicitudes", null);
+            String arrayJSON = swSolicitudes.filtrarSolicitudesNoEstado(estado);
+            if (arrayJSON.length() > 2) {
+                session.setAttribute("arrayJSON", arrayJSON);
+                response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=arrayJSON");
+            } else {
+                response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=jsonVacio");
+            }
         } else if (opc.equals("modificarSolicitud")) {
             String idSolicitud = (String) session.getAttribute("idSolicitud");
             String jsonsSolicitud = (String) session.getAttribute("jsonSolicitud");
