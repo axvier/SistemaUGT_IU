@@ -70,6 +70,16 @@
                     + "}";
             response.setContentType("text/plain");
             response.getWriter().write(result);
+        } else if (accion.equals("combinarPDFs")) {
+            String result = (String) session.getAttribute("pdf64");
+            result = (result != null) ? result : "";
+            session.setAttribute("pdf64", null);
+            if (result != null) {
+                response.setContentType("text/plain");
+                response.getWriter().write(result);
+            } else {
+                response.sendError(300, "Error al retornnar pdf requisitos en base 64");
+            }
         } else if (accion.equals("tableSolicitudesNuevas")) {
 %>
 <!--<div class="main-header">
@@ -105,7 +115,7 @@
             </li>
             <li>
                 <a id="mnReqPDF" href="#" onclick="" class="inactive">
-                    <span class="fa-stack fa-lg"></i><i class="fa fa-eye fa-stack-2x"></i></span>PDF requisitos
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-file-pdf-o fa-stack-2x"></i></span>PDF requisitos
                 </a>
             </li>
             <li>
@@ -190,7 +200,7 @@
             </li>
             <li>
                 <a id="mnReqPDF" href="#" onclick="" class="inactive">
-                    <span class="fa-stack fa-lg"><i class="fa fa-eye fa-stack-2x"></i></span>PDF requisitos
+                    <span class="fa-stack fa-lg"><i class="fa fa-file-pdf-o fa-stack-2x"></i></span>PDF requisitos
                 </a>
             </li>
             <li>
@@ -495,23 +505,46 @@
     </div>
 </div>
 <%        } else if (accion.equals("filtrarGrupoAuto")) {
-            VehiculosConductoresIU filtroV_C = (VehiculosConductoresIU) session.getAttribute("filtroV_C");
-            session.setAttribute("filtroV_C", null);
-            String valor = "";
-            if (filtroV_C != null) {
-                valor += "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
-                for (Tbvehiculosconductores itemList : filtroV_C.getLista()) {
-                    //extraemos solo el vehiculo
-                    Tbvehiculos itemVehiculo = itemList.getTbvehiculos();
-                    //imprimimos el valor del vehiculo con o sin conductor
-                    valor += "<option value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList) + "'>"
-                            + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
-                            + "</option>\n";
-                }
-            } else {
-                valor += "<option disabled value='' selected hidden>--No existen vehiculos --</option>\n";
-            }
-            out.println(valor);
+    VehiculosConductoresIU filtroV_C = (VehiculosConductoresIU) session.getAttribute("filtroV_C");
+    session.setAttribute("filtroV_C", null);
+    String valor = "";
+    if (filtroV_C != null) {
+        valor += "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
+        for (Tbvehiculosconductores itemList : filtroV_C.getLista()) {
+            //extraemos solo el vehiculo
+            Tbvehiculos itemVehiculo = itemList.getTbvehiculos();
+            //imprimimos el valor del vehiculo con o sin conductor
+            valor += "<option value='" + itemVehiculo.getPlaca() + "' data-jsonvehiculo='" + G.toJson(itemList) + "'>"
+                    + itemVehiculo.getDisco() + " | " + itemVehiculo.getMarca() + " " + itemVehiculo.getModelo() + " con placa " + itemVehiculo.getPlaca()
+                    + "</option>\n";
+        }
+    } else {
+        valor += "<option disabled value='' selected hidden>--No existen vehiculos --</option>\n";
+    }
+    out.println(valor);
+} else if (accion.equals("modCombinarSolicitud")) {
+    /**
+     * inicio contenido modal para combinar solicitud pdf con las demas
+     */
+%>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="modalLicenciaTitulo"> Solicitud | Sección combinar pdf </h4>
+</div>
+<div class="modal-body">
+    <form data-parsley-validate novalidate class="form-horizontal" role="form" id="formCombinarPDF">
+        <h4>En este espacio puede subir la solicitud final con los vistos buenos de las respectivas autoridades de la institución.</h4>
+        <input id="filePDF"  type="file" style="display:block;" accept=".pdf" required/>
+        <input type="hidden" value="" id="jsonSolFormPDF">
+    </form>
+</div>
+<div class='modal-footer'>
+    <button type='button' class='btn btn-success' onclick="fncCombinarPDF('formCombinarPDF', 'modGeneralSolicitudes')"><i class='fa fa-upload'></i> Subir</button>
+    <button type='button' class='btn btn-default' data-dismiss='modal'><i class='fa fa-times-circle'></i> Cerrar</button>
+</div>
+<%/**
+             * fin cotenido modal para combinar solicitud pdf con las demas
+             */
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

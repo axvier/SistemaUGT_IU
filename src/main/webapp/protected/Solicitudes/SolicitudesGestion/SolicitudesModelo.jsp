@@ -4,6 +4,9 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.pdf.iu.CombinarPDF"%>
+<%@page import="java.util.Base64"%>
+<%@page import="ugt.servicios.swPDF"%>
 <%@page import="org.json.JSONObject"%>
 <%@page import="ugt.entidades.Tbdisponibilidadvc"%>
 <%@page import="ugt.servicios.swDisponibilidadVC"%>
@@ -43,7 +46,7 @@
             } else {
                 response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=jsonVacio");
             }
-        }else if (opc.equals("jsonSolicitudesProcesadas")) {
+        } else if (opc.equals("jsonSolicitudesProcesadas")) {
             String estado = "enviado";
             session.setAttribute("estadoSolicitudes", null);
             String arrayJSON = swSolicitudes.filtrarSolicitudesNoEstado(estado);
@@ -247,6 +250,57 @@
                 session.setAttribute("grupovehiculo", grupovehiculo);
             }
             response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("combinarPDFs")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            byte[] bytesCombinarPDF = (byte[]) session.getAttribute("bytesCombinarPDF");
+            String jsonSolicitud = (String) session.getAttribute("jsonSolicitud");
+            Tbsolicitudes solicitu = g.fromJson(jsonSolicitud, Tbsolicitudes.class);
+            String pdf = (solicitu.getIdpdf() != null) ? swPDF.listarPDFID(solicitu.getIdpdf().toString()) : "";
+            if (pdf.length() > 2) {
+                JSONObject obj = new JSONObject(pdf);
+                String pdf64 = obj.getString("archivo");
+                byte[] bytesBase = Base64.getDecoder().decode(pdf64);
+                CombinarPDF combinarPDF = new CombinarPDF();
+                byte[] combinado = combinarPDF.combinarPDFs(bytesBase, bytesCombinarPDF).toByteArray();
+                if (combinado != null) {
+                    String b64Combinado = Base64.getEncoder().encodeToString(combinado);
+                    obj = new JSONObject()
+                            .put("idpdf", solicitu.getIdpdf().toString())
+                            .put("archivo", b64Combinado);
+                    if (swPDF.modificarPDFID(solicitu.getIdpdf().toString(), obj.toString()).length() > 2) {
+                        session.setAttribute("statusCodigo", "OK");
+                        session.setAttribute("statusGuardar", "Se ha combinado exitosamente, ahora puede descargarlo en el icono de requisitos");
+                    } else {
+                        session.setAttribute("statusCodigo", "KO");
+                        session.setAttribute("statusGuardar", "Se ha producido un error al momento subir el archivo pdfcombinado");
+                    }
+                } else {
+                    session.setAttribute("statusCodigo", "KO");
+                    session.setAttribute("statusGuardar", "Se ha producido un error al momento de combinar el archivo pdf");
+                }
+            } else {
+                String b64PDF = (bytesCombinarPDF != null) ? Base64.getEncoder().encodeToString(bytesCombinarPDF) : "";
+                if (b64PDF.length() > 0) {
+                    JSONObject objJSON = new JSONObject()
+                            .put("idpdf", "0")
+                            .put("archivo", b64PDF);
+                    String pdfInsert = swPDF.insertPDF(objJSON.toString());
+                    if (pdfInsert.length() > 2) {
+                        objJSON = new JSONObject(pdfInsert);
+                        solicitu.setIdpdf(objJSON.getInt("idpdf"));
+                        swSolicitudes.modificarSolicitudID(solicitu.getNumero().toString(), g.toJson(solicitu));
+                        session.setAttribute("statusCodigo", "OK");
+                        session.setAttribute("statusGuardar", "Se ha combinado el PDF, ahora puede descargarlo en el icono de requerimientos");
+                    } else {
+                        session.setAttribute("statusCodigo", "KO");
+                        session.setAttribute("statusGuardar", "Error al intentar insertar un PDF a una solicitud sin requerimientos");
+                    }
+                } else {
+                    session.setAttribute("statusCodigo", "KO");
+                    session.setAttribute("statusGuardar", "No ha subido un archivo");
+                }
+            }
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=guardarStatus");
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

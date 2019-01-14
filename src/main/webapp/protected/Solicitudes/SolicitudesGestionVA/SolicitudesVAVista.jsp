@@ -84,7 +84,7 @@
             </li>
             <li>
                 <a id="mnReqPDF" href="#" onclick="" class="inactive">
-                    <span class="fa-stack fa-lg"></i><i class="fa fa-eye fa-stack-2x"></i></span>PDF requisitos
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-file-pdf-o fa-stack-2x"></i></span>PDF requisitos
                 </a>
             </li>
             <li>

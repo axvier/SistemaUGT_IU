@@ -278,7 +278,7 @@
             if (objJSON.length() > 2) {
                 JSONObject obj = new JSONObject(objJSON);
                 String pdf64 = obj.getString("archivo");
-                if (pdf64.length() > 0) {
+                if (pdf64.length() > 2) {
                     byte[] bytes = Base64.getDecoder().decode(pdf64);
                     session.setAttribute("pdf64", Base64.getEncoder().encodeToString(bytes));
                 }

@@ -117,7 +117,7 @@ var observacionSolModal = function (idmodal, idtabla, rowid) {
     $('#' + idmodal).modal({show: true});
 };
 
-var fncSubirCombinarPDF = function (idmodal, idtabla, rowid) {
+var fncModSubirCombinarPDF = function (idmodal, idtabla, rowid) {
     var data = $("#" + idtabla + " #" + rowid).attr("data-json");
     var objeto = JSON.parse(decodeURI(data));
     if (typeof objeto !== "undefined") {
@@ -127,10 +127,65 @@ var fncSubirCombinarPDF = function (idmodal, idtabla, rowid) {
         solicitud.numero = objeto.numero;
         if (typeof objeto.idpdf !== "undefined")
             solicitud.idpdf = objeto.idpdf;
-        if (typeof objeto.observacion !== "undefined") 
+        if (typeof objeto.observacion !== "undefined")
             solicitud.observacion = objeto.observacion;
-            
-        console.log(solicitud);
+
+        $('#' + idmodal + ' .modal-content').load(
+                'protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=mostrar&accion=modCombinarSolicitud',
+                function () {
+                    $('#' + idmodal).modal({show: true});
+                    $('#' + idmodal + " #jsonSolFormPDF").val(data);
+                });
+    }
+};
+
+var fncCombinarPDF = function (idform, idmodal) {
+    var parsleyForm = $('#' + idform).parsley();
+    parsleyForm.validate();
+    if (!parsleyForm.isValid())
+        return false;
+    else {
+        var json = decodeURI($('#' + idform + " #jsonSolFormPDF").val());
+        if (typeof json !== 'undefined') {
+            var input = document.getElementById('filePDF');
+            if (!input) {
+                alert("Um, couldn't find the fileinput element.");
+            } else if (!input.files) {
+                alert("This browser doesn't seem to support the `files` property of file inputs.");
+            } else if (!input.files[0]) {
+                alert("Please select a file before clicking 'Load'");
+            } else {
+                swalTimerLoading("Subiendo PDF", "Se esta combinando su pdf con los anteriores requerimientos esto puede tardar un momento", 10000);
+                var file = input.files[0];
+                var myform = $("#" + idform);
+                var fd = new FormData(myform);
+                fd.append("dato", file);
+                fd.append("jsonSolicitud", encodeURI(json));
+                console.log(fd);
+                $.ajax({
+                    url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=combinarPDFs",
+                    data: fd,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    success: function (datos) {
+                        datos = JSON.parse(datos);
+                        if (datos.codigo === "OK") {
+                            swalNormal("Completado", datos.respuesta, "success");
+                        } else {
+                            swalNormal("Completado", datos.respuesta, "error");
+                        }
+                        fncRecargarJQG("tbSolicitudesNuevas", "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion", 
+                        "/SolicitudesControlador.jsp?opc=jsonSolicitudesProcesadas");
+                    },
+                    error: function () {
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+        $('#' + idmodal).modal('hide');
     }
 };
 
@@ -1000,22 +1055,25 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
                     .children("td:nth-child(" + (iCol + 1) + ")")
                     .each(function () {
                         var i = 0;
-                        /**creación y asignación del botón para comibnar un pdf con los demas requerimientos*/
-                        $("<div>",
-                                {
-                                    title: "Subir y combinar PDF",
-                                    id: "btnRecibido_" + i,
-                                    onmouseover: "jQuery(this).addClass('ui-state-hover');",
-                                    onmouseout: "jQuery(this).removeClass('ui-state-hover');",
-                                    click: function (e) {
-                                        fncSubirCombinarPDF('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("id"));
+                        var data = JSON.parse(decodeURI($("#" + idtabla + " #" + $(this).closest("tr.jqgrow").attr("id")).attr("data-json")));
+                        if (data.estado === "aprobada") {
+                            /**creación y asignación del botón para comibnar un pdf con los demas requerimientos*/
+                            $("<div>",
+                                    {
+                                        title: "Subir y combinar PDF",
+                                        id: "btnRecibido_" + i,
+                                        onmouseover: "jQuery(this).addClass('ui-state-hover');",
+                                        onmouseout: "jQuery(this).removeClass('ui-state-hover');",
+                                        click: function (e) {
+                                            fncModSubirCombinarPDF('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("id"));
+                                        }
                                     }
-                                }
 
-                        ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
-                                .addClass("ui-pg-div ui-inline-edit")
-                                .append('<span class="fa fa-file-pdf-o fa-2x text-danger"></span>')
-                                .appendTo($(this).children("div"));
+                            ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                                    .addClass("ui-pg-div ui-inline-edit")
+                                    .append('<span class="fa fa-upload fa-2x text-primary"></span>')
+                                    .appendTo($(this).children("div"));
+                        }
                         i++;
                     });
         }

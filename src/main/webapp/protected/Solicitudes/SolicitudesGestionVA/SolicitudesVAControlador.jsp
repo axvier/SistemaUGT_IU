@@ -16,6 +16,8 @@
                 response.sendRedirect("SolicitudesVAVista.jsp?accion=" + accion);
             } else if (opc.equals("jsonSolicitudesAsignada")) {
                 response.sendRedirect("SolicitudesVAModelo.jsp?opc=" + opc);
+            } else if (opc.equals("jsonSolicitudesAprobadas")) {
+                response.sendRedirect("SolicitudesVAModelo.jsp?opc=" + opc);
             } else if (opc.equals("modificarSolicitud")) {
                 String jsonSolicitud = request.getParameter("jsonSolicitud");
                 session.setAttribute("jsonSolicitud", jsonSolicitud);

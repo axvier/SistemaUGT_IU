@@ -26,6 +26,16 @@
             } else {
                 response.sendRedirect("SolicitudesVAControlador.jsp?opc=mostrar&accion=jsonVacio");
             }
+        } else if (opc.equals("jsonSolicitudesAprobadas")) {
+            String estado = "aprobada";
+            session.setAttribute("estadoSolicitudes", null);
+            String arrayJSON = swSolicitudes.filtrarSolicitudesEstado(estado);
+            if (arrayJSON.length() > 2) {
+                session.setAttribute("arrayJSON", arrayJSON);
+                response.sendRedirect("SolicitudesVAControlador.jsp?opc=mostrar&accion=arrayJSON");
+            } else {
+                response.sendRedirect("SolicitudesVAControlador.jsp?opc=mostrar&accion=jsonVacio");
+            }
         } else if (opc.equals("modificarSolicitud")) {
             String idSolicitud = (String) session.getAttribute("idSolicitud");
             String jsonsSolicitud = (String) session.getAttribute("jsonSolicitud");
