@@ -646,11 +646,12 @@ var fncDibujarMisSolicitudes = function (idtabla) {
         },
         onSelectRow: function (rowid, selected) {
             if (typeof rowid !== 'undefined') {
-                var rowData = $grid.jqGrid('getRowData', rowid);
+                var data = $("#" + idtabla + " #" + rowid).attr("data-json");
+                var rowData = JSON.parse(decodeURI(data));
                 var idObservacionSolmn = "mnobservacion";
-
+                console.log(rowData.estado);
                 if (typeof (rowData.estado) !== 'undefined') {
-                    if (rowData.estado === 'finalizado' || rowData.estado === 'asignada') {
+                    if (rowData.estado === 'finalizada' || rowData.estado === 'asignada') {
                         $(".list-inline #mnSolGenerar").addClass("inactive");
                         $(".list-inline #mnSolGenerar").attr("onclick", null);
                     } else {

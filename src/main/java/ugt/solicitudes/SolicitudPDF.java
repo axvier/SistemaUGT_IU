@@ -99,21 +99,31 @@ public class SolicitudPDF extends Solicitudesfull {
             //Parrafo de fecha actual
             Paragraph fechaOficio = new Paragraph(getFechaActual(), fcambria_Normal());
             //Que no haya espacio entre lienas
-            fechaOficio.setLeading(12, 0);
+            fechaOficio.setLeading(11, 0);
             document.add(fechaOficio);
-
-            document.add(new Paragraph("\n", fcambria_Normal()));
+            
+            Paragraph saltoBlanco11 = new Paragraph("\n",fcambria_Normal());
+            saltoBlanco11.setLeading(10,0);
+            document.add(saltoBlanco11);
 
             //Aquien va dirigido
-            document.add(new Paragraph(Constantes.TITULOPERSONA, fcambria_Normal()));
-            document.add(new Paragraph(Constantes.PERSONA, fcambria_Normal()));
-            document.add(new Paragraph(Constantes.CARGOPERSONA, fcambria_Negrita()));
-            document.add(new Paragraph("Presente.", fcambria_Normal()));
+            Paragraph titulopersona = new Paragraph(Constantes.TITULOPERSONA, fcambria_Normal());
+            titulopersona.setLeading(11,0);
+            Paragraph persona = new Paragraph(new Paragraph(Constantes.PERSONA, fcambria_Normal()));
+            persona.setLeading(11,0);
+            Paragraph cargopersona = new Paragraph(new Paragraph(Constantes.CARGOPERSONA, fcambria_Negrita()));
+            cargopersona.setLeading(11,0);
+            Paragraph presente = new Paragraph(new Paragraph("Presente.", fcambria_Normal()));
+            presente.setLeading(11,0);
+            document.add(titulopersona);
+            document.add(persona);
+            document.add(cargopersona);
+            document.add(presente);
 
             //Formalismo
-            document.add(new Paragraph("\n", fcambria_Normal()));
+            document.add(saltoBlanco11);
             document.add(new Paragraph("De mi consideración.", fcambria_Normal()));
-            document.add(new Paragraph("\n", fcambria_Normal()));
+            document.add(saltoBlanco11);
 
             //Cuerpo
             Paragraph cuerpo = new Paragraph("Luego de un cordial saludo, por medio de la presente, yo " + getYoSolicitante()
@@ -122,6 +132,7 @@ public class SolicitudPDF extends Solicitudesfull {
                     + " de la ESPOCH, solicito se conceda un salvoconducto, con las siguientes características:",
                     fcambria_Normal());
             cuerpo.setAlignment(Element.ALIGN_JUSTIFIED);
+            cuerpo.setLeading(12, 0);
             document.add(cuerpo);
 
             //Inicio Caractertísticas
@@ -217,9 +228,11 @@ public class SolicitudPDF extends Solicitudesfull {
             //fin caracteristicas
 
             //Inicio motivo
-            document.add(new Paragraph("\n", fcambria_Normal()));
-            document.add(new Paragraph("Justificación de requerimiento/motivo:", fcambria_Negrita()));
-            document.add(new Paragraph("\n", fcambria_Normal()));
+            document.add(saltoBlanco11);
+            Paragraph justif = new Paragraph("Justificación de requerimiento/motivo:", fcambria_Negrita());
+            justif.setLeading(12,0);
+            document.add(justif);
+            document.add(saltoBlanco11);
             Paragraph motivo = new Paragraph(getSolicitudMotivo(), fcambria_Normal());
             motivo.setAlignment(Element.ALIGN_JUSTIFIED);
             document.add(motivo);
@@ -229,20 +242,23 @@ public class SolicitudPDF extends Solicitudesfull {
             document.add(new Paragraph("\n", fcambria_Normal()));
             Paragraph favorableAtencion = new Paragraph("Por la atención dada al presente, anticipo mi agradecimiento.", fcambria_Normal());
             favorableAtencion.setAlignment(Element.ALIGN_JUSTIFIED);
+            favorableAtencion.setLeading(11,0);
             document.add(favorableAtencion);
             //fin favorable atencion
 
             //inicio atentamente
-            document.add(new Paragraph("\n", fcambria_Normal()));
+            document.add(saltoBlanco11);
             Paragraph atentamente = new Paragraph("Atentamente", fcambria_Normal());
             atentamente.setAlignment(Element.ALIGN_JUSTIFIED);
             document.add(atentamente);
             Paragraph atentamente2 = new Paragraph("\"SABER PARA SER\"", fcambria_Negrita());
             atentamente2.setAlignment(Element.ALIGN_JUSTIFIED);
+            atentamente2.setLeading(11,0);
+            
             document.add(atentamente2);
-            document.add(new Paragraph("\n", fcambria_Normal()));
-            document.add(new Paragraph("\n", fcambria_Normal()));
-            document.add(new Paragraph("\n", fcambria_Normal()));
+            document.add(saltoBlanco11);
+            document.add(saltoBlanco11);
+            document.add(saltoBlanco11);
             //fin atentamente
             //INICIO FIRMA
             Paragraph firma1 = new Paragraph(this.getYoSolicitante(), fcambria_Normal());
@@ -327,7 +343,7 @@ public class SolicitudPDF extends Solicitudesfull {
     private String getViajeFHRetorno() {
         String result = "";
         try {
-            DateFormat sdf = new SimpleDateFormat("EEEE, dd 'de' MMMMM 'de' yyyy");
+            DateFormat sdf = new SimpleDateFormat("EEEE, dd 'de' MMMMM 'de' yyyy',' HH:mm");
             if (this.getViaje() != null) {
                 if (this.getViaje().getFechasalida() != null) {
                     result = sdf.format(this.getViaje().getFecharetorno());
@@ -343,7 +359,7 @@ public class SolicitudPDF extends Solicitudesfull {
     private String getViajeFHSalida() {
         String result = "";
         try {
-            DateFormat sdf = new SimpleDateFormat("EEEE, dd 'de' MMMMM 'de' yyyy");
+            DateFormat sdf = new SimpleDateFormat("EEEE, dd 'de' MMMMM 'de' yyyy',' HH:mm");
             if (this.getViaje() != null) {
                 if (this.getViaje().getFechasalida() != null) {
                     result = sdf.format(this.getViaje().getFechasalida());
