@@ -1056,7 +1056,7 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
                     .each(function () {
                         var i = 0;
                         var data = JSON.parse(decodeURI($("#" + idtabla + " #" + $(this).closest("tr.jqgrow").attr("id")).attr("data-json")));
-                        if (data.estado === "aprobada") {
+                        if (data.estado === "aprobada" || data.estado === "finalizada") {
                             /**creación y asignación del botón para comibnar un pdf con los demas requerimientos*/
                             $("<div>",
                                     {

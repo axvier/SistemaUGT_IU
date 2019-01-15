@@ -23,6 +23,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import ugt.entidades.Tbordenesmovilizaciones;
 import ugt.entidades.Tbsolicitudes;
 import ugt.servicios.swOrdenMovilizacion;
 import ugt.servicios.swSolicitudes;
@@ -90,26 +91,15 @@ public class GenerarSalvoConducto extends HttpServlet {
         response.setContentType("application/force-download");
         try {
 
-            String jsonSolicitud = request.getParameter("jsonSolicitud");
+            String jsonSolicitud = java.net.URLDecoder.decode(request.getParameter("SolicitudGenerar"), "utf-8");
             String kminicio = request.getParameter("kminicio");
             Tbsolicitudes solicitud = g.fromJson(jsonSolicitud, Tbsolicitudes.class);
-            Calendar today = Calendar.getInstance();
-            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00-05:00");
-            Date date = sf.parse(sf.format(today.getTime()));
-            response.setHeader("Content-disposition", "attachment; filename=" + solicitud.getNumero() + "_UGT_" + date.getYear() + ".pdf");
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            response.setHeader("Content-disposition", "attachment; filename=" + solicitud.getNumero() + "_UGT_" + year + ".pdf");
 
             String jsonSolFull = swSolicitudes.getSolicitudFullID(solicitud.getNumero().toString());
             OrdenMovilizacionPDF ordenPDF = g.fromJson(jsonSolFull, OrdenMovilizacionPDF.class);
             ByteArrayOutputStream baos = ordenPDF.generarPDF();
-
-            String exiteOrden = swOrdenMovilizacion.filtarOrdenMovilizacionIDSol(solicitud.getNumero().toString());
-            if (exiteOrden.length() <= 2) {
-                boolean insert = insertarOrdenMovilizacion(solicitud, kminicio);
-                boolean actualizar = (insert) ? actualizarSolicitud(solicitud) : false;
-            }else{
-                actualizarSolicitud(solicitud);
-            }
-            
             OutputStream os = response.getOutputStream();
             baos.writeTo(os);
             os.flush();
@@ -117,9 +107,6 @@ public class GenerarSalvoConducto extends HttpServlet {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en ejecutar el servlet generador de salvo conducto ", e.getClass().getName() + "****" + e.getMessage());
             System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
             response.sendError(515, "ERROR: " + e.getClass().getName() + "***" + e.getMessage());
-        } catch (ParseException ex) {
-            Logger.getLogger(GenerarSalvoConducto.class.getName()).log(Level.SEVERE, null, ex);
-            response.sendError(515, "ERROR: " + ex.getClass().getName() + "***" + ex.getMessage());
         }
     }
 
@@ -133,19 +120,27 @@ public class GenerarSalvoConducto extends HttpServlet {
     private boolean actualizarSolicitud(Tbsolicitudes solicitud) {
         boolean result = false;
         Gson g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
-        solicitud.setEstado("finalizado");
+        solicitud.setEstado("finalizada");
         String res = swSolicitudes.modificarSolicitudID(solicitud.getNumero().toString(), g.toJson(solicitud));
         result = (res.length() > 2);
         return result;
     }
 
-    private boolean insertarOrdenMovilizacion(Tbsolicitudes solicitud, String kmInicio) {
+    private boolean insertarOrdenMovilizacion(Tbsolicitudes solicitud, String kmInicio, int year) {
         boolean result = false;
         try {
+            Gson g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             Calendar today = Calendar.getInstance();
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd'T'00:00:00-05:00");
             Date date = sf.parse(sf.format(today.getTime()));
-        } catch (ParseException e) {
+            Tbordenesmovilizaciones orden = new Tbordenesmovilizaciones();
+            orden.setFechagenerar(date);
+            orden.setKminicio(kmInicio);
+            orden.setNumeroOrden(solicitud.getNumero() + "-UGT-" + year);
+            orden.setSolicitud(solicitud);
+            String resAUX = swOrdenMovilizacion.insertOrdenMovilizacion(g.toJson(orden));
+            result = (resAUX.length() > 2);
+        } catch (ParseException | IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en insertar la orden de movilización ", e.getClass().getName() + "****" + e.getMessage());
             System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
             result = false;

@@ -1,35 +1,32 @@
 var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/SalvoConductos";
 
-var subminGenerarSalvoConducto = function (idform, idmodal, idtabla) {
-//    $('#' + idmodal + ' .modal-body #'+idform).attr("action", "GenerarSalvoConducto");
-    var parsleyForm = $('#' + idform).parsley();
-    parsleyForm.validate();
-    if (!parsleyForm.isValid())
-        return false;
-    else {
-        swalTimerLoading("Generando", "Puede tardar un momento...");
-        var form = $("#" + idform);
-        var json = $("#" + idform + " #SolicitudGenerar").val();
-        var kminicio = $("#" + idform + " #addGenKMinicio").val();
-        $.ajax({
-            type: form.attr('method'),
-            url: form.attr('action'),
-            data: {jsonSolicitud: json, kminicio: kminicio},
-            success: function () {
-                swal.close();
-                $("#" + idmodal).modal("hiden");
-                fncRecargarJQG(idtabla, urlbase, "/SalvoConductosControlador.jsp?opc=jsonSolicitudesEstado&estadoSolicitudes=aprobada");
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                location.reload();
-            }
-        });
-        return false;
-    }
-};
-
 var fncRecargarJQGenerarSalvo = function (idtabla) {
     var urltabla = "/SalvoConductosControlador.jsp?opc=jsonSolicitudesEstado&estadoSolicitudes=aprobada";
+    var idviajemn = "mnViajeSol";
+    var idpasajmn = "mnPasjerosSol";
+    var idpdfmn = "mnReqPDF";
+    var idasigVCmn = "mnAsignarV_C";
+    var idUsuarioSolmn = "mnUsuarioSol";
+    var idObservacionSolmn = "mnobservacion";
+
+    $(".list-inline #" + idpdfmn).addClass("inactive");
+    $(".list-inline #" + idpdfmn).attr("onclick", null);
+
+    $(".list-inline #" + idviajemn).addClass("inactive");
+    $(".list-inline #" + idviajemn).attr("onclick", null);
+
+    $(".list-inline #" + idpasajmn).addClass("inactive");
+    $(".list-inline #" + idpasajmn).attr("onclick", null);
+
+    $(".list-inline #" + idUsuarioSolmn).addClass("inactive");
+    $(".list-inline #" + idUsuarioSolmn).attr("onclick", null);
+
+    $(".list-inline #" + idObservacionSolmn).addClass("inactive");
+    $(".list-inline #" + idObservacionSolmn).attr("onclick", null);
+
+    $(".list-inline #" + idasigVCmn).addClass("inactive");
+    $(".list-inline #" + idasigVCmn).attr("onclick", null);
+    
     fncRecargarJQG(idtabla, urlbase, urltabla);
 };
 
@@ -45,14 +42,38 @@ var fncModalGenerarSalvoConducto = function (idmodal, idtabla, rowid) {
             solicitud.idpdf = objeto.idpdf;
         if (typeof objeto.observacion !== "undefined") {
             solicitud.observacion = objeto.observacion;
-            $('#' + idmodal + ' .modal-content').load('protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=modGenerarSalvoConducto&jsonSolicitud='+encodeURI(JSON.stringify(solicitud)), function () {
-                $('#' + idmodal + ' .modal-body #formAddInfoSol').attr("action", "GenerarSalvoConducto");
+            $('#' + idmodal + ' .modal-content').load('protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=mostrar&accion=modGenerarSalvoConducto', function () {
+                $('#' + idmodal + ' .modal-body #formGenSalvoC').attr("action", "GenerarSalvoConducto");
+                $("#" + idmodal + " #SolicitudGenerar").val(encodeURI(JSON.stringify(solicitud)));
+                $("#" + idmodal + " #titlemodGeneralSalvoConducto").html(" Solicitud " + solicitud.numero.toString() + " | Generar salvo conducto ");
                 $('#' + idmodal).modal({show: true});
             });
         } else {
             swalNormal("Sin observación", "Debe especificar el motivo del por el cual, se rechaza la solicitud.", "info");
         }
     }
+};
+
+var saveOrdenSolicitud = function (idinputuri, idkminicio) {
+    var dataJSON = decodeURI($("#" + idinputuri).val());
+    var km = $("#" + idkminicio).val();
+    console.log(dataJSON);
+    console.log(km);
+    $.ajax({
+        url: "protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp",
+        type: "GET",
+        data: {opc: "saveOrdenMov", jsonSolicitud: dataJSON, kminicio: km},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            console.log(datos);
+            fncRecargarJQGenerarSalvo("tbSolSalvoConducto");
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    }).always(function () {
+        return true;
+    });
 };
 
 var fncDibujarSolSalvoConducto = function (idtabla) {

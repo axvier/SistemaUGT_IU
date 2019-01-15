@@ -24,9 +24,11 @@
                 String idSolicitud = request.getParameter("idSolicitud");
                 session.setAttribute("idSolicitud", idSolicitud);
                 response.sendRedirect("SalvoConductosModelo.jsp?opc=" + opc);
-            } else if (opc.equals("modGenerarSalvoConducto")) {
-                String jsonSolicitud = java.net.URLDecoder.decode(request.getParameter("jsonSolicitud"), "UTF-8");
+            } else if (opc.equals("saveOrdenMov")) {
+                String jsonSolicitud = request.getParameter("jsonSolicitud");
                 session.setAttribute("jsonSolicitud", jsonSolicitud);
+                String kminicio = request.getParameter("kminicio");
+                session.setAttribute("kminicio", kminicio);
                 response.sendRedirect("SalvoConductosModelo.jsp?opc=" + opc);
             }
         }
