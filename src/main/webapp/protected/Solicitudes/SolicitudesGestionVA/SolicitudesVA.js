@@ -262,6 +262,7 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                 var idpdfmn = "mnReqPDF";
                 var idasigVCmn = "mnAsignarV_C";
                 var idUsuarioSolmn = "mnUsuarioSol";
+                var idObservacionSolmn = "mnobservacion";
 
                 if (typeof rowData.idpdf === "undefined") {
                     $(".list-inline #" + idpdfmn).addClass("inactive");
@@ -295,6 +296,13 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                         $(".list-inline #" + idUsuarioSolmn).removeClass("inactive");
                         $(".list-inline #" + idUsuarioSolmn).attr("onclick", "usuarioSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");
                     }
+                }
+                if (typeof rowData.observacion === "undefined" || rowData.observacion === "" || rowData.observacion === null) {
+                    $(".list-inline #" + idObservacionSolmn).addClass("inactive");
+                    $(".list-inline #" + idObservacionSolmn).attr("onclick", null);
+                } else {
+                    $(".list-inline #" + idObservacionSolmn).removeClass("inactive");
+                    $(".list-inline #" + idObservacionSolmn).attr("onclick", "observacionSolModal('modGeneralSolicitudes','" + idtabla + "','" + rowid + "')");
                 }
                 $(".list-inline #" + idasigVCmn).removeClass("inactive");
                 $(".list-inline #" + idasigVCmn).attr("onclick", "disponibilidadVCSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");
@@ -528,14 +536,15 @@ var fncDibujarSolicitudesAprobadas = function (idtabla) {
             var rowDatajqg = $grid.jqGrid('getRowData', postdata.numero);
             var data = $("#" + idtabla + " #" + postdata.numero).attr("data-json");
             var rowData = JSON.parse(decodeURI(data));
+            postdata.numero = rowData.numero;
             var solicitud = {
-                estado: rowDatajqg.estado,
+                estado: postdata.estado,
                 fecha: rowData.fecha,
                 observacion: postdata.observacion,
                 idpdf: rowData.idpdf,
                 numero: rowData.numero
             };
-            return {opc: "modificarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero};
+            return {opc: "modificarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero, numero: postdata.numero};
         },
         onSelectRow: function (rowid, selected) {
             if (typeof rowid !== 'undefined') {
@@ -547,6 +556,7 @@ var fncDibujarSolicitudesAprobadas = function (idtabla) {
                 var idpdfmn = "mnReqPDF";
                 var idasigVCmn = "mnAsignarV_C";
                 var idUsuarioSolmn = "mnUsuarioSol";
+                var idObservacionSolmn = "mnobservacion";
 
                 if (typeof rowData.idpdf === "undefined") {
                     $(".list-inline #" + idpdfmn).addClass("inactive");
@@ -580,6 +590,13 @@ var fncDibujarSolicitudesAprobadas = function (idtabla) {
                         $(".list-inline #" + idUsuarioSolmn).removeClass("inactive");
                         $(".list-inline #" + idUsuarioSolmn).attr("onclick", "usuarioSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");
                     }
+                }
+                if (typeof rowData.observacion === "undefined" || rowData.observacion === "" || rowData.observacion === null) {
+                    $(".list-inline #" + idObservacionSolmn).addClass("inactive");
+                    $(".list-inline #" + idObservacionSolmn).attr("onclick", null);
+                } else {
+                    $(".list-inline #" + idObservacionSolmn).removeClass("inactive");
+                    $(".list-inline #" + idObservacionSolmn).attr("onclick", "observacionSolModal('modGeneralSolicitudes','" + idtabla + "','" + rowid + "')");
                 }
                 $(".list-inline #" + idasigVCmn).removeClass("inactive");
                 $(".list-inline #" + idasigVCmn).attr("onclick", "disponibilidadVCSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");

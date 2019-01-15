@@ -246,7 +246,7 @@ public class swSolicitudes {
     }
     //</editor-fold>
     
-    //<editor-fold defaultstate="collapsed" desc="Filtatrar solicitud full por estado"> 
+    //<editor-fold defaultstate="collapsed" desc="Filtatrar solicitud full por NO estado"> 
     public static String filtrarSolicitudesNoEstado(String estado) {
         String result = "";
         try {

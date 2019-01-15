@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Tbrevisionesmecanicas.findAll", query = "SELECT t FROM Tbrevisionesmecanicas t")
     , @NamedQuery(name = "Tbrevisionesmecanicas.findByIdrevision", query = "SELECT t FROM Tbrevisionesmecanicas t WHERE t.idrevision = :idrevision")
     , @NamedQuery(name = "Tbrevisionesmecanicas.findByDetalle", query = "SELECT t FROM Tbrevisionesmecanicas t WHERE t.detalle = :detalle")
+    , @NamedQuery(name = "Tbrevisionesmecanicas.findByIdpdf", query = "SELECT t FROM Tbrevisionesmecanicas t WHERE t.idpdf = :idpdf")
     , @NamedQuery(name = "Tbrevisionesmecanicas.findByFecha", query = "SELECT t FROM Tbrevisionesmecanicas t WHERE t.fecha = :fecha")})
 public class Tbrevisionesmecanicas implements Serializable {
 
@@ -47,10 +48,12 @@ public class Tbrevisionesmecanicas implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "detalle")
     private String detalle;
+    @Column(name = "idpdf")
+    private Integer idpdf;
     @Basic(optional = false)
     @NotNull
     @Column(name = "fecha")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
     @JoinColumn(name = "matricula", referencedColumnName = "placa")
     @ManyToOne(optional = false)
@@ -92,6 +95,14 @@ public class Tbrevisionesmecanicas implements Serializable {
         this.fecha = fecha;
     }
 
+    public Integer getIdpdf() {
+        return idpdf;
+    }
+
+    public void setIdpdf(Integer idpdf) {
+        this.idpdf = idpdf;
+    }
+
     public Tbvehiculos getMatricula() {
         return matricula;
     }
@@ -124,5 +135,5 @@ public class Tbrevisionesmecanicas implements Serializable {
     public String toString() {
         return "ugt.entidades.Tbrevisionesmecanicas[ idrevision=" + idrevision + " ]";
     }
-    
+
 }

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <context-param>
         <param-name>renew</param-name>
         <param-value>true</param-value>
@@ -79,9 +77,18 @@
         <servlet-name>SolicitudPDF</servlet-name>
         <servlet-class>ugt.solicitudes.SolicitudPDFServelet</servlet-class>
     </servlet>
+    <servlet>
+        <description>Clase para generar el salvoconducto y descargarlo</description>
+        <servlet-name>GenerarSalvoConducto</servlet-name>
+        <servlet-class>ugt.salvoconducto.GenerarSalvoConducto</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SolicitudPDF</servlet-name>
         <url-pattern>/SolicitudPDFServelet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GenerarSalvoConducto</servlet-name>
+        <url-pattern>/GenerarSalvoConducto</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>
