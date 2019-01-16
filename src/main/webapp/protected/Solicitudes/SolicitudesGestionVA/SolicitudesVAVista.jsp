@@ -122,7 +122,7 @@
         </div><br>
         <div class="widget widget-table" >
             <div class="widget-header">
-                <h3><i class="fa fa-table"></i> Solicitudes por aprobar </h3><em>Lista</em>
+                <h3><i class="fa fa-table"></i> Solicitudes </h3><em>Lista</em>
             </div>
             <div class="widget-content">
                 <div id="jqgrid-wrapper">

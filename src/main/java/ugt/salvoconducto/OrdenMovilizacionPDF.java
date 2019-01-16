@@ -80,7 +80,7 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
 //    public String generarPDF() {
 //        String result = "";
         try {
-            Document document = new Document(PageSize.A4, 30, 30, 35, 35);
+            Document document = new Document(PageSize.A4, 30, 30, 15, 15);
 //            File myfile = new File("D:\\pdfs\\out.pdf");
 //            result = myfile.getName();
 //            FileOutputStream baos = new FileOutputStream(myfile);

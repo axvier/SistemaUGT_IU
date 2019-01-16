@@ -30,6 +30,14 @@
             } else {
                 response.sendRedirect("SalvoConductosControlador.jsp?opc=mostrar&accion=jsonVacio");
             }
+        }else if (opc.equals("jsonFullOrdenes")) {
+            String arrayJSON = swOrdenMovilizacion.listarOrdenesFullSol();
+            if (arrayJSON.length() > 2) {
+                session.setAttribute("arrayJSON", arrayJSON);
+                response.sendRedirect("SalvoConductosControlador.jsp?opc=mostrar&accion=arrayJSON");
+            } else {
+                response.sendRedirect("SalvoConductosControlador.jsp?opc=mostrar&accion=jsonVacio");
+            }
         } else if (opc.equals("ModificarSolicitud")) {
             String idSolicitud = (String) session.getAttribute("idSolicitud");
             String jsonsSolicitud = (String) session.getAttribute("jsonSolicitud");

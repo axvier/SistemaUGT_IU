@@ -18,6 +18,8 @@
                 String estado = request.getParameter("estadoSolicitudes");
                 session.setAttribute("estadoSolicitudes", estado);
                 response.sendRedirect("SalvoConductosModelo.jsp?opc=" + opc);
+            } else if (opc.equals("jsonFullOrdenes")) {
+                response.sendRedirect("SalvoConductosModelo.jsp?opc=" + opc);
             } else if (opc.equals("modificarSolicitud")) {
                 String jsonSolicitud = request.getParameter("jsonSolicitud");
                 session.setAttribute("jsonSolicitud", jsonSolicitud);

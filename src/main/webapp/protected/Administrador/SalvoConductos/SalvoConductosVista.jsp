@@ -126,7 +126,104 @@
         </div><br>
         <div class="widget widget-table" >
             <div class="widget-header">
-                <h3><i class="fa fa-table"></i> Solicitudes por aprobar </h3><em>Lista</em>
+                <h3><i class="fa fa-table"></i> Solicitudes listas para generar salvoconducto </h3><em>Lista</em>
+            </div>
+            <div class="widget-content">
+                <div id="jqgrid-wrapper">
+                    <table id="tbSolSalvoConducto" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>estado</th>
+                                <th>fecha</th>
+                                <th>Motivo</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div id="tbSolSalvoConducto_pager"></div>
+                </div>
+            </div>
+        </div> 
+    </div> 
+</div>
+<%
+    /**
+     * fin de vista de tabla
+     */
+        } else if (accion.equals("tableListaSalvoConductos")) {
+            /**
+             * inicio de la tabla tbListaSalvoConducto
+             */
+%>
+<div class="main-content">
+    <!-- MODAL DIALOG -->
+    <div class="modal fade" id="modGeneralSalvoConducto" tabindex="-1" role="dialog" aria-labelledby="modGeneralSolicitudes" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+    <!-- END MODAL DIALOG -->
+    <div>
+        <ul class="list-inline file-main-menu">
+            <li>
+                <a id="mnUsuarioSol" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"><i class="fa fa-user fa-stack-2x"></i></span> Solictante
+                </a>
+            </li>
+            <li>
+                <a id="mnViajeSol" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"><i class="fa fa-plane fa-stack-2x"></i></span> Detalles Viaje
+                </a>
+            </li>
+            <li>
+                <a id="mnPasjerosSol" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-users fa-stack-2x"></i></span>Pasajeros
+                </a>
+            </li>
+            <li>
+                <a id="mnReqPDF" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-file-pdf-o fa-stack-2x"></i></span>PDF requisitos
+                </a>
+            </li>
+            <li>
+                <a id="mnAsignarV_C" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-bus fa-stack-2x"></i><i class="fa fa-group fa-stack-1x"></i></span>Vehículo-Conductor
+                </a>
+            </li>
+            <li>
+                <a id="mnRefresh" href="#" onclick="fncRecargarJQGListaSalvo('tbSolSalvoConducto')">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-refresh fa-stack-2x"></i></span>Recargar
+                </a>
+            </li>
+            <li>
+                <a id="mnobservacion" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"><i class="fa fa-commenting fa-stack-2x"></i></span>Observación
+                </a>
+            </li>
+<!--            <li>
+                <a id="mnListarSolG" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-navicon fa-stack-2x"></i></span>Lista aprobados
+                </a>
+            </li>-->
+        </ul>
+    </div>
+    <div class="main-content" id="gSolicitudes_body">
+        <div class="row">
+            <div class="col-lg-6 pull-right">
+                <div class="input-group">
+                    <input id="search_cells" type="text" class="form-control x-campaigns-filter">
+                    <span class="input-group-btn">
+                        <button class="btn btn-custom-primary" type="button" disabled="disabled"><i class="fa fa-search"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div><br>
+        <div class="widget widget-table" >
+            <div class="widget-header">
+                <h3><i class="fa fa-table"></i> Ordenes generadas </h3><em>Lista</em>
             </div>
             <div class="widget-content">
                 <div id="jqgrid-wrapper">

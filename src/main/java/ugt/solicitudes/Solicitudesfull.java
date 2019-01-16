@@ -2,6 +2,7 @@ package ugt.solicitudes;
 
 import java.util.List;
 import ugt.entidades.Tbdisponibilidadvc;
+import ugt.entidades.Tbordenesmovilizaciones;
 import ugt.entidades.Tbseccionmotivo;
 import ugt.entidades.Tbseccionsolicitantes;
 import ugt.entidades.Tbseccionviajes;
@@ -12,7 +13,7 @@ import ugt.entidades.Tbviajepasajero;
  *
  * @author Xavy PC
  */
-public class Solicitudesfull{
+public class Solicitudesfull {
 
     private Tbsolicitudes solicitud;
     private Tbseccionmotivo motivo;
@@ -20,6 +21,15 @@ public class Solicitudesfull{
     private Tbseccionsolicitantes solicitante;
     private List<Tbviajepasajero> pasajeros;
     private Tbdisponibilidadvc disponibilidadvc;
+    private Tbordenesmovilizaciones ordenMovilzicion;
+
+    public Tbordenesmovilizaciones getOrdenMovilzicion() {
+        return ordenMovilzicion;
+    }
+
+    public void setOrdenMovilzicion(Tbordenesmovilizaciones ordenMovilzicion) {
+        this.ordenMovilzicion = ordenMovilzicion;
+    }
 
     public Tbsolicitudes getSolicitud() {
         return solicitud;

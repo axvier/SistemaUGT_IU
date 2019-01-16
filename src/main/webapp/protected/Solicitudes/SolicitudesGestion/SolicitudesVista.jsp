@@ -275,7 +275,7 @@
 %>
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h4 class="modal-title" id="modalLicenciaTitulo"> Solicitud <%=idSolicitud%> | Datos usuario de la solicitud </h4>
+    <h4 class="modal-title" id="titleModalSolicitanteInfo"> Solicitud <%=idSolicitud%> | Datos usuario de la solicitud </h4>
 </div>
 <div class="modal-body">
     <form class="form-horizontal" role="form">

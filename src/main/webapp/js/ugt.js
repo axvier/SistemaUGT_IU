@@ -267,7 +267,7 @@ var fncGeListaOrden = function () {
     $.ajax({
         url: "protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp",
         type: "GET",
-        data: {opc: "mostrar", accion: "tableSolSalvoConducto"},
+        data: {opc: "mostrar", accion: "tableListaSalvoConductos"},
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
