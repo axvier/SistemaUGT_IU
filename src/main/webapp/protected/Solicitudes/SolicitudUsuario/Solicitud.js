@@ -439,13 +439,13 @@ var ingInfoDescSolicitudModal = function (idmodal, idtabla) {
         swalTimer("Solicitud", "Seleccione una solicitud", "error");
 };
 
-var verSolRequisitosPDF = function (idpdfreq, idtabla) {
+var verSolRequisitosPDF = function (idpdfreq, idtabla, idnumero) {
     var $grid = $("#" + idtabla);
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
         var rowData = $grid.jqGrid('getRowData', selRowId);
         swal({
-            title: "Requisitos de la solicitud " + rowData.numero,
+            title: "Requisitos de la solicitud " + idnumero,
             text: "Desea ver los requisitos subidos a la solicutd",
             type: "info",
             showCancelButton: true,
@@ -666,7 +666,7 @@ var fncDibujarMisSolicitudes = function (idtabla) {
                     $(".list-inline #mnSolReqPDF").attr("onclick", null);
                 } else {
                     $(".list-inline #mnSolReqPDF").removeClass("inactive");
-                    $(".list-inline #mnSolReqPDF").attr("onclick", "verSolRequisitosPDF('" + rowData2.idpdf + "','tbMisSolicitudes')");
+                    $(".list-inline #mnSolReqPDF").attr("onclick", "verSolRequisitosPDF('" + rowData2.idpdf + "','tbMisSolicitudes','" + rowData2.numero + "')");
                 }
 
                 if (typeof rowData.observacion === "undefined" || rowData.observacion === "" || rowData.observacion === null) {

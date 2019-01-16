@@ -168,7 +168,7 @@
         <label class="control-label" for="addGenKMinicio" >KM inicial:</label>
         <div class="form-group">
             <div class="col-sm-10">
-                <input type="text" value="" name="kminicio" class="form-control" id="addGenKMinicio" title="Kilometraje inicial" placeholder="Kilometraje inicial (opcional)" required/>
+                <input type="text" value="" name="kminicio" class="form-control" id="addGenKMinicio" title="Kilometraje inicial" placeholder="Kilometraje inicial (opcional)"/>
                 <input type="hidden" value="" name="SolicitudGenerar" class="form-control" id="SolicitudGenerar"/>
             </div>
         </div>

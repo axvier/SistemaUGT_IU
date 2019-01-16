@@ -28,6 +28,9 @@ public class Constantes {
     //<editor-fold defaultstate="collapsed" desc="Direccion imagen logo ordenes">
     public static final String SRCIMGENORDEN = "D:/Neatbeans/Proyectos/sistema ugt/SistemaUGT_IU/src/main/webapp/assets/img/logo_espoch_rojo.png";
     //</editor-fold>
-    
+    //<editor-fold defaultstate="collapsed" desc="Encargado Unidad de Gestion de Transporte">
+    public static final String JefeUnidad = "Ing. Diego Haro";
+    public static final String CARGOUGT = "JEFE UNIDAD GESTIÓN DE TRANSPORTE";
+    //</editor-fold>
     
 }

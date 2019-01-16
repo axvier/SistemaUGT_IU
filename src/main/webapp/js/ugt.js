@@ -262,6 +262,23 @@ var fncGenerarOrden = function () {
     });
 };
 
+var fncGeListaOrden = function () {
+    $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
+    $.ajax({
+        url: "protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp",
+        type: "GET",
+        data: {opc: "mostrar", accion: "tableSolSalvoConducto"},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            $("#contenidoDinamico").html(datos);
+            fncDibujaListaSalvoConductos("tbSolSalvoConducto");
+        },
+        error: function (error) {
+            location.reload();
+        }
+    });
+};
+
 var fncRecargarJQG = function (idtabla, urlbase, urltable) {
     var $grid = $("#" + idtabla);
     $(window).on("resize", function () {

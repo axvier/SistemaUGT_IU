@@ -41,7 +41,7 @@ var fncRechazarSolicitud = function (idmodal, idtabla, rowid) {
         solicitud.numero = objeto.numero;
         if (typeof objeto.idpdf !== "undefined")
             solicitud.idpdf = objeto.idpdf;
-        if (typeof objeto.observacion !== "undefined") {
+        if (typeof objeto.observacion !== "undefined" && objeto.observacion !== null) {
             solicitud.observacion = objeto.observacion;
             $.ajax({
                 url: "protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
@@ -79,7 +79,7 @@ var fncRechazarSolicitudAprobadas = function (idmodal, idtabla, rowid) {
         solicitud.numero = objeto.numero;
         if (typeof objeto.idpdf !== "undefined")
             solicitud.idpdf = objeto.idpdf;
-        if (typeof objeto.observacion !== "undefined") {
+        if (typeof objeto.observacion !== "undefined" && objeto.observacion !== null) {
             solicitud.observacion = objeto.observacion;
             $.ajax({
                 url: "protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
@@ -269,7 +269,7 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                     $(".list-inline #" + idpdfmn).attr("onclick", null);
                 } else {
                     $(".list-inline #" + idpdfmn).removeClass("inactive");
-                    $(".list-inline #" + idpdfmn).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "')");
+                    $(".list-inline #" + idpdfmn).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "','" + rowData.numero + "')");
                 }
                 if (typeof rowData.viaje === "undefined") {
                     $(".list-inline #" + idviajemn).addClass("inactive");
@@ -563,7 +563,7 @@ var fncDibujarSolicitudesAprobadas = function (idtabla) {
                     $(".list-inline #" + idpdfmn).attr("onclick", null);
                 } else {
                     $(".list-inline #" + idpdfmn).removeClass("inactive");
-                    $(".list-inline #" + idpdfmn).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "')");
+                    $(".list-inline #" + idpdfmn).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "','" + rowData.numero + "')");
                 }
                 if (typeof rowData.viaje === "undefined") {
                     $(".list-inline #" + idviajemn).addClass("inactive");

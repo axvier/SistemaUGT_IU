@@ -80,9 +80,9 @@ public class NewMain {
             Tbordenesmovilizaciones ord = g.fromJson(jsonOrden, Tbordenesmovilizaciones.class);
             ordenPDF.setOrden(ord);
         }
-        String ruta = ordenPDF.generarPDF();
-        System.out.println(ruta);
-        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
+//        String ruta = ordenPDF.generarPDF();
+//        System.out.println(ruta);
+//        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
         System.out.println("solicitudes full() => " + ordenPDF.getSolicitud().getNumero());
 
     }

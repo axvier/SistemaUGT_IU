@@ -5,9 +5,7 @@
  */
 package ugt.salvoconducto;
 
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -21,9 +19,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,40 +27,63 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.text.Text;
 import ugt.entidades.Tbordenesmovilizaciones;
 import ugt.entidades.Tbpasajeros;
+import ugt.entidades.Tbvehiculos;
 import ugt.entidades.Tbviajepasajero;
 import ugt.solicitudes.Solicitudesfull;
 import utils.Constantes;
 
 /**
+ * Clase para generar una orden de movilziacion heredando los datos de la
+ * solicitud
  *
  * @author Xavy PC
  */
 public class OrdenMovilizacionPDF extends Solicitudesfull {
 
+    /**
+     * Parametro define el tamaño de la fuente en general
+     */
     private static final float FONTSIZEGENERAL = 10;
+    /**
+     * parametro que define la orden de movilziacion
+     */
     private Tbordenesmovilizaciones orden;
 
+    /**
+     * Metodo que define el retorno de la clase orden
+     *
+     * @return orden
+     */
     public Tbordenesmovilizaciones getOrden() {
         return orden;
     }
 
+    /**
+     * Metodo que define el ingreso de la orden
+     *
+     * @param orden
+     */
     public void setOrden(Tbordenesmovilizaciones orden) {
         this.orden = orden;
     }
 
-//    public ByteArrayOutputStream generarPDF() {
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    public String generarPDF() {
-        String result = "";
+    /**
+     * Metodo para generar la orden de movilizacion en formato pd
+     *
+     * @return baos Este parametro define la memoria temporal en servidor para
+     * generar la orden
+     */
+    public ByteArrayOutputStream generarPDF() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//    public String generarPDF() {
+//        String result = "";
         try {
             Document document = new Document(PageSize.A4, 30, 30, 35, 35);
-            //eliminar despues
-            File myfile = new File("D:\\pdfs\\out.pdf");
-            result = myfile.getName();
-            FileOutputStream baos = new FileOutputStream(myfile);
+//            File myfile = new File("D:\\pdfs\\out.pdf");
+//            result = myfile.getName();
+//            FileOutputStream baos = new FileOutputStream(myfile);
             //fin eliminar despues
             PdfWriter write = PdfWriter.getInstance(document, baos);
             document.open();
@@ -238,25 +256,107 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
                     + this.getSolCedulaConductor(), timesNewRomanNormal(FONTSIZEGENERAL));
             PdfPCell celConductorPasajero = new PdfPCell();
             celConductorPasajero.addElement(pCondPasajero);
-            pCondPasajero = new Paragraph("\n" + this.getServidorPasajero() + "\n", timesNewRomanNormal(FONTSIZEGENERAL));
+            pCondPasajero = new Paragraph("\n" + this.getServidorPasajero(), timesNewRomanNormal(FONTSIZEGENERAL));
             celConductorPasajero.addElement(pCondPasajero);
-
+            celConductorPasajero.addElement(new Paragraph(" "));
             tableCuerpo.addCell(celConductorPasajero);
+
             /**
              * Fin Conductor pasajero
              */
             /**
              * Inicio datos vehiculo
              */
-            Paragraph pCaractVehiculo = new Paragraph("CARACTERISTICAS DEL VEHICULO",timesNewRomanBold(FONTSIZEGENERAL));
+            Paragraph pCaractVehiculo = new Paragraph("CARACTERISTICAS DEL VEHICULO", timesNewRomanBold(FONTSIZEGENERAL));
             pCaractVehiculo.setAlignment(Element.ALIGN_CENTER);
-            PdfPTable tableDatos = new PdfPTable(3);
-            PdfPCell cellDatosVehciulo = new PdfPCell();
-            
-            PdfPCell cellVehiculo  = new PdfPCell();
-            tableCuerpo.addCell(cellVehiculo);
+            PdfPTable tableDatosVehiculo = new PdfPTable(4);
+            PdfPCell celDatosVehciulo = new PdfPCell();
+
+            celDatosVehciulo = new PdfPCell(new Paragraph("Placa: ", timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableDatosVehiculo.addCell(celDatosVehciulo);
+
+            celDatosVehciulo = new PdfPCell(new Paragraph(this.getVehiculoPlaca(), timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableDatosVehiculo.addCell(celDatosVehciulo);
+
+            celDatosVehciulo = new PdfPCell(new Paragraph("Marca/Modelo: ", timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableDatosVehiculo.addCell(celDatosVehciulo);
+
+            celDatosVehciulo = new PdfPCell(new Paragraph(this.getVehiculoMarcaModelo(), timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableDatosVehiculo.addCell(celDatosVehciulo);
+
+            celDatosVehciulo = new PdfPCell(new Paragraph("Disco: ", timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableDatosVehiculo.addCell(celDatosVehciulo);
+
+            celDatosVehciulo = new PdfPCell(new Paragraph(this.getVehiculoDisco(), timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableDatosVehiculo.addCell(celDatosVehciulo);
+
+            celDatosVehciulo = new PdfPCell(new Paragraph("Color: ", timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableDatosVehiculo.addCell(celDatosVehciulo);
+
+            celDatosVehciulo = new PdfPCell(new Paragraph(this.getVehiculoColor(), timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableDatosVehiculo.addCell(celDatosVehciulo);
+
+            celDatosVehciulo = new PdfPCell(new Paragraph("Año matricula: ", timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableDatosVehiculo.addCell(celDatosVehciulo);
+
+            celDatosVehciulo = new PdfPCell(new Paragraph(this.getVehiculoAnio(), timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableDatosVehiculo.addCell(celDatosVehciulo);
+
+            celDatosVehciulo = new PdfPCell();
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableDatosVehiculo.addCell(celDatosVehciulo);
+            tableDatosVehiculo.addCell(celDatosVehciulo);
+
+            celDatosVehciulo = new PdfPCell(pCaractVehiculo);
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_CENTER);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableCuerpo.addCell(celDatosVehciulo);
+            Paragraph vacio = new Paragraph(" ");
+            vacio.setLeading(0.5f);
+            celDatosVehciulo = new PdfPCell(vacio);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableCuerpo.addCell(celDatosVehciulo);
+            celDatosVehciulo = new PdfPCell(tableDatosVehiculo);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
+            tableCuerpo.addCell(celDatosVehciulo);
             /**
              * Fin datos vehiculo
+             */
+            /**
+             * Inicio seccion firma encargado
+             */
+            Paragraph pfirmas = new Paragraph("\n\n\n\n\n\n\n\n" + Constantes.JefeUnidad, timesNewRomanNormal(FONTSIZEGENERAL));
+            PdfPCell celFirmas = new PdfPCell(pfirmas);
+            celFirmas.setHorizontalAlignment(Element.ALIGN_CENTER);
+            celFirmas.setBorder(Rectangle.NO_BORDER);
+            tableCuerpo.addCell(celFirmas);
+
+            celFirmas = new PdfPCell(new Paragraph(Constantes.CARGOUGT, timesNewRomanBold(FONTSIZEGENERAL)));
+            celFirmas.setHorizontalAlignment(Element.ALIGN_CENTER);
+            celFirmas.setBorder(Rectangle.NO_BORDER);
+            tableCuerpo.addCell(celFirmas);
+            /**
+             * Fin seccion firma encargado
              */
             PdfPCell cellBodyTLFH = new PdfPCell(tableCuerpo);
             tablaGeneral.addCell(cellBodyTLFH);
@@ -270,6 +370,74 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
 //        } catch (DocumentException e) {
         } catch (DocumentException | IOException e) {
         }
+        return baos;
+//        return result;
+    }
+
+    private String getVehiculoAnio() {
+        String result = "";
+        try {
+            if (this.getDVC_Vehiculo() != null) {
+                result = (this.getDVC_Vehiculo().getAnio() != null)
+                        ? String.valueOf(this.getDVC_Vehiculo().getAnio())
+                        : "";
+            }
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer anio de vehiculo", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+
+    private String getVehiculoColor() {
+        String result = "";
+        try {
+            result = (this.getDVC_Vehiculo() != null)
+                    ? this.getDVC_Vehiculo().getColor().toUpperCase()
+                    : "";
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer color de vehiculo", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+
+    private String getVehiculoDisco() {
+        String result = "";
+        try {
+            result = (this.getDVC_Vehiculo() != null)
+                    ? String.valueOf(this.getDVC_Vehiculo().getDisco())
+                    : "";
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer Disco de vehiculo", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+
+    private String getVehiculoPlaca() {
+        String result = "";
+        try {
+            result = (this.getDVC_Vehiculo() != null)
+                    ? this.getDVC_Vehiculo().getPlaca()
+                    : "";
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer placa de vehiculo", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+
+    private String getVehiculoMarcaModelo() {
+        String result = "";
+        try {
+            result = (this.getDVC_Vehiculo() != null)
+                    ? this.getDVC_Vehiculo().getMarca() + "/" + this.getDVC_Vehiculo().getModelo()
+                    : "";
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer marca/modelo de vehiculo", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
         return result;
     }
 
@@ -279,7 +447,7 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
             if (this.getViajeTotalPasajeros() > 0) {
                 if (this.getViajeTotalPasajeros() > 1) {
                     Tbpasajeros pasajero = this.getPasajeros().get(0).getTbpasajeros();
-                    result = "Nombres y Apellidos servidor: " + pasajero.getNombres() + " " + pasajero.getNombres() + "\nDNI:  " + pasajero.getCedula();
+                    result = "Nombres y Apellidos servidor: " + pasajero.getNombres() + " " + pasajero.getNombres() + "\nDNI: " + pasajero.getCedula();
                 } else {
                     Tbpasajeros pasajero = this.getViajeComision();
                 }
@@ -322,6 +490,21 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
                             break;
                         }
                     }
+                }
+            }
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer el conductor", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+
+    private Tbvehiculos getDVC_Vehiculo() {
+        Tbvehiculos result = null;
+        try {
+            if (this.getDisponibilidadvc() != null) {
+                if (this.getDisponibilidadvc().getMatricula() != null) {
+                    result = this.getDisponibilidadvc().getMatricula();
                 }
             }
         } catch (Exception e) {

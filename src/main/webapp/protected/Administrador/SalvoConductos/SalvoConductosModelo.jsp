@@ -60,7 +60,11 @@
                 int year = Calendar.getInstance().get(Calendar.YEAR);
                 Tbordenesmovilizaciones orden = new Tbordenesmovilizaciones();
                 orden.setFechagenerar(date);
-                orden.setKminicio(kminicio);
+                if (kminicio != null) {
+                    if (kminicio.length() > 0) {
+                        orden.setKminicio(kminicio);
+                    }
+                }
                 orden.setNumeroOrden(solicitud.getNumero() + "-UGT-" + year);
                 orden.setSolicitud(solicitud);
                 String resAUX = swOrdenMovilizacion.insertOrdenMovilizacion(g.toJson(orden));

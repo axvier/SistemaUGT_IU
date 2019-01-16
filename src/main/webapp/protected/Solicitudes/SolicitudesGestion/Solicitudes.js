@@ -176,8 +176,8 @@ var fncCombinarPDF = function (idform, idmodal) {
                         } else {
                             swalNormal("Completado", datos.respuesta, "error");
                         }
-                        fncRecargarJQG("tbSolicitudesNuevas", "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion", 
-                        "/SolicitudesControlador.jsp?opc=jsonSolicitudesProcesadas");
+                        fncRecargarJQG("tbSolicitudesNuevas", "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion",
+                                "/SolicitudesControlador.jsp?opc=jsonSolicitudesProcesadas");
                     },
                     error: function () {
                         window.location.reload();
@@ -707,7 +707,7 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                     $(".list-inline #" + idpdfmn).attr("onclick", null);
                 } else {
                     $(".list-inline #" + idpdfmn).removeClass("inactive");
-                    $(".list-inline #" + idpdfmn).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "')");
+                    $(".list-inline #" + idpdfmn).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "','"+rowData.numero+"')");
                 }
                 if (typeof rowData.viaje === "undefined") {
                     $(".list-inline #" + idviajemn).addClass("inactive");
@@ -752,10 +752,10 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                                 {
                                     title: "Fecha recibido",
                                     id: "btnRecibido_" + i,
-                                    onmouseover: "jQuery(this).addClass('ui-state-hover');",
-                                    onmouseout: "jQuery(this).removeClass('ui-state-hover');",
                                     click: function (e) {
-                                        fncFechaRecibidoSolicitud('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json"));
+                                        fncFechaRecibidoSolicitud('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json")),
+                                                onmouseover = jQuery(this).addClass('ui-state-hover'),
+                                                onmouseout = jQuery(this).removeClass('ui-state-hover');
                                     }
                                 }
 
@@ -784,10 +784,10 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                                 {
                                     title: "VISTO BUENO",
                                     id: "btnVistoBueno_" + i,
-                                    onmouseover: "jQuery(this).addClass('ui-state-hover');",
-                                    onmouseout: "jQuery(this).removeClass('ui-state-hover');",
                                     click: function (e) {
-                                        fnVistoBuenoSolicitud('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json"));
+                                        fnVistoBuenoSolicitud('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json")),
+                                                onmouseover = jQuery(this).addClass('ui-state-hover'),
+                                                onmouseout = jQuery(this).removeClass('ui-state-hover');
                                     }
                                 }
 
@@ -1008,7 +1008,7 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
                     $(".list-inline #" + idpdfmn).attr("onclick", null);
                 } else {
                     $(".list-inline #" + idpdfmn).removeClass("inactive");
-                    $(".list-inline #" + idpdfmn).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "')");
+                    $(".list-inline #" + idpdfmn).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "','"+rowData.numero+"')");
                 }
                 if (typeof rowData.viaje === "undefined") {
                     $(".list-inline #" + idviajemn).addClass("inactive");

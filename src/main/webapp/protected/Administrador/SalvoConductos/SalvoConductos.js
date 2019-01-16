@@ -26,7 +26,7 @@ var fncRecargarJQGenerarSalvo = function (idtabla) {
 
     $(".list-inline #" + idasigVCmn).addClass("inactive");
     $(".list-inline #" + idasigVCmn).attr("onclick", null);
-    
+
     fncRecargarJQG(idtabla, urlbase, urltabla);
 };
 
@@ -56,7 +56,7 @@ var fncModalGenerarSalvoConducto = function (idmodal, idtabla, rowid) {
 
 var saveOrdenSolicitud = function (idinputuri, idkminicio) {
     var dataJSON = decodeURI($("#" + idinputuri).val());
-    var km = $("#" + idkminicio).val();
+    var km = (typeof $("#" + idkminicio).val() !== "undefined") ? $("#" + idkminicio).val() : "";
     console.log(dataJSON);
     console.log(km);
     $.ajax({
@@ -245,7 +245,7 @@ var fncDibujarSolSalvoConducto = function (idtabla) {
                     $(".list-inline #" + idpdfmn).attr("onclick", null);
                 } else {
                     $(".list-inline #" + idpdfmn).removeClass("inactive");
-                    $(".list-inline #" + idpdfmn).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "')");
+                    $(".list-inline #" + idpdfmn).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "','"+rowData.numero+"')");
                 }
                 if (typeof rowData.viaje === "undefined") {
                     $(".list-inline #" + idviajemn).addClass("inactive");
@@ -351,4 +351,8 @@ var fncDibujarSolSalvoConducto = function (idtabla) {
         $grid.trigger("reloadGrid", [{page: 1, current: true}]);
         return false;
     });
+};
+
+var fncDibujaListaSalvoConductos = function (idtabla) {
+    
 };

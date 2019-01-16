@@ -92,16 +92,29 @@ public class GenerarSalvoConducto extends HttpServlet {
         try {
 
             String jsonSolicitud = java.net.URLDecoder.decode(request.getParameter("SolicitudGenerar"), "utf-8");
-            String kminicio = request.getParameter("kminicio");
             Tbsolicitudes solicitud = g.fromJson(jsonSolicitud, Tbsolicitudes.class);
             int year = Calendar.getInstance().get(Calendar.YEAR);
             response.setHeader("Content-disposition", "attachment; filename=" + solicitud.getNumero() + "_UGT_" + year + ".pdf");
 
             String jsonSolFull = swSolicitudes.getSolicitudFullID(solicitud.getNumero().toString());
             OrdenMovilizacionPDF ordenPDF = g.fromJson(jsonSolFull, OrdenMovilizacionPDF.class);
-//            ByteArrayOutputStream baos = ordenPDF.generarPDF();
+            String jsonOrden = swOrdenMovilizacion.filtarOrdenMovilizacionIDSol(ordenPDF.getSolicitud().getNumero().toString());
+            if (jsonOrden.length() > 2) {
+                Tbordenesmovilizaciones ord = g.fromJson(jsonOrden, Tbordenesmovilizaciones.class);
+                Calendar today = Calendar.getInstance();
+                SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00");
+                try {
+                    Date date = sf.parse(sf.format(today.getTime()));
+                    ord.setFechagenerar(date);
+                    swOrdenMovilizacion.modificaOrdenMovilizacionID(ord.getNumeroOrden(),g.toJson(ord));
+                } catch (ParseException ex) {
+                    Logger.getLogger(GenerarSalvoConducto.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                ordenPDF.setOrden(ord);
+            }
+            ByteArrayOutputStream baos = ordenPDF.generarPDF();
             OutputStream os = response.getOutputStream();
-//            baos.writeTo(os);
+            baos.writeTo(os);
             os.flush();
         } catch (JsonSyntaxException | IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en ejecutar el servlet generador de salvo conducto ", e.getClass().getName() + "****" + e.getMessage());

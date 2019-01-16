@@ -118,7 +118,7 @@
 
             String jsonObject = swSolicitudes.modificarSolicitudID(solActualizar.getNumero().toString(), g.toJson(solActualizar));
             if (jsonObject.length() > 2) {
-                session.setAttribute("statusGuardar", "Fehca solicitud actualzido");
+                session.setAttribute("statusGuardar", "Fecha solicitud actualizado");
                 session.setAttribute("statusCodigo", "OK");
             } else {
                 session.setAttribute("statusGuardar", "ERROR NO SE HA PODIDO actualizar la fecha de la solicitud");

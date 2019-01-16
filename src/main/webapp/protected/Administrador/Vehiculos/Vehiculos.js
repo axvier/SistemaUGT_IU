@@ -142,7 +142,7 @@ var fncDibujarTableVehiculos = function () {
             {label: 'Disco', name: 'disco', width: 60, editable: true},
             {label: 'Marca', name: 'marca', width: 110, editable: true},
             {label: 'Modelo', name: 'modelo', width: 110, editable: true},
-            {label: 'Año', name: 'anio', width: 100},
+            {label: 'Año matricula', name: 'anio', width: 100, editable:true},
             {label: 'Color', name: 'color', width: 100, editable: true},
             {label: 'Descripcion', name: 'descripcion', width: 150, editable: true, search: false,
                 edittype: "textarea",
