@@ -16,9 +16,12 @@ import java.io.OutputStream;
 import java.util.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
+import ugt.entidades.Tbordenesmovilizaciones;
 import ugt.entidades.Tbpdf;
 import ugt.entidades.Tbusuariosentidad;
 import ugt.pdf.iu.classpdf;
+import ugt.salvoconducto.OrdenMovilizacionPDF;
+import ugt.servicios.swOrdenMovilizacion;
 import ugt.servicios.swPDF;
 import ugt.servicios.swSeccionSolicitante;
 import ugt.servicios.swSolicitudes;
@@ -59,20 +62,29 @@ public class NewMain {
 //        out.close();
 //        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler out.pdf");
 //        g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-        String solTitulos = "Dr. Giovanni Xavier Aranda Cóndor";
-        String solRolEntidad = "Director de la Escuela Ingeniería en Sistemas";
-        String entidadrol = swSeccionSolicitante.buscarEntidadSolicitante("1804789830", "1");
-        String jsonSolicitud = swSolicitudes.getSolicitudFullID("34");
+//        String solTitulos = "Dr. Giovanni Xavier Aranda Cóndor";
+//        String solRolEntidad = "Director de la Escuela Ingeniería en Sistemas";
+//        String entidadrol = swSeccionSolicitante.buscarEntidadSolicitante("1804789830", "1");
+//        String jsonSolicitud = swSolicitudes.getSolicitudFullID("39");
 //        Solicitudesfull full = g.fromJson(jsonSolicitud, Solicitudesfull.class);
-        SolicitudPDF solPDF = g.fromJson(jsonSolicitud, SolicitudPDF.class);
-        solPDF.setEntidadrol(g.fromJson(entidadrol, Tbusuariosentidad.class));
-        solPDF.setSolicitanteTitulos(solTitulos);
-        solPDF.setSolicitantRolEntidad(solRolEntidad);
-//        String ruta = solPDF.generarPDF();
-//        System.out.println(ruta);
-//        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
-//        System.out.println("solicitudes full() => " + full.getSolicitud().getNumero());
-        
+//        SolicitudPDF solPDF = g.fromJson(jsonSolicitud, SolicitudPDF.class);
+//        solPDF.setEntidadrol(g.fromJson(entidadrol, Tbusuariosentidad.class));
+//        solPDF.setEntidadrol(g.fromJson(entidadrol, Tbusuariosentidad.class));
+//        solPDF.setEntidadrol(g.fromJson(entidadrol, Tbusuariosentidad.class));
+//        solPDF.setSolicitanteTitulos(solTitulos);
+//        solPDF.setSolicitantRolEntidad(solRolEntidad);
+        String jsonSolFull = swSolicitudes.getSolicitudFullID("98");
+        OrdenMovilizacionPDF ordenPDF = g.fromJson(jsonSolFull, OrdenMovilizacionPDF.class);
+        String jsonOrden = swOrdenMovilizacion.filtarOrdenMovilizacionIDSol(ordenPDF.getSolicitud().getNumero().toString());
+        if(jsonOrden.length()>2){
+            Tbordenesmovilizaciones ord = g.fromJson(jsonOrden, Tbordenesmovilizaciones.class);
+            ordenPDF.setOrden(ord);
+        }
+        String ruta = ordenPDF.generarPDF();
+        System.out.println(ruta);
+        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
+        System.out.println("solicitudes full() => " + ordenPDF.getSolicitud().getNumero());
+
     }
 
 }

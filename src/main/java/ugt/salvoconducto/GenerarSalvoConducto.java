@@ -99,9 +99,9 @@ public class GenerarSalvoConducto extends HttpServlet {
 
             String jsonSolFull = swSolicitudes.getSolicitudFullID(solicitud.getNumero().toString());
             OrdenMovilizacionPDF ordenPDF = g.fromJson(jsonSolFull, OrdenMovilizacionPDF.class);
-            ByteArrayOutputStream baos = ordenPDF.generarPDF();
+//            ByteArrayOutputStream baos = ordenPDF.generarPDF();
             OutputStream os = response.getOutputStream();
-            baos.writeTo(os);
+//            baos.writeTo(os);
             os.flush();
         } catch (JsonSyntaxException | IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en ejecutar el servlet generador de salvo conducto ", e.getClass().getName() + "****" + e.getMessage());

@@ -24,4 +24,10 @@ public class Constantes {
 //    public static final String CAMBRIA = "/src/main/resources/font/Cambria.ttf";
     public static final String CAMBRIA = "/font/Cambria.ttf";
     //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Direccion imagen logo ordenes">
+    public static final String SRCIMGENORDEN = "D:/Neatbeans/Proyectos/sistema ugt/SistemaUGT_IU/src/main/webapp/assets/img/logo_espoch_rojo.png";
+    //</editor-fold>
+    
+    
 }
