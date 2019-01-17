@@ -389,14 +389,18 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
         datatype: "json",
         colModel: [
             {label: 'ID', name: 'numero', jsonmap: "solicitud.numero", key: true, width: 50, editable: false, align: 'center', sorttype: 'integer'},
-            {label: 'fecha', name: 'fecha', jsonmap: "solicitud.fecha", width: 80, editable: false,
+            {label: 'Numero', name: 'numero', jsonmap: "ordenMovilzicion.numeroOrden", width: 100, editable: false, align: 'center'},
+            {label: 'Fecha Gen', name: 'fecha', jsonmap: "ordenMovilzicion.fechagenerar", width: 90, editable: false, sorttype: 'date',
+                autoResizing: { minColWidth: 85 },
                 formatter: 'date',
                 formatoptions: {
                     srcformat: "ISO8601Long",
-                    newformat: 'Y-m-d'
+                    newformat: 'Y-m-d H:i'
                 }
             },
-            {label: 'Requisitos PDF', name: 'idpdf', jsonmap: "solicitud.idpdf", width: 80, editable: false, align: 'center',
+            {label: 'Km Inicio', name: 'kminicio', jsonmap: "ordenMovilzicion.kminicio", width: 100, editable: true, search: false, sortable: false},
+            {label: 'Km Fin', name: 'kmfin', jsonmap: "ordenMovilzicion.kmfin", width: 100, editable: true, search: false, sortable: false},
+            {label: 'PDF subido', name: 'idpdf', jsonmap: "ordenMovilzicion.idpdf", width: 50, editable: false, search: false, sortable: false,
                 formatter: function (cellvalue, opts) {
                     if (typeof cellvalue !== "undefined")
                         return 'SI';
@@ -404,8 +408,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                         return 'No';
                 }
             },
-            {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 140, editable: false, search: false, sortable: false},
-            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: true,
+            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: false, search: true,
                 edittype: 'select',
                 editoptions: {
                     value: 'aprobada:aprobada;asignada:asignada;enviada:inicio'
@@ -424,10 +427,10 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                         return cellvalue;
                 }
             },
-            {label: 'Observación', name: 'observacion', jsonmap: "solicitud.observacion", width: 140, editable: true, search: false, sortable: false,
+            {label: 'Observación', name: 'observacion', jsonmap: "solicitud.observacion", width: 150, editable: true, search: false, sortable: false,
                 edittype: 'textarea',
                 editoptions: {
-                    cols: 38,
+                    cols: 34,
                     rows: 5
                 }
             },
@@ -492,7 +495,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                 }
             },
             {
-                label: "Generar",
+                label: "Opciones",
                 name: "actions",
                 sortable: false,
                 search: false,
@@ -501,7 +504,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                 formatoptions: {
                     keys: true,
                     delbutton: false,
-                    editbutton: false,
+                    editbutton: true,
                     editOptions: {},
                     addOptions: {},
                     delOptions: {
@@ -522,7 +525,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
 //            console.log(encodes);
             return {"data-json": encodes};
         },
-        rownumbers: true,
+//        rownumbers: true,
         viewrecords: true,
         width: 780,
         height: 450,
@@ -542,7 +545,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                 idpdf: rowData.idpdf,
                 numero: rowData.numero
             };
-            return {opc: "modificarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero, numero: postdata.numero};
+//            return {opc: "modificarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero, numero: postdata.numero};
         },
         onSelectRow: function (rowid, selected) {
             if (typeof rowid !== 'undefined') {
@@ -602,7 +605,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
         },
         loadComplete: function () {
             var grid = $grid,
-                    iCol = 12; // 'act' - columna donde esta los botones de acciones
+                    iCol = 13; // 'act' - columna donde esta los botones de acciones
             var i = 0;
             grid.children("tbody")
                     .children("tr.jqgrow")
@@ -615,7 +618,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                                 {
                                     title: "GENERAR SALVOCONDUCTO",
                                     id: "btnGenerar_" + i,
-                                    href: "GenerarSalvoConducto?SolicitudGenerar="+obj,
+                                    href: "GenerarSalvoConducto?SolicitudGenerar=" + obj,
                                     click: function (e) {
                                         onmouseover = jQuery(this).addClass('ui-state-hover'),
                                                 onmouseout = jQuery(this).removeClass('ui-state-hover');
