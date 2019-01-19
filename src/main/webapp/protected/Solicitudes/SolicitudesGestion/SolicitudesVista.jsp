@@ -147,7 +147,7 @@
             </div>
             <div class="widget-content">
                 <div id="jqgrid-wrapper">
-                    <table id="tbSolicitudesNuevas" class="table table-striped table-hover">
+                    <table id="tbSolicitudesNuevas" class="table table-hover">
                         <thead>
                             <tr>
                                 <th>id</th>
@@ -248,7 +248,7 @@
             </div>
             <div class="widget-content">
                 <div id="jqgrid-wrapper">
-                    <table id="tbSolicitudesNuevas" class="table table-striped table-hover">
+                    <table id="tbSolicitudesNuevas" class="table table-hover">
                         <thead>
                             <tr>
                                 <th>id</th>

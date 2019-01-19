@@ -26,6 +26,16 @@
                 String idSolicitud = request.getParameter("idSolicitud");
                 session.setAttribute("idSolicitud", idSolicitud);
                 response.sendRedirect("SalvoConductosModelo.jsp?opc=" + opc);
+            } else if (opc.equals("modificarSolicitud")) {
+                String jsonSolicitud = request.getParameter("jsonSolicitud");
+                session.setAttribute("jsonSolicitud", jsonSolicitud);
+                String idSolicitud = request.getParameter("idSolicitud");
+                session.setAttribute("idSolicitud", idSolicitud);
+                String jsonOrden = request.getParameter("jsonOrden");
+                session.setAttribute("jsonOrden", jsonOrden);
+                String idOrden = request.getParameter("idOrden");
+                session.setAttribute("idOrden", idOrden);
+                response.sendRedirect("SalvoConductosModelo.jsp?opc=" + opc);
             } else if (opc.equals("saveOrdenMov")) {
                 String jsonSolicitud = request.getParameter("jsonSolicitud");
                 session.setAttribute("jsonSolicitud", jsonSolicitud);

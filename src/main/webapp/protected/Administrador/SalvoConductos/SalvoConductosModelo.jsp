@@ -4,6 +4,7 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="org.json.JSONObject"%>
 <%@page import="ugt.entidades.Tbordenesmovilizaciones"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -30,7 +31,7 @@
             } else {
                 response.sendRedirect("SalvoConductosControlador.jsp?opc=mostrar&accion=jsonVacio");
             }
-        }else if (opc.equals("jsonFullOrdenes")) {
+        } else if (opc.equals("jsonFullOrdenes")) {
             String arrayJSON = swOrdenMovilizacion.listarOrdenesFullSol();
             if (arrayJSON.length() > 2) {
                 session.setAttribute("arrayJSON", arrayJSON);
@@ -49,6 +50,31 @@
                 session.setAttribute("statusCodigo", "OK");
             } else {
                 session.setAttribute("statusMod", "Error al intentar acuatlizar los datos - contacte con el proveedor");
+                session.setAttribute("statusCodigo", "KO");
+            }
+            response.sendRedirect("SalvoConductosControlador.jsp?opc=mostrar&accion=modificarStatus");
+        } else if (opc.equals("modificarOrden")) {
+            String idSolicitud = (String) session.getAttribute("idSolicitud");
+            String jsonsSolicitud = (String) session.getAttribute("jsonSolicitud");
+            String idOrden = (String) session.getAttribute("idOrden");
+            String jsonsOrden = (String) session.getAttribute("jsonOrden");
+            session.setAttribute("idSolicitud", null);
+            session.setAttribute("jsonSolicitud", null);
+            session.setAttribute("idOrden", null);
+            session.setAttribute("jsonOrdenv", null);
+            String jsonMod = swSolicitudes.modificarSolicitudID(idSolicitud, jsonsSolicitud);
+            if (jsonMod.length() > 2) {
+                JSONObject objOrden = new JSONObject(jsonsOrden);
+                objOrden.append("solicitud", jsonMod);
+                if (swOrdenMovilizacion.modificaOrdenMovilizacionID(objOrden.getString("numeroOrden"), objOrden.toString()).length() > 2) {
+                    session.setAttribute("statusMod", "Se ha actualizado los datos orden solicitud");
+                    session.setAttribute("statusCodigo", "OK");
+                } else {
+                    session.setAttribute("statusMod", "Error al intentar acuatlizar los datos orden solicitud- contacte con el proveedor");
+                    session.setAttribute("statusCodigo", "KO");
+                }
+            } else {
+                session.setAttribute("statusMod", "Error al intentar acuatlizar los datos solicitud orden- contacte con el proveedor");
                 session.setAttribute("statusCodigo", "KO");
             }
             response.sendRedirect("SalvoConductosControlador.jsp?opc=mostrar&accion=modificarStatus");

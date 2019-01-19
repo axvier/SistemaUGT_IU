@@ -184,22 +184,22 @@ var fncDibujarTablaConductor = function () {
         datatype: "json",
         colModel: [
             {label: 'Cédula', name: 'cedula', key: true, width: 100},
-            {label: 'Nombres', name: 'nombres', width: 150, editable: true},
-            {label: 'Apellidos', name: 'apellidos', width: 150, editable: true},
-            {label: 'Género', name: 'genero', width: 90, editable: true,
+            {label: 'Nombres', name: 'nombres', width: 150, editable: true, editrules:{required:true}},
+            {label: 'Apellidos', name: 'apellidos', width: 150, editable: true, editrules:{required:true}},
+            {label: 'Género', name: 'genero', width: 90, editable: true, editrules:{required:true},
                 edittype: 'select',
                 editoptions: {
                     value: 'Masculino:Masculino;Femenino:Femenino;Otros:Otros'
                 }
             },
-            {label: 'Estado', name: 'estado', width: 90, editable: true,
+            {label: 'Estado', name: 'estado', width: 90, editable: true, editrules:{required:true},
                 edittype: 'select',
                 search: false,
                 editoptions: {
                     value: 'Disponible:Disponible;Ocupado:Ocupado'
                 }
             },
-            {label: 'Fecha Nacimiento', name: 'fechanac', width: 120,
+            {label: 'Fecha Nacimiento', name: 'fechanac', width: 120, editrules:{required:true,date : true},
                 formatter: 'date',
                 formatoptions: {
                     srcformat: "ISO8601Long",
@@ -214,7 +214,6 @@ var fncDibujarTablaConductor = function () {
                         });
                     }
                 },
-                editrules: {date: true},
                 search: false
             },
             {label: 'Observación', name: 'observacion', width: 160, search: false, sortable: false, editable: true,
@@ -258,6 +257,8 @@ var fncDibujarTablaConductor = function () {
         serializeRowData: function (postdata) {
             delete postdata.oper;
             postdata.fechanac = postdata.fechanac + "T00:00:00-05:00";
+            if (typeof postdata.observacion === "undefined" || postdata.observacion === null || postdata.observacion === "")
+                delete postdata.observacion;
             return {opc: "modificarConductor", jsonConductor: JSON.stringify(postdata), cedula: postdata.cedula};
         },
         onSelectRow: function (rowid, selected) {

@@ -127,7 +127,7 @@ var fncModSubirCombinarPDF = function (idmodal, idtabla, rowid) {
         solicitud.numero = objeto.numero;
         if (typeof objeto.idpdf !== "undefined")
             solicitud.idpdf = objeto.idpdf;
-        if (typeof objeto.observacion !== "undefined")
+        if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null)
             solicitud.observacion = objeto.observacion;
 
         $('#' + idmodal + ' .modal-content').load(
@@ -295,7 +295,7 @@ var fncFechaRecibidoSolicitud = function (idmodal, idtabla, data) {
         solicitud.numero = objeto.numero;
         if (typeof objeto.idpdf !== "undefined")
             solicitud.idpdf = objeto.idpdf;
-        if (typeof objeto.observacion !== "undefined")
+        if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null)
             solicitud.observacion = objeto.observacion;
         $.ajax({
             url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
@@ -335,7 +335,7 @@ var fnVistoBuenoSolicitud = function (idmodal, idtabla, data) {
         solicitud.numero = objeto.numero;
         if (typeof objeto.idpdf !== "undefined")
             solicitud.idpdf = objeto.idpdf;
-        if (typeof objeto.observacion !== "undefined")
+        if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null)
             solicitud.observacion = objeto.observacion;
         $.ajax({
             url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
@@ -841,6 +841,7 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
 };
 
 var fncDibujarSolicitudesProcesadas = function (idtabla) {
+    var estados = 'rechazada:rechazada;asignada:asignada;finalizada:finalizada';
     contagenda = 0;
     var $grid = $("#" + idtabla);
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
@@ -851,14 +852,14 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
         datatype: "json",
         colModel: [
             {label: 'ID', name: 'numero', jsonmap: "solicitud.numero", key: true, width: 50, editable: false, align: 'center', sorttype: 'integer'},
-            {label: 'fecha', name: 'fecha', jsonmap: "solicitud.fecha", width: 80, editable: false,
+            {label: 'fecha', name: 'fecha', jsonmap: "solicitud.fecha", width: 50, editable: false,
                 formatter: 'date',
                 formatoptions: {
                     srcformat: "ISO8601Long",
                     newformat: 'Y-m-d'
                 }
             },
-            {label: 'Requisitos PDF', name: 'idpdf', jsonmap: "solicitud.idpdf", width: 80, editable: false, align: 'center',
+            {label: 'Requisitos PDF', name: 'idpdf', jsonmap: "solicitud.idpdf", width: 30, editable: false, align: 'center',
                 formatter: function (cellvalue, opts) {
                     if (typeof cellvalue !== "undefined")
                         return 'SI';
@@ -866,11 +867,11 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
                         return 'No';
                 }
             },
-            {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 140, editable: false, search: false, sortable: false},
-            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: true,
+            {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 120, editable: false, search: false, sortable: false},
+            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 50, editable: true, search: true,
                 edittype: 'select',
                 editoptions: {
-                    value: 'enviado:enviado;rechazada:rechazada'
+                    value: estados
                 },
                 align: 'center',
                 formatter: function (cellvalue, options, rowObject) {
@@ -886,7 +887,7 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
                         return cellvalue;
                 }
             },
-            {label: 'Observación', name: 'observacion', jsonmap: "solicitud.observacion", width: 140, editable: true, search: false, sortable: false,
+            {label: 'Observación', name: 'observacion', jsonmap: "solicitud.observacion", width: 120, editable: true, search: false, sortable: false,
                 edittype: 'textarea',
                 editoptions: {
                     cols: 30
@@ -945,11 +946,11 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
                 name: "actions",
                 sortable: false,
                 search: false,
-                width: 50,
+                width: 40,
                 formatter: "actions",
                 formatoptions: {
                     keys: true,
-                    editbutton: false,
+                    editbutton: true,
                     delbutton: false,
                     editOptions: {},
                     addOptions: {},
@@ -989,6 +990,9 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
                 idpdf: rowData.idpdf,
                 numero: rowData.numero
             };
+            if (typeof postdata.observacion === "undefined" || postdata.observacion === null || postdata.observacion === "")
+                delete solicitud.observacion;
+            console.log({opc: "modificarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero});
             return {opc: "modificarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero};
         },
         onSelectRow: function (rowid, selected) {
@@ -1046,36 +1050,36 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
                 $(".list-inline #" + idasigVCmn).removeClass("inactive");
                 $(".list-inline #" + idasigVCmn).attr("onclick", "disponibilidadVCSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");
             }
-        },
-        loadComplete: function () {
-            var grid = $grid,
-                    iCol = 11; // 'act' - name of the actions column
-            grid.children("tbody")
-                    .children("tr.jqgrow")
-                    .children("td:nth-child(" + (iCol + 1) + ")")
-                    .each(function () {
-                        var i = 0;
-                        var data = JSON.parse(decodeURI($("#" + idtabla + " #" + $(this).closest("tr.jqgrow").attr("id")).attr("data-json")));
-                        if (data.estado === "aprobada" || data.estado === "finalizada") {
-                            /**creación y asignación del botón para comibnar un pdf con los demas requerimientos*/
-                            $("<div>",
-                                    {
-                                        title: "Subir y combinar PDF",
-                                        id: "btnRecibido_" + i,
-                                        onmouseover: "jQuery(this).addClass('ui-state-hover');",
-                                        onmouseout: "jQuery(this).removeClass('ui-state-hover');",
-                                        click: function (e) {
-                                            fncModSubirCombinarPDF('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("id"));
-                                        }
-                                    }
-
-                            ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
-                                    .addClass("ui-pg-div ui-inline-edit")
-                                    .append('<span class="fa fa-upload fa-2x text-primary"></span>')
-                                    .appendTo($(this).children("div"));
-                        }
-                        i++;
-                    });
+//        },
+//        loadComplete: function () {
+//            var grid = $grid,
+//                    iCol = 11; // 'act' - name of the actions column
+//            grid.children("tbody")
+//                    .children("tr.jqgrow")
+//                    .children("td:nth-child(" + (iCol + 1) + ")")
+//                    .each(function () {
+//                        var i = 0;
+//                        var data = JSON.parse(decodeURI($("#" + idtabla + " #" + $(this).closest("tr.jqgrow").attr("id")).attr("data-json")));
+//                        if (data.estado === "aprobada" || data.estado === "finalizada") {
+//                            /**creación y asignación del botón para comibnar un pdf con los demas requerimientos*/
+//                            $("<div>",
+//                                    {
+//                                        title: "Subir y combinar PDF",
+//                                        id: "btnRecibido_" + i,
+//                                        onmouseover: "jQuery(this).addClass('ui-state-hover');",
+//                                        onmouseout: "jQuery(this).removeClass('ui-state-hover');",
+//                                        click: function (e) {
+//                                            fncModSubirCombinarPDF('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("id"));
+//                                        }
+//                                    }
+//
+//                            ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
+//                                    .addClass("ui-pg-div ui-inline-edit")
+//                                    .append('<span class="fa fa-upload fa-2x text-primary"></span>')
+//                                    .appendTo($(this).children("div"));
+//                        }
+//                        i++;
+//                    });
         }
     });
 

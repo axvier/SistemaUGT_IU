@@ -30,6 +30,40 @@ var fncRecargarJQGenerarSalvo = function (idtabla) {
     fncRecargarJQG(idtabla, urlbase, urltabla);
 };
 
+var fncRecargarJQGenerarSalvoDNuevo = function (idtabla,estado) {
+    var urltabla = "/SalvoConductosControlador.jsp?opc="+estado;
+    var idviajemn = "mnViajeSol";
+    var idpasajmn = "mnPasjerosSol";
+    var idpdfmn = "mnReqPDF";
+    var idasigVCmn = "mnAsignarV_C";
+    var idUsuarioSolmn = "mnUsuarioSol";
+    var idObservacionSolmn = "mnobservacion";
+    var idordenPDF = "mnOrdenPDF";
+
+    $(".list-inline #" + idpdfmn).addClass("inactive");
+    $(".list-inline #" + idpdfmn).attr("onclick", null);
+    
+    $(".list-inline #" + idordenPDF).addClass("inactive");
+    $(".list-inline #" + idordenPDF).attr("onclick", null);
+
+    $(".list-inline #" + idviajemn).addClass("inactive");
+    $(".list-inline #" + idviajemn).attr("onclick", null);
+
+    $(".list-inline #" + idpasajmn).addClass("inactive");
+    $(".list-inline #" + idpasajmn).attr("onclick", null);
+
+    $(".list-inline #" + idUsuarioSolmn).addClass("inactive");
+    $(".list-inline #" + idUsuarioSolmn).attr("onclick", null);
+
+    $(".list-inline #" + idObservacionSolmn).addClass("inactive");
+    $(".list-inline #" + idObservacionSolmn).attr("onclick", null);
+
+    $(".list-inline #" + idasigVCmn).addClass("inactive");
+    $(".list-inline #" + idasigVCmn).attr("onclick", null);
+
+    fncRecargarJQG(idtabla, urlbase, urltabla);
+};
+
 var fncRecargarJQGListaSalvo = function (idtabla) {
     var urltabla = "/SalvoConductosControlador.jsp?opc=jsonFullOrdenes";
     var idviajemn = "mnViajeSol";
@@ -67,10 +101,10 @@ var fncModalGenerarSalvoConducto = function (idmodal, idtabla, rowid) {
         var solicitud = {};
         solicitud.estado = objeto.estado;
         solicitud.fecha = objeto.fecha;
-        solicitud.numero = objeto.numero;
+        solicitud.solicitud = objeto.numero;
         if (typeof objeto.idpdf !== "undefined")
             solicitud.idpdf = objeto.idpdf;
-        if (typeof objeto.observacion !== "undefined")
+        if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null)
             solicitud.observacion = objeto.observacion;
         $('#' + idmodal + ' .modal-content').load('protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=mostrar&accion=modGenerarSalvoConducto', function () {
             $('#' + idmodal + ' .modal-body #formGenSalvoC').attr("action", "GenerarSalvoConducto");
@@ -79,6 +113,47 @@ var fncModalGenerarSalvoConducto = function (idmodal, idtabla, rowid) {
             $('#' + idmodal).modal({show: true});
         });
     }
+};
+
+var fncModalGenerarSalvoConductoDNuevo = function (idmodal, idtabla, rowid) {
+    var data = $("#" + idtabla + " #" + rowid).attr("data-json");
+    var objeto = JSON.parse(decodeURI(data));
+    if (typeof objeto !== "undefined") {
+        var rowData = $("#" + idtabla).jqGrid('getRowData', rowid);
+        var solicitud = objeto.jsonsolicitud;
+        delete solicitud.observacion;
+        if (typeof rowData.observacion !== "undefined" && rowData.observacion !== "" && rowData.observacion !== null) {
+            solicitud.observacion = rowData.observacion;
+        }
+        $('#' + idmodal + ' .modal-content').load('protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=mostrar&accion=modGenerarSalvoConductoDNuevo', function () {
+            $('#' + idmodal + ' .modal-body #formGenSalvoC').attr("action", "GenerarSalvoConducto");
+            $("#" + idmodal + " #SolicitudGenerar").val(encodeURI(JSON.stringify(solicitud)));
+            $("#" + idmodal + " #titlemodGeneralSalvoConducto").html(" Solicitud " + solicitud.numero.toString() + " | Generar salvo conducto ");
+            $('#' + idmodal).modal({show: true});
+        });
+    }
+};
+
+var saveOrdenSolicitudDNuevo = function (idinputuri, idkminicio) {
+    var dataJSON = decodeURI($("#" + idinputuri).val());
+    var km = (typeof $("#" + idkminicio).val() !== "undefined") ? $("#" + idkminicio).val() : "";
+    console.log(dataJSON);
+    console.log(km);
+    $.ajax({
+        url: "protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp",
+        type: "GET",
+        data: {opc: "saveOrdenMov", jsonSolicitud: dataJSON, kminicio: km},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            console.log(datos);
+            fncRecargarJQGenerarSalvoDNuevo("tbSolSalvoConducto","jsonFullOrdenes");
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    }).always(function () {
+        return true;
+    });
 };
 
 var saveOrdenSolicitud = function (idinputuri, idkminicio) {
@@ -101,6 +176,22 @@ var saveOrdenSolicitud = function (idinputuri, idkminicio) {
     }).always(function () {
         return true;
     });
+};
+
+var disponVCSolOrdenModal = function (idmodal, idtabla, data) {
+    console.log(data);
+    var $grid = $("#" + idtabla);
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        swalTimerLoading("Consultado datos", "Esto puede tardar un momento...", 9000);
+        var dcodes = decodeURI(data);
+        var objeto = JSON.parse(dcodes);
+        $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + objeto.solicitud, function () {
+            swal.close();
+            $('#' + idmodal).modal({show: true});
+        });
+    } else
+        swalTimer("Solicitud", "Seleccione una solicitud", "error");
 };
 
 var fncDibujarSolSalvoConducto = function (idtabla) {
@@ -388,19 +479,63 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
         mtype: "POST",
         datatype: "json",
         colModel: [
-            {label: 'ID', name: 'numero', jsonmap: "solicitud.numero", key: true, width: 50, editable: false, align: 'center', sorttype: 'integer'},
-            {label: 'Numero', name: 'numero', jsonmap: "ordenMovilzicion.numeroOrden", width: 100, editable: false, align: 'center'},
-            {label: 'Fecha Gen', name: 'fecha', jsonmap: "ordenMovilzicion.fechagenerar", width: 90, editable: false, sorttype: 'date',
-                autoResizing: { minColWidth: 85 },
+            {label: 'Solicitud', name: 'solicitud', jsonmap: "solicitud.numero", width: 50, editable: false, align: 'center', sorttype: 'integer'},
+            {label: 'Numero', name: 'numero', jsonmap: "ordenMovilzicion.numeroOrden", width: 100, editable: false, align: 'center', key: true},
+            {label: 'Fecha Gen', name: 'fechagenerar', jsonmap: "ordenMovilzicion.fechagenerar", width: 90, editable: false, sorttype: 'date',
+                autoResizing: {minColWidth: 85},
                 formatter: 'date',
                 formatoptions: {
                     srcformat: "ISO8601Long",
                     newformat: 'Y-m-d H:i'
                 }
             },
-            {label: 'Km Inicio', name: 'kminicio', jsonmap: "ordenMovilzicion.kminicio", width: 100, editable: true, search: false, sortable: false},
-            {label: 'Km Fin', name: 'kmfin', jsonmap: "ordenMovilzicion.kmfin", width: 100, editable: true, search: false, sortable: false},
-            {label: 'PDF subido', name: 'idpdf', jsonmap: "ordenMovilzicion.idpdf", width: 50, editable: false, search: false, sortable: false,
+            {label: 'Km Inicio', name: 'kminicio', jsonmap: "ordenMovilzicion.kminicio", width: 100, editable: true, search: false, sortable: false,
+                editrules: {
+                    required: true,
+                    custom: true,
+                    custom_func: function (value, colname) {
+                        if (value.indexOf('+') > -1 || value.indexOf('-') > -1 || value.indexOf(',') > -1 || value.indexOf(' ') > -1)
+                            return [false, "KM Fin solo admite números idx"];
+                        if (parseFloat(value) === "NaN")
+                            return [false, "KM fin solo admite números prs"];
+                        else
+                            return [true, ""];
+                        if (isNaN(value))
+                            return [false, "KM Fin solo admite números nan"];
+                        else
+                            return [true, ""];
+
+                    }
+                }
+            },
+            {label: 'Km Fin', name: 'kmfin', jsonmap: "ordenMovilzicion.kmfin", width: 100, editable: true, search: false, sortable: false,
+                editrules: {
+                    required: true,
+                    custom: true,
+                    custom_func: function (value, colname) {
+                        if (value.indexOf('+') > -1 || value.indexOf('-') > -1 || value.indexOf(',') > -1 || value.indexOf(' ') > -1)
+                            return [false, "KM Fin solo admite números idx"];
+                        if (parseFloat(value) === "NaN")
+                            return [false, "KM fin solo admite números prs"];
+                        else
+                            return [true, ""];
+                        if (isNaN(value))
+                            return [false, "KM Fin solo admite números nan"];
+                        else
+                            return [true, ""];
+
+                    }
+                }
+            },
+            {label: 'PDF req.', name: 'idpdfreq', jsonmap: "solicitud.idpdf", width: 50, editable: false, search: false, sortable: false,
+                formatter: function (cellvalue, opts) {
+                    if (typeof cellvalue !== "undefined")
+                        return 'SI';
+                    else
+                        return 'No';
+                }
+            },
+            {label: 'PDF orden', name: 'idpdf', jsonmap: "ordenMovilzicion.idpdf", width: 50, editable: false, search: false, sortable: false,
                 formatter: function (cellvalue, opts) {
                     if (typeof cellvalue !== "undefined")
                         return 'SI';
@@ -482,7 +617,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                     }
                 }
             },
-            {label: 'Solicitud', name: 'solicitud', width: 130, jsonmap: "solicitud", editable: false,
+            {label: 'Solicitud', name: 'jsonsolicitud', width: 130, jsonmap: "ordenMovilzicion.solicitud", editable: false,
                 editrules: {
                     required: true,
                     edithidden: true
@@ -534,18 +669,22 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
         loadonce: true,
         pager: "#" + idtabla + "_pager",
         serializeRowData: function (postdata) {
-            var rowDatajqg = $grid.jqGrid('getRowData', postdata.numero);
-            var data = $("#" + idtabla + " #" + postdata.numero).attr("data-json");
-            var rowData = JSON.parse(decodeURI(data));
-            postdata.numero = rowData.numero;
-            var solicitud = {
-                estado: postdata.estado,
-                fecha: rowData.fecha,
-                observacion: postdata.observacion,
-                idpdf: rowData.idpdf,
-                numero: rowData.numero
+            var rowData = $grid.jqGrid('getRowData', postdata.numero);
+            var data = JSON.parse(decodeURI($("#" + idtabla + " #" + postdata.numero).attr("data-json")));
+
+            var orden = {
+                fechagenerar: rowData.fechagenerar,
+                idpdf: data.idpdf,
+                kmfin: postdata.kmfin,
+                kminicio: postdata.kminicio,
+                numeroOrden: rowData.numero
             };
-//            return {opc: "modificarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero, numero: postdata.numero};
+            var solicitud = data.jsonsolicitud;
+            if (typeof postdata.observacion !== "undefined" && postdata.observacion !== "" && postdata.observacion !== null)
+                solicitud.observacion = postdata.observacion;
+            else
+                delete solicitud.observacion;
+            return {opc: "modificarOrden", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero, jsonOrden: JSON.stringify(orden), idOrden: orden.numeroOrden};
         },
         onSelectRow: function (rowid, selected) {
             if (typeof rowid !== 'undefined') {
@@ -558,13 +697,22 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                 var idasigVCmn = "mnAsignarV_C";
                 var idUsuarioSolmn = "mnUsuarioSol";
                 var idObservacionSolmn = "mnobservacion";
+                var idordenPDF = "mnOrdenPDF";
 
-                if (typeof rowData.idpdf === "undefined") {
+                if (typeof rowData.idpdfreq === "undefined") {
                     $(".list-inline #" + idpdfmn).addClass("inactive");
                     $(".list-inline #" + idpdfmn).attr("onclick", null);
                 } else {
                     $(".list-inline #" + idpdfmn).removeClass("inactive");
-                    $(".list-inline #" + idpdfmn).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "','" + rowData.numero + "')");
+                    $(".list-inline #" + idpdfmn).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdfreq + "','" + idtabla + "','" + rowData.solicitud + "')");
+                }
+                if (typeof rowData.idpdf === "undefined") {
+                    $(".list-inline #" + idordenPDF).addClass("inactive");
+                    $(".list-inline #" + idordenPDF).attr("onclick", null);
+                } else {
+                    $(".list-inline #" + idordenPDF).removeClass("inactive");
+                    $(".list-inline #" + idordenPDF).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "','" + rowData.numero + "')");
+                    console.log(rowData.idpdf);
                 }
                 if (typeof rowData.viaje === "undefined") {
                     $(".list-inline #" + idviajemn).addClass("inactive");
@@ -600,12 +748,12 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                     $(".list-inline #" + idObservacionSolmn).attr("onclick", "observacionSolModal('modGeneralSalvoConducto','" + idtabla + "','" + rowid + "')");
                 }
                 $(".list-inline #" + idasigVCmn).removeClass("inactive");
-                $(".list-inline #" + idasigVCmn).attr("onclick", "disponibilidadVCSolModal('modGeneralSalvoConducto','" + idtabla + "','" + data + "')");
+                $(".list-inline #" + idasigVCmn).attr("onclick", "disponVCSolOrdenModal('modGeneralSalvoConducto','" + idtabla + "','" + data + "')");
             }
         },
         loadComplete: function () {
             var grid = $grid,
-                    iCol = 13; // 'act' - columna donde esta los botones de acciones
+                    iCol = 14; // 'act' - columna donde esta los botones de acciones
             var i = 0;
             grid.children("tbody")
                     .children("tr.jqgrow")
@@ -613,14 +761,14 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                     .each(function () {
                         var obj = JSON.parse(decodeURI($(this).children("div").parents("tr").attr("data-json"))).solicitud;
                         obj = encodeURI(JSON.stringify(obj));
-                        /**Creación del boton para rechazar la solicitud con las funciones al dar click*/
-                        $("<a>",
+                        /**Creación del boton para llamar al modal para generar una orden al dar click*/
+                        $("<div>",
                                 {
                                     title: "GENERAR SALVOCONDUCTO",
                                     id: "btnGenerar_" + i,
-                                    href: "GenerarSalvoConducto?SolicitudGenerar=" + obj,
                                     click: function (e) {
-                                        onmouseover = jQuery(this).addClass('ui-state-hover'),
+                                        fncModalGenerarSalvoConductoDNuevo('modGeneralSalvoConducto', idtabla, $(e.target).closest("tr.jqgrow").attr("id")),
+                                                onmouseover = jQuery(this).addClass('ui-state-hover'),
                                                 onmouseout = jQuery(this).removeClass('ui-state-hover');
                                     }
                                 }
@@ -628,6 +776,22 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                         ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
                                 .addClass("ui-pg-div ui-inline-edit")
                                 .append('<span class="fa fa-download fa-2x text-primary"></span>')
+                                .appendTo($(this).children("div"));
+                        /**Creación del boton para subir una orden pdf al dar click*/
+                        $("<div>",
+                                {
+                                    title: "SUBIR ORDEN PDF",
+                                    id: "btnSubir_" + i,
+                                    click: function (e) {
+                                        fncModalSubirOrden('modGeneralSalvoConducto', idtabla, $(e.target).closest("tr.jqgrow").attr("id")),
+                                                onmouseover = jQuery(this).addClass('ui-state-hover'),
+                                                onmouseout = jQuery(this).removeClass('ui-state-hover');
+                                    }
+                                }
+
+                        ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                                .addClass("ui-pg-div ui-inline-edit")
+                                .append('<span class="fa fa-cloud-upload fa-2x text-success"></span>')
                                 .appendTo($(this).children("div"));
                         i++;
                     });

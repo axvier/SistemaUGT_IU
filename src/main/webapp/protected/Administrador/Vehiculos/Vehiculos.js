@@ -96,8 +96,8 @@ var verVehiculoConductor = function (idModGeneral) {
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
         var rowData = $grid.jqGrid('getRowData', selRowId);
-        $('#modGeneralVehiculo .modal-content').load('protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=contentModalVerCond&placa='+rowData.placa, function () {
-            $('#'+idModGeneral).modal({show: true});
+        $('#modGeneralVehiculo .modal-content').load('protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=contentModalVerCond&placa=' + rowData.placa, function () {
+            $('#' + idModGeneral).modal({show: true});
         });
     } else
         swalTimer("Vehículo", "Seleccione una fila", "error");
@@ -138,23 +138,24 @@ var fncDibujarTableVehiculos = function () {
         mtype: "POST",
         datatype: "json",
         colModel: [
-            {label: 'Placa', name: 'placa', key: true, width: 80, editable: true},
-            {label: 'Disco', name: 'disco', width: 60, editable: true},
-            {label: 'Marca', name: 'marca', width: 110, editable: true},
-            {label: 'Modelo', name: 'modelo', width: 110, editable: true},
-            {label: 'Año matricula', name: 'anio', width: 100, editable:true},
-            {label: 'Color', name: 'color', width: 100, editable: true},
+            {label: 'Placa', name: 'placa', key: true, width: 80, editable: false},
+            {label: 'Disco', name: 'disco', width: 60, editable: true, editrules: {required: true}},
+            {label: 'Marca', name: 'marca', width: 110, editable: true, editrules: {required: true}},
+            {label: 'Modelo', name: 'modelo', width: 110, editable: true, editrules: {required: true}},
+            {label: 'Año matricula', name: 'anio', width: 100, editable: true, editrules: {required: true, number: true}},
+            {label: 'Color', name: 'color', width: 100, editable: true, editrules: {required: true}},
             {label: 'Descripcion', name: 'descripcion', width: 150, editable: true, search: false,
                 edittype: "textarea",
                 editoptions: {cols: 15}
+                , editrules: {required: true}
             },
-            {label: 'Grupo/Tipo', name: 'nombre', jsonmap: "idgrupo.nombre", width: 130, editable: true,
+            {label: 'Grupo/Tipo', name: 'nombre', jsonmap: "idgrupo.nombre", width: 130, editable: true, editrules: {required: true},
                 edittype: 'select',
                 editoptions: {
                     value: '1:Automovil;2:Bus;3:otros'
                 }
             },
-            {label: 'Estado', name: 'estado', width: 110, editable: true,
+            {label: 'Estado', name: 'estado', width: 110, editable: true, editrules: {required: true},
                 edittype: 'select',
                 editoptions: {
                     value: 'Disponible:Disponible;Ocupado:Ocupado;Rematado:Rematado'
@@ -203,8 +204,10 @@ var fncDibujarTableVehiculos = function () {
         serializeRowData: function (postdata) {
             var idgrupo = postdata.nombre;
             delete postdata.nombre;
-//            postdata.idgrupo = {idgrupo: postdata.nombre};
             delete postdata.oper;
+            if (typeof postdata.observacion === "undefined" || postdata.observacion === null || postdata.observacion === "")
+                delete postdata.observacion;
+            console.log({opc: "modificarVehiculo", jsonVehiculo: JSON.stringify(postdata), placa: postdata.placa, idgrupo: idgrupo});
             return {opc: "modificarVehiculo", jsonVehiculo: JSON.stringify(postdata), placa: postdata.placa, idgrupo: idgrupo};
         }
     });

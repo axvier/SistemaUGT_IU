@@ -50,6 +50,52 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
      * parametro que define la orden de movilziacion
      */
     private Tbordenesmovilizaciones orden;
+    /**
+     * parametro que define la persona encargada de firmar la orden de
+     * movilizacion
+     */
+    private String nombresApellidos;
+    /**
+     * parametro que define el cargo de la persona encargada de firmar la orden
+     * de movilizacion en una entidad
+     */
+    private String cargoEntidad;
+
+    /**
+     * Método que define el retorno del nombre y el apellido
+     *
+     * @return nombresApellidos
+     */
+    public String getNombresApellidos() {
+        return nombresApellidos;
+    }
+
+    /**
+     * Método que define el ingreso de un valor del nombre y el apellido
+     *
+     * @param nombresApellidos
+     */
+    public void setNombresApellidos(String nombresApellidos) {
+        this.nombresApellidos = nombresApellidos;
+    }
+
+    /**
+     * Método que define el retorno del valor del cargo en la entidad
+     *
+     * @return cargoEntidad
+     */
+    public String getCargoEntidad() {
+        return cargoEntidad;
+    }
+
+    /**
+     * Método que define el ingreso del valor para el cargo en la entidad
+     *
+     * @param cargoEntidad
+     */
+    public void setCargoEntidad(String cargoEntidad) {
+        this.cargoEntidad = cargoEntidad;
+    }
 
     /**
      * Metodo que define el retorno de la clase orden
@@ -345,13 +391,13 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
             /**
              * Inicio seccion firma encargado
              */
-            Paragraph pfirmas = new Paragraph("\n\n\n\n\n\n\n\n" + Constantes.JefeUnidad, timesNewRomanNormal(FONTSIZEGENERAL));
+            Paragraph pfirmas = new Paragraph("\n\n\n\n\n\n\n" + this.nombresApellidos(), timesNewRomanNormal(FONTSIZEGENERAL));
             PdfPCell celFirmas = new PdfPCell(pfirmas);
             celFirmas.setHorizontalAlignment(Element.ALIGN_CENTER);
             celFirmas.setBorder(Rectangle.NO_BORDER);
             tableCuerpo.addCell(celFirmas);
 
-            celFirmas = new PdfPCell(new Paragraph(Constantes.CARGOUGT, timesNewRomanBold(FONTSIZEGENERAL)));
+            celFirmas = new PdfPCell(new Paragraph(this.cargoEntidad(), timesNewRomanBold(FONTSIZEGENERAL)));
             celFirmas.setHorizontalAlignment(Element.ALIGN_CENTER);
             celFirmas.setBorder(Rectangle.NO_BORDER);
             tableCuerpo.addCell(celFirmas);
@@ -372,6 +418,28 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
         }
         return baos;
 //        return result;
+    }
+
+    private String cargoEntidad() {
+        String result = "";
+        try {
+            result = (this.cargoEntidad != null) ? this.cargoEntidad : Constantes.CARGOUGT;
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer cargo de autoridad firma", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+
+    private String nombresApellidos() {
+        String result = "";
+        try {
+            result = (this.nombresApellidos != null) ? this.nombresApellidos : Constantes.JefeUnidad;
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer el nombre y apellidos de autoridad firma", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
     }
 
     private String getVehiculoAnio() {

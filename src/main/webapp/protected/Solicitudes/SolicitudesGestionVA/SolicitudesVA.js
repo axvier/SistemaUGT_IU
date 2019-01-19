@@ -8,7 +8,7 @@ var fncAprobarSolictud = function (idmodal, idtabla, rowid) {
         solicitud.numero = objeto.numero;
         if (typeof objeto.idpdf !== "undefined")
             solicitud.idpdf = objeto.idpdf;
-        if (typeof objeto.observacion !== "undefined")
+        if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null)
             solicitud.observacion = objeto.observacion;
         $.ajax({
             url: "protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
@@ -41,7 +41,7 @@ var fncRechazarSolicitud = function (idmodal, idtabla, rowid) {
         solicitud.numero = objeto.numero;
         if (typeof objeto.idpdf !== "undefined")
             solicitud.idpdf = objeto.idpdf;
-        if (typeof objeto.observacion !== "undefined" && objeto.observacion !== null) {
+        if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null) {
             solicitud.observacion = objeto.observacion;
             $.ajax({
                 url: "protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
@@ -79,7 +79,7 @@ var fncRechazarSolicitudAprobadas = function (idmodal, idtabla, rowid) {
         solicitud.numero = objeto.numero;
         if (typeof objeto.idpdf !== "undefined")
             solicitud.idpdf = objeto.idpdf;
-        if (typeof objeto.observacion !== "undefined" && objeto.observacion !== null) {
+        if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null) {
             solicitud.observacion = objeto.observacion;
             $.ajax({
                 url: "protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",

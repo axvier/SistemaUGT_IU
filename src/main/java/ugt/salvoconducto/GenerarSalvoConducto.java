@@ -125,12 +125,18 @@ public class GenerarSalvoConducto extends HttpServlet {
         try {
 
             String jsonSolicitud = java.net.URLDecoder.decode(request.getParameter("SolicitudGenerar"), "utf-8");
+            String nombresApellidos = request.getParameter("nombresApellidos");
+            String cargoentidad = request.getParameter("cargoentidad");
             Tbsolicitudes solicitud = g.fromJson(jsonSolicitud, Tbsolicitudes.class);
             int year = Calendar.getInstance().get(Calendar.YEAR);
             response.setHeader("Content-disposition", "attachment; filename=" + solicitud.getNumero() + "_UGT_" + year + ".pdf");
 
             String jsonSolFull = swSolicitudes.getSolicitudFullID(solicitud.getNumero().toString());
             OrdenMovilizacionPDF ordenPDF = g.fromJson(jsonSolFull, OrdenMovilizacionPDF.class);
+            if(nombresApellidos!= null && cargoentidad!=null){
+                ordenPDF.setNombresApellidos(nombresApellidos);
+                ordenPDF.setCargoEntidad(cargoentidad);
+            }
             String jsonOrden = swOrdenMovilizacion.filtarOrdenMovilizacionIDSol(ordenPDF.getSolicitud().getNumero().toString());
             if (jsonOrden.length() > 2) {
                 Tbordenesmovilizaciones ord = g.fromJson(jsonOrden, Tbordenesmovilizaciones.class);

@@ -8,6 +8,7 @@
 <%@page import="ugt.entidades.Tbsolicitudes"%>
 <%@page import="com.google.gson.Gson"%>
 <%@page import="utg.login.Login"%>
+<%@page import="utils.Constantes"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Login login = (Login) session.getAttribute("login");
@@ -106,11 +107,11 @@
                     <span class="fa-stack fa-lg"><i class="fa fa-commenting fa-stack-2x"></i></span>Observación
                 </a>
             </li>
-<!--            <li>
-                <a id="mnListarSolG" href="#" onclick="" class="inactive">
-                    <span class="fa-stack fa-lg"></i><i class="fa fa-navicon fa-stack-2x"></i></span>Lista aprobados
-                </a>
-            </li>-->
+            <!--            <li>
+                            <a id="mnListarSolG" href="#" onclick="" class="inactive">
+                                <span class="fa-stack fa-lg"></i><i class="fa fa-navicon fa-stack-2x"></i></span>Lista aprobados
+                            </a>
+                        </li>-->
         </ul>
     </div>
     <div class="main-content" id="gSolicitudes_body">
@@ -130,7 +131,7 @@
             </div>
             <div class="widget-content">
                 <div id="jqgrid-wrapper">
-                    <table id="tbSolSalvoConducto" class="table table-striped table-hover">
+                    <table id="tbSolSalvoConducto" class="table table-responsive table-hover">
                         <thead>
                             <tr>
                                 <th>id</th>
@@ -151,10 +152,10 @@
     /**
      * fin de vista de tabla
      */
-        } else if (accion.equals("tableListaSalvoConductos")) {
-            /**
-             * inicio de la tabla tbListaSalvoConducto
-             */
+} else if (accion.equals("tableListaSalvoConductos")) {
+    /**
+     * inicio de la tabla tbListaSalvoConducto
+     */
 %>
 <div class="main-content">
     <!-- MODAL DIALOG -->
@@ -189,6 +190,11 @@
                 </a>
             </li>
             <li>
+                <a id="mnOrdenPDF" href="#" onclick="" class="inactive">
+                    <span class="fa-stack fa-lg"><i class="fa fa-file-o fa-stack-2x"></i><i class="fa fa-car fa-stack-1x"></i></span>PDF Orden Mov.
+                </a>
+            </li>
+            <li>
                 <a id="mnAsignarV_C" href="#" onclick="" class="inactive">
                     <span class="fa-stack fa-lg"></i><i class="fa fa-bus fa-stack-2x"></i><i class="fa fa-group fa-stack-1x"></i></span>Vehículo-Conductor
                 </a>
@@ -203,11 +209,11 @@
                     <span class="fa-stack fa-lg"><i class="fa fa-commenting fa-stack-2x"></i></span>Observación
                 </a>
             </li>
-<!--            <li>
-                <a id="mnListarSolG" href="#" onclick="" class="inactive">
-                    <span class="fa-stack fa-lg"></i><i class="fa fa-navicon fa-stack-2x"></i></span>Lista aprobados
-                </a>
-            </li>-->
+            <!--            <li>
+                            <a id="mnListarSolG" href="#" onclick="" class="inactive">
+                                <span class="fa-stack fa-lg"></i><i class="fa fa-navicon fa-stack-2x"></i></span>Lista aprobados
+                            </a>
+                        </li>-->
         </ul>
     </div>
     <div class="main-content" id="gSolicitudes_body">
@@ -227,7 +233,7 @@
             </div>
             <div class="widget-content">
                 <div id="jqgrid-wrapper">
-                    <table id="tbSolSalvoConducto" class="table table-striped table-hover">
+                    <table id="tbSolSalvoConducto" class="table table-responsive table-hover">
                         <thead>
                             <tr>
                                 <th>id</th>
@@ -262,11 +268,25 @@
 <div class="modal-body">
     <form id="formGenSalvoC" class="form-horizontal" role="form" method="POST">
         <p>Antes de generar el salvo conducto puede ingresar el kilometraje inicial</br></p>
-        <label class="control-label" for="addGenKMinicio" >KM inicial:</label>
         <div class="form-group">
-            <div class="col-sm-10">
+            <label class="col-sm-3 control-label" for="addGenKMinicio" >KM inicial:</label>
+            <div class="col-sm-9">
                 <input type="text" value="" name="kminicio" class="form-control" id="addGenKMinicio" title="Kilometraje inicial" placeholder="Kilometraje inicial (opcional)"/>
                 <input type="hidden" value="" name="SolicitudGenerar" class="form-control" id="SolicitudGenerar"/>
+            </div>
+        </div>
+        <hr>
+        <p><strong class="text-danger">Obligatorio</strong> especificar la autoridad que será la encargada de firmar la orden de movilización</br></p>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="addNombres_Apellidos" >Nombres y Apellidos:</label>
+            <div class="col-sm-9">
+                <input type="text" minlength=5 value="<%=Constantes.JefeUnidad%>" name="nombresApellidos" class="form-control" id="addNombres_Apellidos" title="Describir los nombres y los apellidos" placeholder="Nombres y Apellidos" required/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="addCargoEntidad" >Cargo:</label>
+            <div class="col-sm-9">
+                <input type="text" minlength=5 value="<%=Constantes.CARGOUGT%>" name="cargoentidad" class="form-control" id="addCargoEntidad" title="Describir el cargo que ostenta en una entidad" placeholder="Ejemplo: Jefe de la unidad" required/>
             </div>
         </div>
         <hr>
@@ -294,7 +314,77 @@
                     });
             $("#formGenSalvoC").submit(function () {
                 $('#modGeneralSalvoConducto').modal('hide'); //or  $('#IDModal').modal('hide');
-                saveOrdenSolicitud("SolicitudGenerar","addGenKMinicio");
+                saveOrdenSolicitud("SolicitudGenerar", "addGenKMinicio");
+            });
+        });
+    </script>
+</div>
+<%
+            /**
+             * FIN del contenido modal para subir KM inicial y generar Orden de
+             * Movilización
+             */
+} else if (accion.equals("modGenerarSalvoConductoDNuevo")) {
+    /**
+     * INICIO del contenido modal para subir KM inicial y generar Orden de
+     * Movilización Parametro solicitudGen representa los datos de la solicitud
+     * enviadas por JQuery
+     */
+%>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="titlemodGeneralSalvoConducto"> Solicitud  | Generar salvo conducto </h4>
+</div>
+<div class="modal-body">
+    <form id="formGenSalvoC" class="form-horizontal" role="form" method="POST">
+        <p>Antes de generar el salvo conducto puede ingresar el kilometraje inicial</br></p>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="addGenKMinicio" >KM inicial:</label>
+            <div class="col-sm-9">
+                <input type="text" value="" name="kminicio" class="form-control" id="addGenKMinicio" title="Kilometraje inicial" placeholder="Kilometraje inicial (opcional)"/>
+                <input type="hidden" value="" name="SolicitudGenerar" class="form-control" id="SolicitudGenerar"/>
+            </div>
+        </div>
+        <hr>
+        <p><strong class="text-danger">Obligatorio</strong> especificar la autoridad que será la encargada de firmar la orden de movilización</br></p>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="addNombres_Apellidos" >Nombres y Apellidos:</label>
+            <div class="col-sm-9">
+                <input type="text" minlength=5 value="<%=Constantes.JefeUnidad%>" name="nombresApellidos" class="form-control" id="addNombres_Apellidos" title="Describir los nombres y los apellidos" placeholder="Nombres y Apellidos" required/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label" for="addCargoEntidad" >Cargo:</label>
+            <div class="col-sm-9">
+                <input type="text" minlength=5 value="<%=Constantes.CARGOUGT%>" name="cargoentidad" class="form-control" id="addCargoEntidad" title="Describir el cargo que ostenta en una entidad" placeholder="Ejemplo: Jefe de la unidad" required/>
+            </div>
+        </div>
+        <hr>
+        <div class="container text-right">
+            <button type='submit' class='btn btn-success' id="btsuccesscerrar"><i class='fa fa-upload'></i> Generar</button>
+            <button type='button' class='btn btn-default' data-dismiss='modal'><i class='fa fa-times-circle'></i> Cerrar</button>
+        </div>
+    </form>
+    <script>
+        $(document).ready(function () {
+            $("#addGenKMinicio").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape and enter
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
+                        // Allow: Ctrl+A
+                                (e.keyCode === 65 && e.ctrlKey === true) ||
+                                // Allow: home, end, left, right
+                                        (e.keyCode >= 35 && e.keyCode <= 39)) {
+                            // let it happen, don't do anything
+                            return;
+                        }
+                        // Ensure that it is a number and stop the keypress
+                        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                            e.preventDefault();
+                        }
+                    });
+            $("#formGenSalvoC").submit(function () {
+                $('#modGeneralSalvoConducto').modal('hide'); //or  $('#IDModal').modal('hide');
+                saveOrdenSolicitudDNuevo("SolicitudGenerar", "addGenKMinicio");
             });
         });
     </script>
