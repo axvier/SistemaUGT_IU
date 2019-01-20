@@ -4,6 +4,12 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="org.apache.commons.fileupload.FileItem"%>
+<%@page import="org.apache.commons.io.IOUtils"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="org.apache.commons.fileupload.disk.DiskFileItemFactory"%>
+<%@page import="org.apache.commons.fileupload.servlet.ServletFileUpload"%>
+<%@page import="org.apache.commons.fileupload.FileUploadException"%>
 <%@page import="utg.login.Login"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
@@ -42,6 +48,27 @@
                 String kminicio = request.getParameter("kminicio");
                 session.setAttribute("kminicio", kminicio);
                 response.sendRedirect("SalvoConductosModelo.jsp?opc=" + opc);
+            } else if (opc.equals("subirOrdenPDF")) {
+                if (ServletFileUpload.isMultipartContent(request)) {
+                    try {
+                        ServletFileUpload SFileUpload = new ServletFileUpload(new DiskFileItemFactory());
+                        Iterator iter = SFileUpload.parseRequest(request).iterator();
+                        while (iter.hasNext()) {
+                            FileItem FItem = (FileItem) iter.next();
+                            if (!FItem.isFormField()) {
+                                byte[] bytes = IOUtils.toByteArray(FItem.getInputStream());
+                                session.setAttribute("byteSPDF", bytes);
+                            }
+                            if (FItem.getFieldName().equals("numeroOrden")) {
+                                session.setAttribute("numeroOrden", FItem.getString());
+                            }
+                        }
+                        response.sendRedirect("SalvoConductosModelo.jsp?opc=" + opc);
+                    } catch (FileUploadException e) {
+                        out.println(e.toString());
+                        response.sendError(501, this.getServletName() + "-> Error al querer subir el archivo al sistema");
+                    }
+                }
             }
         }
     } else {

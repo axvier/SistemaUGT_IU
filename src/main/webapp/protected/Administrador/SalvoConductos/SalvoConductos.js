@@ -30,8 +30,8 @@ var fncRecargarJQGenerarSalvo = function (idtabla) {
     fncRecargarJQG(idtabla, urlbase, urltabla);
 };
 
-var fncRecargarJQGenerarSalvoDNuevo = function (idtabla,estado) {
-    var urltabla = "/SalvoConductosControlador.jsp?opc="+estado;
+var fncRecargarJQGenerarSalvoDNuevo = function (idtabla, estado) {
+    var urltabla = "/SalvoConductosControlador.jsp?opc=" + estado;
     var idviajemn = "mnViajeSol";
     var idpasajmn = "mnPasjerosSol";
     var idpdfmn = "mnReqPDF";
@@ -42,7 +42,7 @@ var fncRecargarJQGenerarSalvoDNuevo = function (idtabla,estado) {
 
     $(".list-inline #" + idpdfmn).addClass("inactive");
     $(".list-inline #" + idpdfmn).attr("onclick", null);
-    
+
     $(".list-inline #" + idordenPDF).addClass("inactive");
     $(".list-inline #" + idordenPDF).attr("onclick", null);
 
@@ -72,9 +72,13 @@ var fncRecargarJQGListaSalvo = function (idtabla) {
     var idasigVCmn = "mnAsignarV_C";
     var idUsuarioSolmn = "mnUsuarioSol";
     var idObservacionSolmn = "mnobservacion";
+    var idordenPDF = "mnOrdenPDF";
 
     $(".list-inline #" + idpdfmn).addClass("inactive");
     $(".list-inline #" + idpdfmn).attr("onclick", null);
+    
+    $(".list-inline #" + idordenPDF).addClass("inactive");
+    $(".list-inline #" + idordenPDF).attr("onclick", null);
 
     $(".list-inline #" + idviajemn).addClass("inactive");
     $(".list-inline #" + idviajemn).attr("onclick", null);
@@ -146,7 +150,7 @@ var saveOrdenSolicitudDNuevo = function (idinputuri, idkminicio) {
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             console.log(datos);
-            fncRecargarJQGenerarSalvoDNuevo("tbSolSalvoConducto","jsonFullOrdenes");
+            fncRecargarJQGenerarSalvoDNuevo("tbSolSalvoConducto", "jsonFullOrdenes");
         },
         error: function (error) {
             console.log(error);
@@ -192,6 +196,70 @@ var disponVCSolOrdenModal = function (idmodal, idtabla, data) {
         });
     } else
         swalTimer("Solicitud", "Seleccione una solicitud", "error");
+};
+
+var fncModalSubirOrdenPDF = function (idmodal, idtabla, rowid) {
+    var objeto = JSON.parse(decodeURI($("#" + idtabla + " #" + rowid).attr("data-json")));
+    if (typeof objeto !== "undefined") {
+        console.log(objeto);
+        $('#' + idmodal + ' .modal-content').load(
+                'protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=mostrar&accion=modSubirOrden',
+                function () {
+                    $('#' + idmodal).modal({show: true});
+                    $('#' + idmodal + " #numeroOrden").val(objeto.numero);
+                    $('#' + idmodal + " #titleOrdenSubirPDF").html(" Orden <strong>" + objeto.numero + "</strong> | Subir PDF ");
+                });
+    }
+};
+
+var fncSubirOrdenPDF = function (idform, idmodal) {
+    var parsleyForm = $('#' + idform).parsley();
+    parsleyForm.validate();
+    if (!parsleyForm.isValid())
+        return false;
+    else {
+        var numeroOrden = $('#' + idform + " #numeroOrden").val();
+        if (typeof numeroOrden !== 'undefined') {
+            var input = document.getElementById('filePDF');
+            if (!input) {
+                alert("Um, couldn't find the fileinput element.");
+            } else if (!input.files) {
+                alert("This browser doesn't seem to support the `files` property of file inputs.");
+            } else if (!input.files[0]) {
+                alert("Please select a file before clicking 'Load'");
+            } else {
+                swalTimerLoading("Transacción subir PDF", "Se esta subiendo su PDF, esto puede tardar un momento...", 10000);
+                var file = input.files[0];
+                var myform = $("#" + idform);
+                var fd = new FormData(myform);
+                fd.append("dato", file);
+                fd.append("numeroOrden", numeroOrden);
+                console.log(fd);
+                $.ajax({
+                    url: "protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=subirOrdenPDF",
+                    data: fd,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    success: function (datos) {
+                        $("#modGeneralSalvoConducto").modal("hide");
+                        datos = JSON.parse(datos);
+                        if (datos.codigo === "OK") {
+                            swalNormal("Completado", datos.respuesta, "success");
+                        } else {
+                            swalNormal("Completado", datos.respuesta, "error");
+                        }
+                        fncRecargarJQGenerarSalvoDNuevo("tbSolSalvoConducto", "jsonFullOrdenes");
+                    },
+                    error: function () {
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+        $('#' + idmodal).modal('hide');
+    }
 };
 
 var fncDibujarSolSalvoConducto = function (idtabla) {
@@ -634,7 +702,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                 name: "actions",
                 sortable: false,
                 search: false,
-                width: 80,
+                width: 90,
                 formatter: "actions",
                 formatoptions: {
                     keys: true,
@@ -783,7 +851,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                                     title: "SUBIR ORDEN PDF",
                                     id: "btnSubir_" + i,
                                     click: function (e) {
-                                        fncModalSubirOrden('modGeneralSalvoConducto', idtabla, $(e.target).closest("tr.jqgrow").attr("id")),
+                                        fncModalSubirOrdenPDF('modGeneralSalvoConducto', idtabla, $(e.target).closest("tr.jqgrow").attr("id")),
                                                 onmouseover = jQuery(this).addClass('ui-state-hover'),
                                                 onmouseout = jQuery(this).removeClass('ui-state-hover');
                                     }

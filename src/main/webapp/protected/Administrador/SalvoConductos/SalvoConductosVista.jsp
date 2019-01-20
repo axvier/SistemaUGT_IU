@@ -233,7 +233,7 @@
             </div>
             <div class="widget-content">
                 <div id="jqgrid-wrapper">
-                    <table id="tbSolSalvoConducto" class="table table-responsive table-hover">
+                    <table id="tbSolSalvoConducto" class="table table-hover">
                         <thead>
                             <tr>
                                 <th>id</th>
@@ -320,10 +320,10 @@
     </script>
 </div>
 <%
-            /**
-             * FIN del contenido modal para subir KM inicial y generar Orden de
-             * Movilización
-             */
+    /**
+     * FIN del contenido modal para subir KM inicial y generar Orden de
+     * Movilización
+     */
 } else if (accion.equals("modGenerarSalvoConductoDNuevo")) {
     /**
      * INICIO del contenido modal para subir KM inicial y generar Orden de
@@ -390,9 +390,33 @@
     </script>
 </div>
 <%
+    /**
+     * FIN del contenido modal para subir KM inicial y generar Orden de
+     * Movilización
+     */
+    } else if (accion.equals("modSubirOrden")) {
+    /**
+     * INICIO CONTENIDO MODAL PARA SUBIR UNA ORDEN PDF
+     */
+%>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="titleOrdenSubirPDF"> Orden | Subir PDF </h4>
+</div>
+<div class="modal-body">
+    <form data-parsley-validate novalidate class="form-horizontal" role="form" id="formSubirOrdenPDF">
+        <h4>En este espacio puede subir el PDF de la orden de movilización firmada.</h4>
+        <input id="filePDF"  type="file" style="display:block;" accept=".pdf" required/>
+        <input type="hidden" value="" id="numeroOrden">
+    </form>
+</div>
+<div class='modal-footer'>
+    <button type='button' class='btn btn-success' onclick="fncSubirOrdenPDF('formSubirOrdenPDF', 'modGeneralSolicitudes')"><i class='fa fa-cloud-upload'></i> Subir </button>
+    <button type='button' class='btn btn-default' data-dismiss='modal'><i class='fa fa-times-circle'></i> Cerrar</button>
+</div>
+<%
             /**
-             * FIN del contenido modal para subir KM inicial y generar Orden de
-             * Movilización
+             * FIN CONTENIDO MODAL PARA SUBIR UNA ORDEN PDF
              */
         }
     } else {
