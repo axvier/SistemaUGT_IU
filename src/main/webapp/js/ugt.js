@@ -279,6 +279,23 @@ var fncGeListaOrden = function () {
     });
 };
 
+var fncGestionSAprobadasSec = function () {
+    $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
+    $.ajax({
+        url: "protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
+        type: "GET",
+        data: {opc: "mostrar", accion: "tableSolicitudesAsignadas"},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            $("#contenidoDinamico").html(datos);
+            fncDibujarSolicitudesAprobadasSecVA("tbSolicitudesAsignadas");
+        },
+        error: function (error) {
+            location.reload();
+        }
+    });
+};
+
 var fncRecargarJQG = function (idtabla, urlbase, urltable) {
     var $grid = $("#" + idtabla);
     $(window).on("resize", function () {

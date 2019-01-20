@@ -17,15 +17,15 @@
 <%} else if (login.getRolActivo().getCharrol().equals("Sadmi")) {
 %>
 <link href="assets/css/skins/slategray.css" rel="stylesheet" type="text/css"/>
-<%} else if(login.getRolActivo().getCharrol().equals("Vrora")|| login.getRolActivo().getCharrol().equals("Vrtor")){
+<%} else if (login.getRolActivo().getCharrol().equals("Vrora") || login.getRolActivo().getCharrol().equals("Vrtor")) {
 %>
 <!--<link href="assets/css/skins/darkblue.css" rel="stylesheet" type="text/css"/>-->
 <link href="assets/css/skins/lightgreen.css" rel="stylesheet" type="text/css"/>
-<%}else{
+<%} else {
 %>
 <link href="assets/css/skins/darkblue.css" rel="stylesheet" type="text/css"/>
 <%
-}%>
+    }%>
 <!--<script src="assets/js/jquery/jquery-2.1.0.min.js"></script>-->
 <script src="assets/js/king-common.js"></script>
 
@@ -228,6 +228,20 @@
                     <li style='cursor: pointer'>
                         <a onclick="fncGestionSAprobadasVR()">
                             <i class="fa fa-sticky-note"></i><span class="text">Solicitudes aprobadas</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <%
+                }
+                if (opc.getIdopcion().equals(13) && opc.getEstado().equals("Habilitado")) {//Menu Gestión Solicitudes para Secretaría vicerrectorado administrativa
+            %>
+            <li id="<%=opc.getIdopcion()%>" class="active"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-folder fa-fw"></i><span class="text">Solicitudes</span>
+                    <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
+                <ul id="submenu1" class="sub-menu open">
+                    <li style='cursor: pointer'>
+                        <a onclick="fncGestionSAprobadasSec()">
+                            <i class="fa fa-file-pdf-o"></i><span class="text">Solicitudes aprobadas</span>
                         </a>
                     </li>
                 </ul>
