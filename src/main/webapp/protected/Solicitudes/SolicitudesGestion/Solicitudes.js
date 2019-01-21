@@ -554,6 +554,52 @@ var fncSelectConductorDVC = function () {
     }
 };
 
+var fncModVerDatosVehiculo = function (idSelecVehiculo, idmodal) {
+    if (typeof $("#" + idSelecVehiculo).val() !== "undefined" && $("#" + idSelecVehiculo).val() !== null) {
+        var objeto = JSON.parse($("#" + idSelecVehiculo).find(':selected').attr("data-jsonvehiculo"));
+        var jsonVehiculo = (typeof objeto.tbvehiculos !== "undefined") ? JSON.stringify(objeto.tbvehiculos) : JSON.stringify(objeto);
+        $.ajax({
+            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            type: "GET",
+            data: {opc: "modDatosVehiculoDVC", jsonVehiculo: jsonVehiculo},
+            contentType: "application/json ; charset=UTF-8",
+            success: function (datos) {
+                $("#" + idmodal + " .modal-content").html(datos);
+                $("#" + idmodal).modal("show");
+            },
+            error: function (error) {
+                $("#" + idmodal + " .modal-content").html(error);
+                $("#" + idmodal).modal("show");
+                console.log(error);
+            }
+        });
+    } else
+        swalNormal("Error", "Seleccione un vehículo primero", "error");
+};
+
+var fncModVerDatosConductor = function (idSelecConductor, idmodal) {
+    if (typeof $("#" + idSelecConductor).val() !== "undefined" && $("#" + idSelecConductor).val() !== null) {
+        var jsonConductor = $("#" + idSelecConductor).find(':selected').attr("data-jsonconductor");
+        console.log(jsonConductor);
+        $.ajax({
+            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            type: "GET",
+            data: {opc: "modDatosConductorDVC", jsonConductor: jsonConductor},
+            contentType: "application/json ; charset=UTF-8",
+            success: function (datos) {
+                $("#" + idmodal + " .modal-content").html(datos);
+                $("#" + idmodal).modal("show");
+            },
+            error: function (error) {
+                $("#" + idmodal + " .modal-content").html(error);
+                $("#" + idmodal).modal("show");
+                console.log(error);
+            }
+        });
+    } else
+        swalNormal("Error", "Seleccione un conductor primero", "error");
+};
+
 var fncDibujarSolicitudesNuevas = function (idtabla) {
     contagenda = 0;
     var $grid = $("#" + idtabla);
@@ -841,7 +887,7 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
 };
 
 var fncDibujarSolicitudesProcesadas = function (idtabla) {
-    var estados = 'rechazada:rechazada;asignada:asignada;finalizada:finalizada';
+    var estados = 'rechazada:rechazada;aprobadaUGT:aprobadaUGT;finalizada:finalizada';
     contagenda = 0;
     var $grid = $("#" + idtabla);
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";

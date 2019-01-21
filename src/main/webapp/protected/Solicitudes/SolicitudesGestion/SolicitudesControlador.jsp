@@ -62,6 +62,14 @@
                 String idSolicitud = request.getParameter("idSolicitud");
                 session.setAttribute("idSolicitud", idSolicitud);
                 response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("modDatosVehiculoDVC")) {
+                String jsonVehiculo = request.getParameter("jsonVehiculo");
+                session.setAttribute("jsonVehiculo", jsonVehiculo);
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("modDatosConductorDVC")) {
+                String jsonConductor = request.getParameter("jsonConductor");
+                session.setAttribute("jsonConductor", jsonConductor);
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
             } else if (opc.equals("combinarPDFs")) {
                 if (ServletFileUpload.isMultipartContent(request)) {
                     try {

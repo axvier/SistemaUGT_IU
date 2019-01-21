@@ -4,6 +4,14 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.licencias.IU.LicenciasIU"%>
+<%@page import="ugt.entidades.Tblicencias"%>
+<%@page import="ugt.servicios.swLicencia"%>
+<%@page import="ugt.entidades.Tbconductores"%>
+<%@page import="ugt.revisionesmecanicas.iu.RevisionesMecanicasIU"%>
+<%@page import="ugt.entidades.Tbrevisionesmecanicas"%>
+<%@page import="ugt.servicios.swRevisionesMecanicas"%>
+<%@page import="ugt.entidades.Tbvehiculos"%>
 <%@page import="ugt.pdf.iu.CombinarPDF"%>
 <%@page import="java.util.Base64"%>
 <%@page import="ugt.servicios.swPDF"%>
@@ -301,6 +309,34 @@
                 }
             }
             response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=guardarStatus");
+        } else if (opc.equals("modDatosVehiculoDVC")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String json = (String) session.getAttribute("jsonVehiculo");
+            session.setAttribute("jsonVehiculo", null);
+            Tbvehiculos vehiculoAux = g.fromJson(json, Tbvehiculos.class);
+            if(vehiculoAux != null)
+                session.setAttribute("vehiculoDVC", vehiculoAux);
+            String objJSON = swRevisionesMecanicas.filtrarXSolicitud(vehiculoAux.getPlaca());
+            if (objJSON.length() > 2) {
+                RevisionesMecanicasIU revisiones = new RevisionesMecanicasIU();
+                revisiones.setListaJSON(objJSON);
+                session.setAttribute("revisionmecanicaDVC", revisiones.itemPos(0));
+            }
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion="+opc);
+        } else if (opc.equals("modDatosConductorDVC")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String json = (String) session.getAttribute("jsonConductor");
+            session.setAttribute("jsonVehiculo", null);
+            Tbconductores conductorAux = g.fromJson(json, Tbconductores.class);
+            if(conductorAux != null)
+                session.setAttribute("conductorDVC", conductorAux);
+            String objJSON = swLicencia.licenciaID(conductorAux.getCedula());
+            if (objJSON.length() > 2) {
+                LicenciasIU licencias  = new LicenciasIU();
+                licencias.setListaJSON(objJSON);
+                session.setAttribute("licenciaDVC", licencias.itemPos(0));
+            }
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion="+opc);
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

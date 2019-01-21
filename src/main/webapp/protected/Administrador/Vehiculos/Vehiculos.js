@@ -10,7 +10,7 @@ function eliminarVehiculo(objeto) {
     var vehiculo = obtenerObjetoVehiculo(objeto);
     var jsonVehiculo = JSON.stringify(vehiculo);
     $.ajax({
-        url: "Administrador/Vehiculos/vehiculoControlador.jsp",
+        url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
         type: "POST",
         dataType: "text",
         data: {placa: placa, opc: "eliminarVehiculo", jsonVehiculo: jsonVehiculo},
@@ -25,8 +25,10 @@ function eliminarVehiculo(objeto) {
 }
 function  guardarVehiculo(objeto) {
     var jsonVehiculo = JSON.stringify(objeto);
+    console.log(objeto);
+    console.log(jsonVehiculo);
     $.ajax({
-        url: "Administrador/Vehiculos/vehiculoControlador.jsp",
+        url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
         type: "POST",
         dataType: "text",
         data: {jsonVehiculo: jsonVehiculo, opc: "saveVehiculo", placa: objeto.placa},
@@ -52,7 +54,7 @@ function  modificarVehiculo(objeto) {
     var vehiculo = obtenerObjetoVehiculo(objeto);
     var jsonVehiculo = JSON.stringify(vehiculo);
     $.ajax({
-        url: "Administrador/Vehiculos/vehiculoControlador.jsp",
+        url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
         type: "POST",
         dataType: "text",
         data: {jsonVehiculo: jsonVehiculo, opc: "modificarVehiculo", placa: vehiculo.placaVehiculo},
@@ -106,6 +108,7 @@ var verVehiculoConductor = function (idModGeneral) {
 var fncaddNuevoVehiculo = function () {
     var obj = {};
     obj.placa = $("#addPlaca").val();
+    obj.motor = $("#addMotor").val();
     obj.disco = $("#addDisco").val();
     obj.marca = $("#addMarca").val();
     obj.modelo = $("#addModelo").val();
@@ -146,6 +149,32 @@ var cerrarModRevisionM = function (idmodal) {
     $('#' + idmodal).modal("hide");
     $('#' + idmodal + ' .modal-content').html();
 };
+
+var downloadPDFOrden = function (idPDFRevision) {
+    if (typeof idPDFRevision !== 'undefined' && idPDFRevision !== null && idPDFRevision !== "") {
+        swalTimerLoading("Consultando pdf "+idPDFRevision, "Esto puede tardar un momento...", 9000);
+        $.ajax({
+            url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
+            type: "POST",
+            data: {opc: 'downloadPDFOrden', idPDFRevision: idPDFRevision},
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.respuesta !== 'vacio') {
+                    swal.close();
+                    let pdfWindow = window.open("");
+                    pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + (data.respuesta) + "'></iframe>");
+                } else {
+                    swalNormal("Sin pdf", "No tiene un pdf de revisión vehicular", "error");
+                }
+            },
+            error: function (e) {
+                location.reload();
+            }
+        });
+    } else
+        swalNormal("Sin pdf", "No tiene un pdf de revisión vehicular", "error");
+};
+
 var countRM = 0;
 var fncVerListaRevisiones = function (idDivModal, idtabla) {
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Vehiculos";
@@ -160,10 +189,10 @@ var fncVerListaRevisiones = function (idDivModal, idtabla) {
             mtype: "POST",
             datatype: "json",
             colModel: [
-                {label: 'ID', name: 'idrevision', key: true, width: 70, editable: false},
-                {label: 'Placa', name: 'matricula', jsonmap: 'matricula.placa', width: 80, editable: false, editrules: {required: true}},
-                {label: 'Detalle', name: 'detalle', width: 100, editable: true, editrules: {required: true}},
-                {label: 'Fecha', name: 'fecha', width: 90, editable: true, editrules: {date: true, required: true},
+                {label: 'ID', name: 'idrevision', key: true, width: 60, editable: false},
+                {label: 'Placa', name: 'matricula', jsonmap: 'matricula.placa', width: 70, editable: false, editrules: {required: true}},
+                {label: 'Detalle', name: 'detalle', width: 110, editable: true, editrules: {required: true}},
+                {label: 'Fecha', name: 'fecha', width: 125, editable: true, editrules: {date: true, required: true},
                     sortable: false,
                     search: false,
                     formatter: 'date',
@@ -180,30 +209,31 @@ var fncVerListaRevisiones = function (idDivModal, idtabla) {
                         }
                     }
                 },
-                {label: 'PDF', name: 'idpdf', width: 70, editable: false, editrules: {required: true, number: true}},
+                {label: 'PDF', name: 'idpdf', width: 60, editable: false, editrules: {required: true, number: true}},
                 {
                     label: "Opciones",
                     name: "actions",
                     sortable: false,
                     search: false,
-                    width: 90,
+                    width: 100,
                     formatter: "actions",
                     formatoptions: {
                         keys: true,
+                        editbutton: false,
+                        delbutton: true,
                         editOptions: {},
                         addOptions: {},
                         delOptions: {
                             height: 150,
                             width: 300,
                             serializeDelData: function (postdata) {
-                                console.log(postdata);
-//                            return {opc: "eliminarRevision", idrevision : 'idrevision'};
+                                return {opc: "eliminarRevision", idrevision: postdata.id};
                             }
                         }
                     }
                 }
             ],
-            rownumbers: true,
+//            rownumbers: true,
             viewrecords: true,
             loadtext: '<center><i class="fa fa-spinner fa-pulse fa-4x fa-fw"></i><span class="sr-only">Cargando...</span></center>',
             caption: 'Revisiones mecánicas',
@@ -218,15 +248,43 @@ var fncVerListaRevisiones = function (idDivModal, idtabla) {
 //                if (typeof postdata.observacion === "undefined" || postdata.observacion === null || postdata.observacion === "")
 //                    delete postdata.observacion;
 //                return {opc: "modificarVehiculo", jsonVehiculo: JSON.stringify(postdata), placa: postdata.placa, idgrupo: idgrupo};
+            },
+            loadComplete: function () {
+                var grid = $grid,
+                        iCol = 5; // 'act' - name of the actions column
+                grid.children("tbody")
+                        .children("tr.jqgrow")
+                        .children("td:nth-child(" + (iCol + 1) + ")")
+                        .each(function () {
+                            var i = 0;
+                            var data = $(this).parent("tr.jqgrow").find("td[aria-describedby='tjqgRevision_idpdf']").text();
+                            /**creación y asignación del botón para comibnar un pdf con los demas requerimientos*/
+                            $("<div>",
+                                    {
+                                        title: "Descargar revisión mecánica PDF",
+                                        id: "btnDOrden_" + i,
+                                        onmouseover: "jQuery(this).addClass('ui-state-hover');",
+                                        onmouseout: "jQuery(this).removeClass('ui-state-hover');",
+                                        click: function (e) {
+                                            downloadPDFOrden(data);
+                                        }
+                                    }
+
+                            ).css({"margin-left": "6px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                                    .addClass("ui-pg-div ui-inline-edit")
+                                    .append('<span class="fa fa-cloud-download fa-2x text-primary"></span>')
+                                    .appendTo($(this).children("div"));
+                            i++;
+                        });
             }
         });
 
         $grid.navGrid("#" + idtabla + "_pager", {edit: false, add: false, del: false, search: true, refresh: false, view: false, position: "left"});
 
-//        $("#"+idDivModal).on("resize", function () {
-//            var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
-//            grid.jqGrid("setGridWidth", newWidth, true);
-//        }).trigger('resize');
+        $("#" + idDivModal).on("resize", function () {
+            var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
+            grid.jqGrid("setGridWidth", newWidth, true);
+        }).trigger('resize');
     }
 };
 
@@ -297,14 +355,15 @@ var fncDibujarTableVehiculos = function () {
             {label: 'Disco', name: 'disco', width: 60, editable: true, editrules: {required: true}},
             {label: 'Marca', name: 'marca', width: 110, editable: true, editrules: {required: true}},
             {label: 'Modelo', name: 'modelo', width: 110, editable: true, editrules: {required: true}},
-            {label: 'Año matricula', name: 'anio', width: 100, editable: true, editrules: {required: true, number: true}},
-            {label: 'Color', name: 'color', width: 100, editable: true, editrules: {required: true}},
+            {label: 'Motor', name: 'motor', width: 110, editable: true, editrules: {required: true}},
+            {label: 'Año matricula', name: 'anio', width: 70, editable: true, editrules: {required: true, number: true}},
+            {label: 'Color', name: 'color', width: 80, editable: true, editrules: {required: true}},
             {label: 'Descripcion', name: 'descripcion', width: 150, editable: true, search: false,
                 edittype: "textarea",
                 editoptions: {cols: 15}
                 , editrules: {required: true}
             },
-            {label: 'Grupo/Tipo', name: 'nombre', jsonmap: "idgrupo.nombre", width: 130, editable: true, editrules: {required: true},
+            {label: 'Grupo/Tipo', name: 'nombre', jsonmap: "idgrupo.nombre", width: 110, editable: true, editrules: {required: true},
                 edittype: 'select',
                 editoptions: {
                     value: '1:Automovil;2:Bus;3:otros'
@@ -380,17 +439,33 @@ var fncDibujarTableVehiculos = function () {
     }).trigger('resize');
 
     $("#search_cells").on("keyup", function () {
-        var value = $(this).val();
-        $("table tr").each(function (index) {
-            if (!index)
-                return;
-            $(this).find("td").each(function () {
-                var id = $(this).text().toLowerCase().trim();
-                var not_found = (id.indexOf(value) === -1);
-                $(this).closest('tr').toggle(!not_found);
-                return not_found;
-            });
+        var rules = [], i, cm,
+                postData = $grid.jqGrid("getGridParam", "postData"),
+                colModel = $grid.jqGrid("getGridParam", "colModel"),
+                searchText = $("#search_cells").val(),
+                l = colModel.length;
+
+        for (i = 0; i < l; i++) {
+            cm = colModel[i];
+            if (cm.search !== false && (typeof cm.stype === "undefined" || cm.stype === "text")) {
+                rules.push({
+                    field: cm.name,
+                    op: "cn",
+                    data: searchText
+                });
+            }
+        }
+
+        $.extend(postData, {
+            filters: {
+                groupOp: "OR",
+                rules: rules
+            }
         });
+
+        $grid.jqGrid("setGridParam", {search: true, postData: postData});
+        $grid.trigger("reloadGrid", [{page: 1, current: true}]);
+        return false;
     });
 };
 

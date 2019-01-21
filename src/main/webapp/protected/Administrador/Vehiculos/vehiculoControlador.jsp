@@ -17,7 +17,7 @@
             } else if (opc.equals("saveVehiculo")) {
                 String jsonVehiculo = request.getParameter("jsonVehiculo");
                 session.setAttribute("jsonVehiculo", jsonVehiculo);
-                String placa = request.getParameter("jsonVehiculo");
+                String placa = request.getParameter("placa");
                 session.setAttribute("placa", placa);
                 response.sendRedirect("vehiculoModelo.jsp?opc=" + opc);
             } else if (opc.equals("eliminarVehiculo")) {
@@ -27,6 +27,14 @@
                 session.setAttribute("json", jsonVehiculo);
                 session.setAttribute("placa", placa);
                 session.setAttribute("nombreGrupo", nombreGrupo);
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc);
+            } else if (opc.equals("eliminarRevision")) {
+                String idrevision = request.getParameter("idrevision");
+                session.setAttribute("idrevision", idrevision);
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc);
+            } else if (opc.equals("downloadPDFOrden")) {
+                String idPDFRevision = request.getParameter("idPDFRevision");
+                session.setAttribute("idPDFRevision", idPDFRevision);
                 response.sendRedirect("vehiculoModelo.jsp?opc=" + opc);
             } else if (opc.equals("modificarVehiculo")) {
                 String placa = request.getParameter("placa");

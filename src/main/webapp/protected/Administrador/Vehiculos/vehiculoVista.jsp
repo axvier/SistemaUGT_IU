@@ -53,6 +53,16 @@
                     + "}";
             response.setContentType("text/plain");
             response.getWriter().write(result);
+        } else if (accion.equals("downloadPDFOrden")) {
+            String result = (String) session.getAttribute("pdf64");
+            session.setAttribute("pdf64", null);
+            if (result != null) {
+                response.setContentType("text/plain");
+                response.getWriter().write("{\"respuesta\":\""+result+"\"}");
+            } else {
+                response.setContentType("text/plain");
+                response.getWriter().write("{\"respuesta\":\"vacio\"}");
+            }
         } else if (accion.equals("tableVehiculos")) {
 %>
 <div class="main-header">
@@ -105,7 +115,13 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-2 control-label" for="addAnio" >Año</label>
+                            <label class="col-sm-2 control-label" for="addMotor" >Motor</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="modelo" class="form-control" id="addMotor" placeholder="Numero motor" required/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="addAnio" >Año matricula</label>
                             <div class="col-sm-10">
                                 <input type="number" name="anio" class="form-control" id="addAnio" placeholder="2000" max="2500" min="1990" required/>
                             </div>
@@ -217,6 +233,55 @@
         </div>
     </div> 
 </div>
+<script>
+$(document).ready(function () {
+  $("#addDisco").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape and enter
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
+                    // Allow: Ctrl+A
+                            (e.keyCode === 65 && e.ctrlKey === true) ||
+                            // Allow: home, end, left, right
+                                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                    }
+                    // Ensure that it is a number and stop the keypress
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                    }
+                });  
+  $("#addMotor").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape and enter
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
+                    // Allow: Ctrl+A
+                            (e.keyCode === 65 && e.ctrlKey === true) ||
+                            // Allow: home, end, left, right
+                                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                    }
+                    // Ensure that it is a number and stop the keypress
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                    }
+                });  
+  $("#addAnio").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape and enter
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
+                    // Allow: Ctrl+A
+                            (e.keyCode === 65 && e.ctrlKey === true) ||
+                            // Allow: home, end, left, right
+                                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                    }
+                    // Ensure that it is a number and stop the keypress
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                    }
+                });  
+});
+</script>
 <%
 } else if (accion.equals("tableVehiculosUnlock")) {
 %>
@@ -415,7 +480,7 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane fade in active" id="tabitem1">
-            <form id="formAddGU_E_R" class="form-horizontal" role="form" onsubmit="fncAddRevisionMForm(this.id,'modGeneralVehiculo');return false;">
+            <form id="formAddGU_E_R" class="form-horizontal" role="form" onsubmit="fncAddRevisionMForm(this.id, 'modGeneralVehiculo');return false;">
                 <div class="form-group">
                     <label  class="col-sm-2 control-label" for="addRMDetalle">Detalle: </label>
                     <div class="col-sm-10">

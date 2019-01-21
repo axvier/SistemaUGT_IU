@@ -39,7 +39,8 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Tbvehiculos.findByDescripcion", query = "SELECT t FROM Tbvehiculos t WHERE t.descripcion = :descripcion")
     , @NamedQuery(name = "Tbvehiculos.findByEstado", query = "SELECT t FROM Tbvehiculos t WHERE t.estado = :estado")
     , @NamedQuery(name = "Tbvehiculos.findByMarca", query = "SELECT t FROM Tbvehiculos t WHERE t.marca = :marca")
-    , @NamedQuery(name = "Tbvehiculos.findByMarca", query = "SELECT t FROM Tbvehiculos t WHERE t.observacion = :observacion")
+    , @NamedQuery(name = "Tbvehiculos.findByObservacion", query = "SELECT t FROM Tbvehiculos t WHERE t.observacion = :observacion")
+    , @NamedQuery(name = "Tbvehiculos.findByMotor", query = "SELECT t FROM Tbvehiculos t WHERE t.motor = :motor")
     , @NamedQuery(name = "Tbvehiculos.findByModelo", query = "SELECT t FROM Tbvehiculos t WHERE t.modelo = :modelo")})
 public class Tbvehiculos implements Serializable {
 
@@ -74,6 +75,9 @@ public class Tbvehiculos implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "modelo")
     private String modelo;
+    @Size(max = 20)
+    @Column(name = "motor")
+    private String motor;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tbvehiculos")
     private Collection<Tbvehiculosdependencias> tbvehiculosdependenciasCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "matricula")
@@ -160,6 +164,14 @@ public class Tbvehiculos implements Serializable {
 
     public void setObservacion(String observacion) {
         this.observacion = observacion;
+    }
+
+    public String getMotor() {
+        return motor;
+    }
+
+    public void setMotor(String motor) {
+        this.motor = motor;
     }
 
     public String getModelo() {

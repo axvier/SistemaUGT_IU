@@ -338,7 +338,7 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
             celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
             tableDatosVehiculo.addCell(celDatosVehciulo);
 
-            celDatosVehciulo = new PdfPCell(new Paragraph("Disco: ", timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo = new PdfPCell(new Paragraph("No.: ", timesNewRomanNormal(FONTSIZEGENERAL)));
             celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
             celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
             tableDatosVehiculo.addCell(celDatosVehciulo);
@@ -358,7 +358,7 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
             celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
             tableDatosVehiculo.addCell(celDatosVehciulo);
 
-            celDatosVehciulo = new PdfPCell(new Paragraph("Año matricula: ", timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo = new PdfPCell(new Paragraph("Matrícula: ", timesNewRomanNormal(FONTSIZEGENERAL)));
             celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
             celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
             tableDatosVehiculo.addCell(celDatosVehciulo);
@@ -368,9 +368,14 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
             celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
             tableDatosVehiculo.addCell(celDatosVehciulo);
 
-            celDatosVehciulo = new PdfPCell();
+            celDatosVehciulo = new PdfPCell(new Paragraph("Motor: ", timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
             celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
             tableDatosVehiculo.addCell(celDatosVehciulo);
+
+            celDatosVehciulo = new PdfPCell(new Paragraph(this.getVehiculoMotor(), timesNewRomanNormal(FONTSIZEGENERAL)));
+            celDatosVehciulo.setHorizontalAlignment(Element.ALIGN_LEFT);
+            celDatosVehciulo.setBorder(Rectangle.NO_BORDER);
             tableDatosVehiculo.addCell(celDatosVehciulo);
 
             celDatosVehciulo = new PdfPCell(pCaractVehiculo);
@@ -448,6 +453,21 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
             if (this.getDVC_Vehiculo() != null) {
                 result = (this.getDVC_Vehiculo().getAnio() != null)
                         ? String.valueOf(this.getDVC_Vehiculo().getAnio())
+                        : "";
+            }
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer anio de vehiculo", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+    
+    private String getVehiculoMotor() {
+        String result = "";
+        try {
+            if (this.getDVC_Vehiculo() != null) {
+                result = (this.getDVC_Vehiculo().getMotor()!= null)
+                        ? String.valueOf(this.getDVC_Vehiculo().getMotor())
                         : "";
             }
         } catch (Exception e) {

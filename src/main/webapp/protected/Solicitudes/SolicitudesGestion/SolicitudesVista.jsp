@@ -4,6 +4,12 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="java.time.ZoneId"%>
+<%@page import="java.time.LocalDate"%>
+<%@page import="java.time.Period"%>
+<%@page import="ugt.entidades.Tblicencias"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="ugt.entidades.Tbrevisionesmecanicas"%>
 <%@page import="ugt.vehiculos.iu.VehiculosIU"%>
 <%@page import="ugt.entidades.Tbgrupovehiculos"%>
 <%@page import="ugt.gruposvehiculos.iu.GruposVehiculosIU"%>
@@ -339,6 +345,7 @@
 </div>
 <%
 } else if (accion.equals("disponibilidadVehiculoConductor")) {
+    G = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
     Tbusuariosentidad userSol = (Tbusuariosentidad) session.getAttribute("userSol");
     Tbvehiculosconductores vehiculoConductor = (Tbvehiculosconductores) session.getAttribute("vehiculoConductor");
     Tbvehiculosdependencias vehiculodependencia = (Tbvehiculosdependencias) session.getAttribute("vehiculodependencia");
@@ -449,8 +456,9 @@
                                     </div>    
                                 </div>    
                                 <div class="form-group">
-                                    <button type="button" id="btn-aprobarDVC" class="btn btn-success" onclick="fncAprobarVehiculoConductor()"><i class="fa fa-check fa-2x"></i> Aprobar </button>
+                                    <button type="button" id="btn-aprobarDVC" class="btn btn-success" onclick="fncAprobarVehiculoConductor()"><i class="fa fa-check fa-2x"></i> Asignar </button>
                                     <button type="button" id="btn-quick-event" class="btn btn-custom-primary" onclick="fncVerAgendaPlaca()"><i class="fa fa-eye fa-2x"></i> Agenda </button>
+                                    <button type="button" id="btn-modal-dts-vehiculo" class="btn btn-info" onclick="fncModVerDatosVehiculo('addDVehiculoC', 'modGeneralSolicitudes')"><i class="fa fa-car fa-2x"></i> Datos vehículo </button>
                                     <input type="hidden" value="" id="inputHSolititud">
                                 </div>
                                 <!--</div>-->
@@ -461,38 +469,43 @@
                                                         <div class="panel-heading">
                                                             <h3 class="panel-title">Conductor</h3></div>
                                                         <div class="panel-body">-->
-                                <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Lista conductores</label>
-                                <div class="col-sm-10">
-                                    <select name="conductor" class="form-control selectpicker" id="addDVConductor" data-live-search="true" required>
-                                        <%//lista de conductores
-                                            valor = "";
-                                            if (listaConductores != null) {
-                                                valor += "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
-                                                for (Tbconductores itemConductor : listaConductores.getListaconductores()) {
-                                                    if (vehiculoConductor != null) {
-                                                        // pregutnar si el vehiculo conductor es igual al item conductor list para seleccionarlo
-                                                        if (vehiculoConductor.getTbvehiculosconductoresPK().getCedula().equals(itemConductor.getCedula())) {
-                                                            valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor)
-                                                                    + "' selected='selected'>"
-                                                                    + itemConductor.getNombres() + " " + itemConductor.getApellidos()
-                                                                    + "</option>\n";
-                                                        } //si no lo imprimimos sin seleccionado
-                                                        else {
+                                <div class="form-group">
+                                    <label  class="col-sm-2 control-label" id="titleTipoDisponibilidad">Lista conductores</label>
+                                    <div class="col-sm-10">
+                                        <select name="conductor" class="form-control selectpicker" id="addDVConductor" data-live-search="true" required>
+                                            <%//lista de conductores
+                                                valor = "";
+                                                if (listaConductores != null) {
+                                                    valor += "<option disabled value='' selected hidden>--Escoja uno --</option>\n";
+                                                    for (Tbconductores itemConductor : listaConductores.getListaconductores()) {
+                                                        if (vehiculoConductor != null) {
+                                                            // pregutnar si el vehiculo conductor es igual al item conductor list para seleccionarlo
+                                                            if (vehiculoConductor.getTbvehiculosconductoresPK().getCedula().equals(itemConductor.getCedula())) {
+                                                                valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor)
+                                                                        + "' selected='selected'>"
+                                                                        + itemConductor.getNombres() + " " + itemConductor.getApellidos()
+                                                                        + "</option>\n";
+                                                            } //si no lo imprimimos sin seleccionado
+                                                            else {
+                                                                valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor) + "'>"
+                                                                        + itemConductor.getNombres() + " " + itemConductor.getApellidos()
+                                                                        + "</option>\n";
+                                                            }
+                                                            // si no, lsitamos normalmente la opcion
+                                                        } else {
                                                             valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor) + "'>"
                                                                     + itemConductor.getNombres() + " " + itemConductor.getApellidos()
                                                                     + "</option>\n";
                                                         }
-                                                        // si no, lsitamos normalmente la opcion
-                                                    } else {
-                                                        valor += "<option class='disponibles' value='" + itemConductor.getCedula() + "' data-jsonconductor='" + G.toJson(itemConductor) + "'>"
-                                                                + itemConductor.getNombres() + " " + itemConductor.getApellidos()
-                                                                + "</option>\n";
                                                     }
                                                 }
-                                            }
-                                            out.println(valor);
-                                        %>
-                                    </select>
+                                                out.println(valor);
+                                            %>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" id="btn-modal-dts-conductor" class="btn btn-info" onclick="fncModVerDatosConductor('addDVConductor', 'modGeneralSolicitudes')"><i class="fa fa-user fa-2x"></i> Datos conductor </button>
                                 </div>
                             </div>
                         </div>
@@ -544,7 +557,175 @@
     <button type='button' class='btn btn-default' data-dismiss='modal'><i class='fa fa-times-circle'></i> Cerrar</button>
 </div>
 <%/**
-             * fin cotenido modal para combinar solicitud pdf con las demas
+     * fin cotenido modal para combinar solicitud pdf con las demas
+     */
+} else if (accion.equals("modDatosVehiculoDVC")) {
+    /**
+     * inicio contenido modal para ver datos de vehiculo DVC
+     */
+    Tbvehiculos vehiculoAux = (Tbvehiculos) session.getAttribute("vehiculoDVC");
+    Tbrevisionesmecanicas revisionAux = (Tbrevisionesmecanicas) session.getAttribute("revisionmecanicaDVC");
+    session.setAttribute("vehiculoDVC", null);
+    session.setAttribute("revisionmecanicaDVC", null);
+    String observacion = (vehiculoAux.getObservacion() != null) ? vehiculoAux.getObservacion() : "";
+%>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="modalLicenciaTitulo"> Vehículo <%=vehiculoAux.getPlaca()%> | Datos del vehículo </h4>
+</div>
+<div class="modal-body">
+    <form data-parsley-validate novalidate class="form-horizontal" role="form" id="formCombinarPDF">
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >Matrícula</label>
+            <div class='col-sm-10'>
+                <input type='text' class='form-control' value="<%=vehiculoAux.getAnio()%>" readonly/>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >Color</label>
+            <div class='col-sm-10'>
+                <input type='text' class='form-control' value="<%=vehiculoAux.getColor()%>" readonly/>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >Tipo</label>
+            <div class='col-sm-10'>
+                <input type='text' class='form-control' value="<%=vehiculoAux.getIdgrupo().getNombre()%>" readonly/>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >observación</label>
+            <div class='col-sm-10'>
+                <textarea cols="50" readonly><%=observacion%></textarea>
+            </div>
+        </div>
+        <hr>
+        <%
+            if (revisionAux != null) {
+                SimpleDateFormat smf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                String date = smf.format(revisionAux.getFecha());
+        %>
+        <h3>Última revisión mecánica</h3>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >ID revisión</label>
+            <div class='col-sm-10'>
+                <input type='text' class='form-control' value="<%=revisionAux.getIdrevision()%>" readonly/>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >Detalle</label>
+            <div class='col-sm-10'>
+                <input type='text' class='form-control' value="<%=revisionAux.getDetalle()%>" readonly/>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >Fecha</label>
+            <div class='col-sm-10'>
+                <input type='datetime-local' class='form-control' value="<%=date%>" readonly/>
+            </div>
+        </div>
+        <%
+            } else {
+                out.println("<h3 class='text-danger'>No hay una revision mecánica disponible</h3>");
+            }
+        %>
+    </form>
+</div>
+<div class='modal-footer'>
+    <button type='button' class='btn btn-default' data-dismiss='modal'><i class='fa fa-times-circle'></i> Cerrar</button>
+</div>
+<%/**
+     * fin cotenido modal para ver datos del vehiculo DVC
+     */
+} else if (accion.equals("modDatosConductorDVC")) {
+    /**
+     * inicio contenido modal para ver datos de conductor DVC
+     */
+    Tbconductores conductorAux = (Tbconductores) session.getAttribute("conductorDVC");
+    Tblicencias licenciaAux = (Tblicencias) session.getAttribute("licenciaDVC");
+    session.setAttribute("conductorDVC", null);
+    session.setAttribute("licenciaDVC", null);
+    SimpleDateFormat smf = new SimpleDateFormat("dd 'de' MMMM 'del' yyyy");
+    LocalDate ahora = LocalDate.now();
+    LocalDate fechaNac = conductorAux.getFechanac().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    Period periodo = Period.between(fechaNac, ahora);
+    String edad = periodo.getYears() + " años con " + periodo.getMonths()+" m.";
+    String observacion = (conductorAux.getObservacion() != null) ? conductorAux.getObservacion() : "";
+%>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="modalLicenciaTitulo"> Conductor <%=conductorAux.getCedula()%> | Datos del Conductor </h4>
+</div>
+<div class="modal-body">
+    <form data-parsley-validate novalidate class="form-horizontal" role="form" id="formCombinarPDF">
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >Cédula</label>
+            <div class='col-sm-10'>
+                <input type='text' class='form-control' value="<%=conductorAux.getCedula()%>" readonly/>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >Año nacimiento</label>
+            <div class='col-sm-10'>
+                <input type='text' class='form-control' value="<%=smf.format(conductorAux.getFechanac())%>" readonly/>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >Edad</label>
+            <div class='col-sm-10'>
+                <input type='text' class='form-control' value="<%=edad%>" readonly/>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >observación</label>
+            <div class='col-sm-10'>
+                <textarea cols="50" readonly><%=observacion%></textarea>
+            </div>
+        </div>
+        <hr>
+        <%
+            if (licenciaAux != null) {
+                smf = new SimpleDateFormat("yyyy-MM-dd");
+                String expedicion = smf.format(licenciaAux.getFechaexpedicion());
+                String expiracion = smf.format(licenciaAux.getFechaexpiracion());
+        %>
+        <h3>Licencia</h3>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >ID</label>
+            <div class='col-sm-10'>
+                <input type='text' class='form-control' value="<%=licenciaAux.getIdlicencia()%>" readonly/>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >Tipo</label>
+            <div class='col-sm-10'>
+                <input type='text' class='form-control' value="<%=licenciaAux.getTipo()%>" readonly/>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >Fecha expedición</label>
+            <div class='col-sm-10'>
+                <input type='date' class='form-control' value="<%=expedicion%>" readonly/>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >Fecha expiración</label>
+            <div class='col-sm-10'>
+                <input type='date' class='form-control' value="<%=expiracion%>" readonly/>
+            </div>
+        </div>
+        <%
+            } else {
+                out.println("<h3 class='text-danger'>No hay una licencia asignada al conductor</h3>");
+            }
+        %>
+    </form>
+</div>
+<div class='modal-footer'>
+    <button type='button' class='btn btn-default' data-dismiss='modal'><i class='fa fa-times-circle'></i> Cerrar</button>
+</div>
+<%/**
+             * fin contenido modal para ver datos de conductor DVC
              */
         }
     } else {

@@ -64,7 +64,7 @@
                     session.setAttribute("statusCodigo", "KO");
                 }
             } else {
-                session.setAttribute("statusGuardar", "Ya existe un vehiculo con esa cédula");
+                session.setAttribute("statusGuardar", "Ya existe un vehiculo con esa placa");
                 session.setAttribute("statusCodigo", "KO");
             }
             response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=guardarStatus");
@@ -99,6 +99,35 @@
                 session.setAttribute("statusEliminar", "KO");
             }
             response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=eliminarStatus");
+        } else if (opc.equals("eliminarRevision")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String idrevision = (String) session.getAttribute("idrevision");
+            session.setAttribute("idrevision", null);
+            String objRevision = swRevisionesMecanicas.listarRevisionMecanicaID(idrevision);
+            String objJSON = swRevisionesMecanicas.eliminarRevisionMecanica(idrevision);
+            if (objJSON.equals("200") || objJSON.equals("204") || objJSON.equals("202")) {
+                Tbrevisionesmecanicas revDel = g.fromJson(objRevision, Tbrevisionesmecanicas.class);
+                if(revDel.getIdpdf() != null)
+                    swPDF.eliminarPDF(revDel.getIdpdf().toString());
+                session.setAttribute("statusEliminar", "OK");
+            } else {
+                session.setAttribute("statusEliminar", "KO");
+            }
+            response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=eliminarStatus");
+        } else if (opc.equals("downloadPDFOrden")) {
+            g = new Gson();
+            String idPDFRevision = (String) session.getAttribute("idPDFRevision");
+            session.setAttribute("idPDFRevision", null);
+            String objJSON = swPDF.listarPDFID(idPDFRevision);
+            if (objJSON.length() > 2) {
+                JSONObject obj = new JSONObject(objJSON);
+                String pdf64 = obj.getString("archivo");
+                if (pdf64.length() > 2) {
+                    byte[] bytes = Base64.getDecoder().decode(pdf64);
+                    session.setAttribute("pdf64", Base64.getEncoder().encodeToString(bytes));
+                }
+            }
+            response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=" + opc);
         } else if (opc.equals("modificarVehiculo")) {
             String placa = (String) session.getAttribute("placa");
             String jsonVehiculo = (String) session.getAttribute("jsonVehiculo");

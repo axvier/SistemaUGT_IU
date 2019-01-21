@@ -113,7 +113,7 @@ var fncModalGenerarSalvoConducto = function (idmodal, idtabla, rowid) {
         $('#' + idmodal + ' .modal-content').load('protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=mostrar&accion=modGenerarSalvoConducto', function () {
             $('#' + idmodal + ' .modal-body #formGenSalvoC').attr("action", "GenerarSalvoConducto");
             $("#" + idmodal + " #SolicitudGenerar").val(encodeURI(JSON.stringify(solicitud)));
-            $("#" + idmodal + " #titlemodGeneralSalvoConducto").html(" Solicitud " + solicitud.numero.toString() + " | Generar salvo conducto ");
+            $("#" + idmodal + " #titlemodGeneralSalvoConducto").html(" Solicitud " + solicitud.numero + " | Generar salvo conducto ");
             $('#' + idmodal).modal({show: true});
         });
     }
