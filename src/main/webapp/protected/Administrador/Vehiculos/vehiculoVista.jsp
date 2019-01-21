@@ -1,3 +1,7 @@
+<%@page import="com.google.gson.GsonBuilder"%>
+<%@page import="ugt.entidades.Tbrevisionesmecanicas"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="ugt.revisionesmecanicas.iu.RevisionesMecanicasIU"%>
 <%@page import="ugt.entidades.Tbvehiculosconductores"%>
 <%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
 <%@page import="ugt.entidades.Tbgrupovehiculos"%>
@@ -157,26 +161,26 @@
         <ul class="list-inline file-main-menu">
             <li>
                 <a data-toggle="modal" data-target="#miModalVehiculo" style='cursor: pointer'>
-                    <span class="fa-stack fa-lg"><i class="fa fa-plus-circle fa-stack-2x"></i></span> Nuevo vehículo
+                    <span class="fa-stack fa-lg"><i class="fa fa-plus-circle fa-stack-2x"></i></span>Add vehículo
                 </a>
             </li>
             <li>
                 <a  id="mnCondDisp" href="#" onclick="cambiarJQGVehiculo('jsonVehiculos')">
-                    <span class="fa-stack fa-lg"></i><i class="fa fa-truck fa-stack-2x"></i></span>Vehículos disponibles
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-truck fa-stack-2x"></i></span>Disponibles
                 </a>
             </li>
             <li>
                 <a id="mnCondOcup" href="#" onclick="cambiarJQGVehiculo('jsonVehiculosOcup')">
-                    <span class="fa-stack fa-lg"></i><i class="fa fa-bus fa-stack-2x"></i><i class="fa fa-group fa-stack-1x"></i></span>Vehículos con Conductores
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-bus fa-stack-2x"></i><i class="fa fa-group fa-stack-1x"></i></span>Con Conductores
                 </a>
             </li>
             <li>
                 <a id="mnCondOcup" href="#" onclick="verVehiculoConductor('modGeneralVehiculo')">
-                    <span class="fa-stack fa-lg"></i><i class="fa fa-file-o fa-stack-2x"></i><i class="fa fa-user fa-stack-1x"></i></span>Ver conductor asignado
+                    <span class="fa-stack fa-lg"></i><i class="fa fa-file-o fa-stack-2x"></i><i class="fa fa-user fa-stack-1x"></i></span>Conductor asignado
                 </a>
             </li>
             <li>
-                <a id="mnCondOcup" href="#" onclick="">
+                <a id="mnCondOcup" href="#" onclick="addModalRevisionMecanica('modGeneralVehiculo', 'jqgridVehiculo')">
                     <span class="fa-stack fa-lg"></i><i class="fa fa-gavel fa-stack-2x"></i></span>Revision Mecánica
                 </a>
             </li>
@@ -203,7 +207,7 @@
         </div>
         <div class="widget-content">
             <div id="jqgrid-wrapper">
-                <table id="jqgridVehiculo" class="table table-striped table-hover">
+                <table id="jqgridVehiculo" class="table table-hover">
                     <tr>
                         <td></td>
                     </tr>
@@ -335,7 +339,7 @@
         </div>
         <div class="widget-content">
             <div id="jqgrid-wrapper">
-                <table id="jqgridVehiculoUnlock" class="table table-striped table-hover">
+                <table id="jqgridVehiculoUnlock" class="table table-hover">
                     <tr>
                         <td></td>
                     </tr>
@@ -392,9 +396,75 @@
     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cerrar</button>
 </div>
 <%
-        } else if (accion.equals("jsonVacio")) {
-            String datos = "{\"rows\":\"\"}";
-            out.println(datos);
+} else if (accion.equals("jsonVacio")) {
+    String datos = "{\"rows\":\"\"}";
+    out.println(datos);
+} else if (accion.equals("modRevisionM")) {
+    String matricula = (String) session.getAttribute("placaRM");
+    session.setAttribute("placaRM", null);
+%>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="modalLicenciaTitulo">Vehículo <%=matricula%>| Revisiones mecánicas</h4>
+</div>
+<div class="modal-body">
+    <input type="hidden" value="<%=matricula%>" id="placaRM">
+    <ul class="nav nav-tabs nav-tabs-right">
+        <li class="active"><a href="#tabitem1" data-toggle="tab"><i class="fa fa-plus fa-2x"></i>  Add revisión mecánica</a></li>
+        <li><a href="#tabitem2" data-toggle="tab" onclick="fncVerListaRevisiones('tabitem2', 'tjqgRevision')"><i class="fa fa-eye fa-2x text-center"></i>  Lista revisiones</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="tabitem1">
+            <form id="formAddGU_E_R" class="form-horizontal" role="form" onsubmit="fncAddRevisionMForm(this.id,'modGeneralVehiculo');return false;">
+                <div class="form-group">
+                    <label  class="col-sm-2 control-label" for="addRMDetalle">Detalle: </label>
+                    <div class="col-sm-10">
+                        <input id="addRMDetalle" type="text" class="form-control" value="" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="addRMFecha" >Fecha: </label>
+                    <div class="col-sm-10">
+                        <input id="addRMFecha" type="datetime-local" class="form-control" value="" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="filePDF" >PDF revisión: </label>
+                    <div class="col-sm-10">
+                        <input id="filePDF"  type="file" style="display:block;" accept=".pdf" required/>
+                    </div>
+                </div>
+                <hr>
+                <div class="text-right">
+                    <button type="submit" class="btn btn-success" id="btnAddGU_E_R"><i class="fa fa-check-circle"></i> Guardar </button>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane fade" id="tabitem2">
+            <div id="jqgrid-wrapper">
+                <table id="tjqgRevision" class="table table-hover">
+                    <thead>        
+                        <tr>            
+                            <th>Entidad</th>         
+                            <th>Rol</th>          
+                            <th>Fecha inicio</th>       
+                            <th>Fecha Fin</th>       
+                        </tr>   
+                    </thead> 
+                    <tbody>
+                    </tbody>
+                </table>
+                <div id="tjqgRevision_pager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" id="modGeneralVehiculo_Cerrar" onclick="cerrarModRevisionM('modGeneralVehiculo')"><i class="fa fa-times-circle"></i> Cerrar</button>
+</div>
+<%
+        } else {
+            out.println("<h3>No se ha encontrado revisiones mecánicas</h3>");
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

@@ -246,6 +246,30 @@ public class swSolicitudes {
     }
     //</editor-fold>
     
+    //<editor-fold defaultstate="collapsed" desc="Filtatrar solicitud full por estado enviado y asignada"> 
+    public static String filtrarSolicitudesEnviadaAsignada() {
+        String result = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/bsolicitudesfullea");
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setRequestMethod("GET");
+            conexion.setDoOutput(true);
+            conexion.setDoInput(true);
+            InputStream contenido = (InputStream) conexion.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(contenido, "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result = line;
+            }
+            conexion.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para filtrar solicitudes por estado asignada y enviada ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+    //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Filtatrar solicitud full por NO estado"> 
     public static String filtrarSolicitudesNoEstado(String estado) {
         String result = "";

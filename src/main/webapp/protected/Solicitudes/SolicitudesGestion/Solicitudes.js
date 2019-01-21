@@ -1135,7 +1135,7 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
                 if (cm.search !== false && (typeof cm.stype === "undefined" || cm.stype === "text")) {
                     rules.push({
                         field: cm.name,
-                        op: "cn",
+                        op: "eq",
                         data: searchText
                     });
                 }

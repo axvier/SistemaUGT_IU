@@ -39,7 +39,7 @@
 //            String estado = (String) session.getAttribute("estadoSolicitudes");
             String estado = "enviado";
             session.setAttribute("estadoSolicitudes", null);
-            String arrayJSON = swSolicitudes.filtrarSolicitudesEstado(estado);
+            String arrayJSON = swSolicitudes.filtrarSolicitudesEnviadaAsignada();
             if (arrayJSON.length() > 2) {
                 session.setAttribute("arrayJSON", arrayJSON);
                 response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=" + opc);
@@ -130,7 +130,7 @@
             String json = (String) session.getAttribute("solicitudRecib");
             session.setAttribute("solicitudRecib", null);
             Tbsolicitudes solActualizar = g.fromJson(json, Tbsolicitudes.class);
-            solActualizar.setEstado("asignada");
+            solActualizar.setEstado("aprobadaUGT");
 
             String ojbExiste = swDisponibilidadVC.getDisponibilidadVCSolicitud(solActualizar.getNumero().toString());
             if (ojbExiste.length() > 2) {
@@ -187,14 +187,14 @@
             String respuesta = "";
             if (jsonObject.length() > 2) {
                 session.setAttribute("statusCodigo", "OK");
-//                solActualizar.setEstado("asignada");
-//                jsonObject = swSolicitudes.modificarSolicitudID(solActualizar.getNumero().toString(), g.toJson(solActualizar));
-//                if (jsonObject.length() > 2) {
-//                    session.setAttribute("statusCodigo", "OK");
-//                } else {
-//                    respuesta += "Error al momento de actualizar estado solicitud " + solActualizar.getNumero();
-//                    session.setAttribute("statusCodigo", "KO");
-//                }
+                solActualizar.setEstado("asignada");
+                jsonObject = swSolicitudes.modificarSolicitudID(solActualizar.getNumero().toString(), g.toJson(solActualizar));
+                if (jsonObject.length() > 2) {
+                    session.setAttribute("statusCodigo", "OK");
+                } else {
+                    respuesta += "Error al momento de actualizar estado solicitud " + solActualizar.getNumero();
+                    session.setAttribute("statusCodigo", "KO");
+                }
             } else {
                 respuesta += "Error al momento de asignar el vehículo-conductor";
                 session.setAttribute("statusCodigo", "KO");

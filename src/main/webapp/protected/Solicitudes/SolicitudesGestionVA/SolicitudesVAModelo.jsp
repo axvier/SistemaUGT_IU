@@ -17,7 +17,7 @@
         String opc = request.getParameter("opc");
         Gson g = new Gson();
         if (opc.equals("jsonSolicitudesAsignada")) {
-            String estado = "asignada";
+            String estado = "aprobadaUGT";
             session.setAttribute("estadoSolicitudes", null);
             String arrayJSON = swSolicitudes.filtrarSolicitudesEstado(estado);
             if (arrayJSON.length() > 2) {

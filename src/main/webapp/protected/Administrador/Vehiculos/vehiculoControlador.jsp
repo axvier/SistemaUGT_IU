@@ -1,3 +1,8 @@
+<%@page import="org.apache.commons.fileupload.FileItem"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="org.apache.commons.fileupload.disk.DiskFileItemFactory"%>
+<%@page import="org.apache.commons.fileupload.servlet.ServletFileUpload"%>
+<%@page import="org.apache.commons.fileupload.FileUploadException"%>
 <%@page import="utg.login.Login"%>
 <%
     Login login = (Login) session.getAttribute("login");
@@ -41,6 +46,40 @@
                 String placa = request.getParameter("placa");
                 session.setAttribute("placa", placa);
                 response.sendRedirect("vehiculoModelo.jsp?opc=" + opc );
+            } else if (opc.equals("modRevisionM")) {
+                String placa = request.getParameter("placaRM");
+                session.setAttribute("placaRM", placa);
+                response.sendRedirect("vehiculoVista.jsp?accion=" + opc );
+            } else if (opc.equals("jsonRevisionMecanica")) {
+                String placa = request.getParameter("matricula");
+                session.setAttribute("matricula", placa);
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc );
+            } else if (opc.equals("addRevisionM")) {
+                if (ServletFileUpload.isMultipartContent(request)) {
+                    try {
+                        ServletFileUpload SFileUpload = new ServletFileUpload(new DiskFileItemFactory());
+                        Iterator iter = SFileUpload.parseRequest(request).iterator();
+                        while (iter.hasNext()) {
+                            FileItem FItem = (FileItem) iter.next();
+                            if (!FItem.isFormField()) {
+                                if (FItem.getFieldName().equals("dato")) {
+                                    byte[] bytes = org.apache.commons.io.IOUtils.toByteArray(FItem.getInputStream());
+                                    session.setAttribute("bytesPDF", bytes);
+                                }
+                            }
+                            if (FItem.getFieldName().equals("jsonRevisionM")) {
+                                session.setAttribute("jsonRevisionM", java.net.URLDecoder.decode(FItem.getString(), "UTF-8"));
+                            }
+                            if (FItem.getFieldName().equals("placaRM")) {
+                                session.setAttribute("placaRM", FItem.getString());
+                            }
+                        }
+                        response.sendRedirect("vehiculoModelo.jsp?opc=" + opc);
+                    } catch (FileUploadException e) {
+                        out.println(e.toString());
+                        response.sendError(501, this.getServletName() + "-> Error al querer subir el archivo al servidor");
+                    }
+                }
             }
         }
     } else {

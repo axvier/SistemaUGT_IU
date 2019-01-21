@@ -129,7 +129,162 @@ var cambiarJQGVehiculo = function (tipo) {
     $grid.jqGrid('setGridParam', {url: urlbase + "/vehiculoControlador.jsp?opc=" + tipo, datatype: "json"}).trigger("reloadGrid");
 };
 
+var addModalRevisionMecanica = function (idmodal, idtabla) {
+    var $grid = $("#" + idtabla);
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        var rowData = $grid.jqGrid('getRowData', selRowId);
+        $('#' + idmodal + ' .modal-content').load('protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=modRevisionM&placaRM=' + rowData.placa, function () {
+            $('#' + idmodal + " .modal-header .modal-title").html("<strong>[" + rowData.disco + "] Vehículo " + rowData.placa + "</strong> | Revisiones mecánicas ");
+            $('#' + idmodal).modal({show: true});
+        });
+    } else
+        swalTimer("Vehículo", "Seleccione un vehículo", "error");
+};
+
+var cerrarModRevisionM = function (idmodal) {
+    $('#' + idmodal).modal("hide");
+    $('#' + idmodal + ' .modal-content').html();
+};
+var countRM = 0;
+var fncVerListaRevisiones = function (idDivModal, idtabla) {
+    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Vehiculos";
+    var $grid = $("#jqgridVehiculo");
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        var rowData = $grid.jqGrid('getRowData', selRowId);
+        $grid = $("#" + idtabla);
+        $grid.jqGrid({
+            url: urlbase + "/vehiculoControlador.jsp?opc=jsonRevisionMecanica&matricula=" + rowData.placa,
+            editurl: urlbase + "/vehiculoControlador.jsp",
+            mtype: "POST",
+            datatype: "json",
+            colModel: [
+                {label: 'ID', name: 'idrevision', key: true, width: 70, editable: false},
+                {label: 'Placa', name: 'matricula', jsonmap: 'matricula.placa', width: 80, editable: false, editrules: {required: true}},
+                {label: 'Detalle', name: 'detalle', width: 100, editable: true, editrules: {required: true}},
+                {label: 'Fecha', name: 'fecha', width: 90, editable: true, editrules: {date: true, required: true},
+                    sortable: false,
+                    search: false,
+                    formatter: 'date',
+                    formatoptions: {
+                        srcformat: "ISO8601Long",
+                        newformat: 'Y-m-d H:i'
+                    },
+                    edittype: 'text',
+                    editoptions: {
+                        dataInit: function (element) {
+                            $(element).datepicker({
+                                format: "yyyy-mm-dd"
+                            });
+                        }
+                    }
+                },
+                {label: 'PDF', name: 'idpdf', width: 70, editable: false, editrules: {required: true, number: true}},
+                {
+                    label: "Opciones",
+                    name: "actions",
+                    sortable: false,
+                    search: false,
+                    width: 90,
+                    formatter: "actions",
+                    formatoptions: {
+                        keys: true,
+                        editOptions: {},
+                        addOptions: {},
+                        delOptions: {
+                            height: 150,
+                            width: 300,
+                            serializeDelData: function (postdata) {
+                                console.log(postdata);
+//                            return {opc: "eliminarRevision", idrevision : 'idrevision'};
+                            }
+                        }
+                    }
+                }
+            ],
+            rownumbers: true,
+            viewrecords: true,
+            loadtext: '<center><i class="fa fa-spinner fa-pulse fa-4x fa-fw"></i><span class="sr-only">Cargando...</span></center>',
+            caption: 'Revisiones mecánicas',
+            rowNum: 5,
+            loadonce: true,
+            pager: "#" + idtabla + "_pager",
+            serializeRowData: function (postdata) {
+                console.log(postdata);
+//                var idgrupo = postdata.nombre;
+//                delete postdata.nombre;
+//                delete postdata.oper;
+//                if (typeof postdata.observacion === "undefined" || postdata.observacion === null || postdata.observacion === "")
+//                    delete postdata.observacion;
+//                return {opc: "modificarVehiculo", jsonVehiculo: JSON.stringify(postdata), placa: postdata.placa, idgrupo: idgrupo};
+            }
+        });
+
+        $grid.navGrid("#" + idtabla + "_pager", {edit: false, add: false, del: false, search: true, refresh: false, view: false, position: "left"});
+
+//        $("#"+idDivModal).on("resize", function () {
+//            var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
+//            grid.jqGrid("setGridWidth", newWidth, true);
+//        }).trigger('resize');
+    }
+};
+
+var fncAddRevisionMForm = function (idform, idmodal) {
+    var parsleyForm = $('#' + idform).parsley();
+    parsleyForm.validate();
+    if (!parsleyForm.isValid())
+        return false;
+    else {
+        var rowData = $("#placaRM").val();
+        if (typeof rowData !== 'undefined') {
+            var input = document.getElementById('filePDF');
+            if (!input) {
+                alert("Um, couldn't find the fileinput element.");
+            } else if (!input.files) {
+                alert("This browser doesn't seem to support the `files` property of file inputs.");
+            } else if (!input.files[0]) {
+                alert("Please select a file before clicking 'Load'");
+            } else {
+                swalTimerLoading("Subiendo PDF", "Se esta subiendo la revisión vehicular PDF", 10000);
+                var file = input.files[0];
+                var myform = $("#" + idform);
+                var fd = new FormData(myform);
+                var revision = {
+                    detalle: $("#" + idform + " #addRMDetalle").val(),
+                    fecha: $("#" + idform + " #addRMFecha").val() + ":00-05:00"
+                };
+                fd.append("dato", file);
+                fd.append("jsonRevisionM", encodeURI(JSON.stringify(revision)));
+                fd.append("placaRM", rowData);
+                $.ajax({
+                    url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=addRevisionM",
+                    data: fd,
+                    cache: false,
+                    processData: false,
+                    contentType: false,
+                    type: 'POST',
+                    success: function (datos) {
+                        cerrarModRevisionM('modGeneralVehiculo');
+                        datos = JSON.parse(datos);
+                        if (datos.codigo === "OK") {
+                            swalNormal("Completado", datos.respuesta, "success");
+                        } else {
+                            swalNormal("Completado", datos.respuesta, "error");
+                        }
+                    },
+                    error: function () {
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+        $('#' + idmodal).modal('hide');
+    }
+};
+
 var fncDibujarTableVehiculos = function () {
+    countRM = 0;
     var $grid = $("#jqgridVehiculo");
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Vehiculos";
     $grid.jqGrid({
@@ -248,7 +403,7 @@ var fncDibujarTableVehiculosUnlock = function () {
         mtype: "POST",
         datatype: "json",
         colModel: [
-            {label: 'Placa', name: 'placa', key: true, width: 80, editable: true},
+            {label: 'Placa', name: 'placa', key: true, width: 80, editable: false},
             {label: 'Disco', name: 'disco', width: 60, editable: true},
             {label: 'Marca', name: 'marca', width: 150, editable: true},
             {label: 'Modelo', name: 'modelo', width: 150, editable: true},

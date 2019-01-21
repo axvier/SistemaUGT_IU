@@ -223,8 +223,9 @@
                     <div class="col-sm-10">
                         <select name="filtroSolicitud" class="form-control" id="filtroSolicitudEstado" data-live-search="true">
                             <!--<optgroup label="Tipo Vehículo">-->
-                            <option value="asignada">Asignadas (Visto bueno UGT )</option>
+                            <!--<option value="asignada">Asignadas</option>-->
                             <option value="aprobada">Aprobadas (Visto bueno VA)</option>
+                            <option value="aprobadaUGT">Aprobadas (Visto bueno UGT)</option>
                             <option value="finalizada">Finalizadas</option>
                             <option value="rechazada">Rechazadas</option>
                             <option value="procesadas" selected="selected">Todas (UGT - VA)</option>
@@ -244,7 +245,7 @@
         </div><br>
         <div class="widget widget-table" >
             <div class="widget-header">
-                <h3><i class="fa fa-table"></i> Sección </h3><em>Lista solicitudes</em>
+                <h3><i class="fa fa-table"></i> Sección Solicitudes Procesadas</h3><em>Lista solicitudes</em>
             </div>
             <div class="widget-content">
                 <div id="jqgrid-wrapper">

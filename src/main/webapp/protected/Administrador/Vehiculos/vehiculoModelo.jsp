@@ -1,3 +1,11 @@
+<%@page import="java.util.logging.Level"%>
+<%@page import="java.util.logging.Logger"%>
+<%@page import="ugt.servicios.swPDF"%>
+<%@page import="org.json.JSONObject"%>
+<%@page import="java.util.Base64"%>
+<%@page import="ugt.entidades.Tbrevisionesmecanicas"%>
+<%@page import="com.google.gson.GsonBuilder"%>
+<%@page import="ugt.servicios.swRevisionesMecanicas"%>
 <%@page import="ugt.vehiculosconductores.iu.VehiculosConductoresIU"%>
 <%@page import="ugt.servicios.swVehiculoConductor"%>
 <%@page import="ugt.entidades.Tbvehiculos"%>
@@ -103,7 +111,7 @@
                 Tbgrupovehiculos grupo = g.fromJson(listaGrupo, Tbgrupovehiculos.class);
                 Tbvehiculos vehiculo = g.fromJson(jsonVehiculo, Tbvehiculos.class);
                 vehiculo.setIdgrupo(grupo);
-                String jsonMod = swVehiculo.modificarVehiculo(placa,g.toJson(vehiculo));
+                String jsonMod = swVehiculo.modificarVehiculo(placa, g.toJson(vehiculo));
                 if (jsonMod.length() > 2) {
                     session.setAttribute("statusMod", "OK");
                 } else {
@@ -130,6 +138,69 @@
                 session.setAttribute("vehiculosConductoresIU", vehiculosConductoresIU);
             }
             response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=contentModalVerCond");
+        } else if (opc.equals("jsonRevisionMecanica")) {
+            String placa = (String) session.getAttribute("matricula");
+            session.setAttribute("matricula", null);
+            String arrayJSON = swRevisionesMecanicas.filtrarXSolicitud(placa);
+            if (arrayJSON.length() > 2) {
+                session.setAttribute("arrayJSON", arrayJSON);
+                response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=jsonVehiculos");
+            } else {
+                response.sendRedirect("../../vista.jsp?accion=jsonVacio");
+
+            }
+        } else if (opc.equals("addRevisionM")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String placa = (String) session.getAttribute("placaRM");
+            session.setAttribute("placaRM", null);
+            String jsonRevisionM = (String) session.getAttribute("jsonRevisionM");
+            session.setAttribute("jsonRevisionM", null);
+            byte[] bytes = (byte[]) session.getAttribute("bytesPDF");
+            session.setAttribute("bytesPDF", null);
+            String objJSONVehiculo = swVehiculo.listarVehiculoID(placa);
+            if (objJSONVehiculo.length() > 2) {
+                Tbvehiculos vehiculoAux = g.fromJson(objJSONVehiculo, Tbvehiculos.class);
+                Tbrevisionesmecanicas addRevision = g.fromJson(jsonRevisionM, Tbrevisionesmecanicas.class);
+                if (bytes != null) {
+                    if (bytes.length > 0) {
+                        try {
+                            String encoded = Base64.getEncoder().encodeToString(bytes);
+                            String pdfJSON = new JSONObject()
+                                    .put("idpdf", 0)
+                                    .put("archivo", encoded).toString();
+                            String jsonPDF = swPDF.insertPDF(pdfJSON);
+                            if (jsonPDF.length() > 2) {
+                                JSONObject obj = new JSONObject(jsonPDF);
+                                addRevision.setIdpdf(obj.getInt("idpdf"));
+                                addRevision.setIdrevision(0);
+                                addRevision.setMatricula(vehiculoAux);
+                                if (swRevisionesMecanicas.insertRevisionMecanica(g.toJson(addRevision)).length() > 2) {
+                                    session.setAttribute("statusGuardar", "Se ha ingresado la revisión mecánica");
+                                    session.setAttribute("statusCodigo", "OK");
+                                } else {
+                                    session.setAttribute("statusGuardar", "No se ha podido ingresado la revisión mecánica");
+                                    session.setAttribute("statusCodigo", "KO");
+                                }
+                            } else {
+                                session.setAttribute("statusGuardar", "Error no se ha subido su PDF a la base de datos");
+                                session.setAttribute("statusCodigo", "KO");
+                            }
+                        } catch (Exception e) {
+                            session.setAttribute("statusGuardar", "Ha ocurrido un error al momento de subir al servidor modelo");
+                            session.setAttribute("statusCodigo", "KO");
+                            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en subir el PDF revision mecanica", e.getClass().getName() + "****" + e.getMessage());
+                            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+                        }
+                    } else {
+                        session.setAttribute("statusGuardar", "No ha seleccionado un archivo PDF");
+                        session.setAttribute("statusCodigo", "KO");
+                    }
+                } else {
+                    session.setAttribute("statusGuardar", "No ha seleccionado un archivo PDF");
+                    session.setAttribute("statusCodigo", "KO");
+                }
+            }
+            response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=guardarStatus");
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");
