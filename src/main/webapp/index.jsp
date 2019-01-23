@@ -378,12 +378,19 @@
         <script src="assets/js/plugins/jquery-mapael/jquery.mapael.js"></script>
         <script src="assets/js/plugins/raphael/maps/usa_states.js"></script>
         <script src="assets/js/plugins/dropzone/dropzone.min.js" type="text/javascript"></script>
+        <script src="js/numeric/jquery.numeric.min.js" type="text/javascript"></script>
         <script src="assets/js/king-chart-stat.js"></script>
         <script src="assets/js/king-table.js"></script>
         <script src="assets/js/king-components.js"></script>
         <!--        <link href="js/dropzone/dropzone.css" rel="stylesheet" type="text/css"/>
                 <script src="js/dropzone/dropzone.js" type="text/javascript"></script>-->
-
+        <!--inicio graficos charts-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<!--        <script src="js/flop_chart0.8.3/jquery.flot.min.js" type="text/javascript"></script>
+        <script src="js/flop_chart0.8.3/jquery.flot.resize.min.js" type="text/javascript"></script>
+        <script src="js/flop_chart0.8.3/jquery.flot.time.min.js" type="text/javascript"></script>
+        <script src="js/flop_chart0.8.3/jquery.flot.pie.min.js" type="text/javascript"></script>-->
+        <!--fin graficos chart-->
         <script src="assets/js/jquery-ui/jquery-ui-1.10.4.custom.js" type="text/javascript"></script>
         <link href="js/css/selectbox.css" rel="stylesheet" type="text/css"/>
         <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">-->
@@ -427,5 +434,6 @@
         <script src="protected/Solicitudes/SolicitudesGestion/Solicitudes.js" type="text/javascript"></script>
         <script src="protected/Solicitudes/SolicitudesGestionVA/SolicitudesVA.js" type="text/javascript"></script>
         <script src="protected/Administrador/SalvoConductos/SalvoConductos.js" type="text/javascript"></script>
+        <script src="protected/Administrador/Reportes/Reportes.js" type="text/javascript"></script>
     </body>
 </html>

@@ -81,9 +81,12 @@ var fncaddNuevoConductor = function () {
     licencia.fechaexpedicion = obj.fechaexpedicion + "T00:00:00-05:00";
     licencia.fechaexpiracion = obj.fechaexpiracion + "T00:00:00-05:00";
     licencia.tipo = obj.tipo;
+    licencia.puntos = obj.puntos;
+    licencia.telefono = obj.telefono;
     delete obj.tipo;
     delete obj.fechaexpiracion;
     delete obj.fechaexpedicion;
+    delete obj.puntos;
     guardarConductor(obj, licencia);
 };
 
@@ -132,7 +135,7 @@ var fncAddVehiculosConductor = function () {
             data: {opc: "saveAsignacionVC", jsonLista: json},
             success: function (datos) {
                 datos = JSON.parse(datos);
-                var msj = (datos.respuesta !== null) ? datos.respuesta: "Se han guardado correctamente";
+                var msj = (datos.respuesta !== null) ? datos.respuesta : "Se han guardado correctamente";
                 swalTimer("Asignación Vehículo-Conductor", msj, "info");
 //                $("#jqgridChofer").jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
 //                $("#miModal").modal('hide');
@@ -184,22 +187,22 @@ var fncDibujarTablaConductor = function () {
         datatype: "json",
         colModel: [
             {label: 'Cédula', name: 'cedula', key: true, width: 100},
-            {label: 'Nombres', name: 'nombres', width: 150, editable: true, editrules:{required:true}},
-            {label: 'Apellidos', name: 'apellidos', width: 150, editable: true, editrules:{required:true}},
-            {label: 'Género', name: 'genero', width: 90, editable: true, editrules:{required:true},
+            {label: 'Nombres', name: 'nombres', width: 150, editable: true, editrules: {required: true}},
+            {label: 'Apellidos', name: 'apellidos', width: 150, editable: true, editrules: {required: true}},
+            {label: 'Género', name: 'genero', width: 90, editable: true, editrules: {required: true},
                 edittype: 'select',
                 editoptions: {
                     value: 'Masculino:Masculino;Femenino:Femenino;Otros:Otros'
                 }
             },
-            {label: 'Estado', name: 'estado', width: 90, editable: true, editrules:{required:true},
+            {label: 'Estado', name: 'estado', width: 90, editable: true, editrules: {required: true},
                 edittype: 'select',
                 search: false,
                 editoptions: {
-                    value: 'Disponible:Disponible;Ocupado:Ocupado'
+                    value: 'Disponible:Disponible;Ocupado:Ocupado;Indispuesto:Indispuesto'
                 }
             },
-            {label: 'Fecha Nacimiento', name: 'fechanac', width: 120, editrules:{required:true,date : true},
+            {label: 'Fecha Nacimiento', name: 'fechanac', width: 120, editrules: {required: true, date: true},
                 formatter: 'date',
                 formatoptions: {
                     srcformat: "ISO8601Long",
@@ -216,6 +219,7 @@ var fncDibujarTablaConductor = function () {
                 },
                 search: false
             },
+            {label: 'Teléfono', name: 'telefono', width: 100, search: false, sortable: false, editable: true},
             {label: 'Observación', name: 'observacion', width: 160, search: false, sortable: false, editable: true,
                 edittype: 'textarea',
                 editoptions: {
@@ -323,7 +327,7 @@ var fncDibujarTablaConductor = function () {
         colModel: [
             {label: 'ID', name: 'idlicencia', key: true, width: 50, sortable: false, search: false},
             {label: 'Cédula', name: 'cedulac', jsonmap: "cedulac.cedula", width: 100, editable: true},
-            {label: 'Expedición', name: 'fechaexpedicion', width: 100,
+            {label: 'Expedición', name: 'fechaexpedicion', width: 90,
                 sortable: false,
                 search: false,
                 formatter: 'date',
@@ -342,7 +346,7 @@ var fncDibujarTablaConductor = function () {
                 },
                 editrules: {date: true}
             },
-            {label: 'Expiración', name: 'fechaexpiracion', width: 100,
+            {label: 'Expiración', name: 'fechaexpiracion', width: 90,
                 sortable: false,
                 formatter: 'date',
                 formatoptions: {
@@ -361,12 +365,24 @@ var fncDibujarTablaConductor = function () {
                 editrules: {date: true},
                 search: false
             },
-            {label: 'Tipo', name: 'tipo', width: 80, editable: true,
+            {label: 'Tipo', name: 'tipo', width: 50, editable: true,
                 sortable: false,
                 search: false,
                 edittype: 'select',
                 editoptions: {
                     value: 'A:A;B:B;F:F;A1:A1;C:C;C1:C1;D:D;D1:D1;E:E;E1:E1;G:G'
+                }
+            },
+            {label: 'Puntos', name: 'puntos', width: 80, editable: true,
+                sortable: true,
+                search: true,
+                editoptions: {
+                    dataInit: function (elem) {
+                        setTimeout(function () {
+                            $(elem).numeric(false, function() { alert("Integers only"); this.value = ""; this.focus(); });
+                        }, 100);
+                    }
+
                 }
             },
             {
@@ -449,6 +465,7 @@ var fncDibujarTablaConductorUnlock = function () {
                 editrules: {date: true},
                 search: false
             },
+            {label: 'Teléfono', name: 'telefono', width: 100, search: false, sortable: false, editable: true},
             {label: 'Observación', name: 'observacion', width: 150, search: false, sortable: false, editable: true,
                 edittype: 'textarea',
                 editoptions: {

@@ -20,9 +20,11 @@ import ugt.entidades.Tbordenesmovilizaciones;
 import ugt.entidades.Tbpdf;
 import ugt.entidades.Tbusuariosentidad;
 import ugt.pdf.iu.classpdf;
+import ugt.reportes.iu.ConductoresReporteEstadosIU;
 import ugt.salvoconducto.OrdenMovilizacionPDF;
 import ugt.servicios.swOrdenMovilizacion;
 import ugt.servicios.swPDF;
+import ugt.servicios.swReportes;
 import ugt.servicios.swSeccionSolicitante;
 import ugt.servicios.swSolicitudes;
 import ugt.solicitudes.SolicitudPDF;
@@ -73,17 +75,23 @@ public class NewMain {
 //        solPDF.setEntidadrol(g.fromJson(entidadrol, Tbusuariosentidad.class));
 //        solPDF.setSolicitanteTitulos(solTitulos);
 //        solPDF.setSolicitantRolEntidad(solRolEntidad);
-        String jsonSolFull = swSolicitudes.getSolicitudFullID("98");
-        OrdenMovilizacionPDF ordenPDF = g.fromJson(jsonSolFull, OrdenMovilizacionPDF.class);
-        String jsonOrden = swOrdenMovilizacion.filtarOrdenMovilizacionIDSol(ordenPDF.getSolicitud().getNumero().toString());
-        if(jsonOrden.length()>2){
-            Tbordenesmovilizaciones ord = g.fromJson(jsonOrden, Tbordenesmovilizaciones.class);
-            ordenPDF.setOrden(ord);
-        }
+//        String jsonSolFull = swSolicitudes.getSolicitudFullID("98");
+//        OrdenMovilizacionPDF ordenPDF = g.fromJson(jsonSolFull, OrdenMovilizacionPDF.class);
+//        String jsonOrden = swOrdenMovilizacion.filtarOrdenMovilizacionIDSol(ordenPDF.getSolicitud().getNumero().toString());
+//        if(jsonOrden.length()>2){
+//            Tbordenesmovilizaciones ord = g.fromJson(jsonOrden, Tbordenesmovilizaciones.class);
+//            ordenPDF.setOrden(ord);
+//        }
 //        String ruta = ordenPDF.generarPDF();
 //        System.out.println(ruta);
 //        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
-        System.out.println("solicitudes full() => " + ordenPDF.getSolicitud().getNumero());
+        String result = "";
+        String objJSON = swReportes.reporteEstadoConductor();
+        if (objJSON.length() > 2) {
+            ConductoresReporteEstadosIU repCondEstado = g.fromJson(objJSON, ConductoresReporteEstadosIU.class);
+            result = repCondEstado.generarPIEEstados();
+        }
+        System.out.println("solicitudes full() => " + result);
 
     }
 

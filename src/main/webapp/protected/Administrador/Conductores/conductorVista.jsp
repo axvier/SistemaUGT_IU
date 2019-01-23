@@ -115,6 +115,12 @@
                                 <input type="date" name="fechanac" class="form-control" id="addFechanac" placeholder="2018-01-01" required/>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="addTelefono" >Teléfono</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="telefono" class="form-control" id="addTelefono" placeholder="0000000000" maxlength="15" required/>
+                            </div>
+                        </div>
                         <hr>
                         <p>Licencia</p>
                         <div class="form-group">
@@ -145,6 +151,12 @@
                             <label class="col-sm-2 control-label" for="addFechaexpiracion" >Fecha expiración</label>
                             <div class="col-sm-10">
                                 <input type="date" name="fechaexpiracion" class="form-control" id="addFechaexpiracion" placeholder="2018-01-01" required/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label" for="addPuntos" >Puntos</label>
+                            <div class="col-sm-10">
+                                <input type="number" name="puntos" class="form-control" id="addPuntos" placeholder="30" required/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -249,6 +261,29 @@
         </div>
     </div> 
 </div>
+<script>
+    $(document).ready(function () {
+            $("#addTelefono").keydown(function (e) {
+                // Allow: backspace, delete, tab, escape and enter
+                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
+                        // Allow: Ctrl+A
+                                (e.keyCode === 65 && e.ctrlKey === true) ||
+                                // Allow: home, end, left, right
+                                        (e.keyCode >= 35 && e.keyCode <= 39)) {
+                            // let it happen, don't do anything
+                            return;
+                        }
+                        // Ensure that it is a number and stop the keypress
+                        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                            e.preventDefault();
+                        }
+                    });
+            $("#formGenSalvoC").submit(function () {
+                $('#modGeneralSalvoConducto').modal('hide'); //or  $('#IDModal').modal('hide');
+                saveOrdenSolicitud("SolicitudGenerar", "addGenKMinicio");
+            });
+        });
+</script>
 <%
 } else if (accion.equals("jsonConductores")) {
     String json = (String) session.getAttribute("jsonArray");

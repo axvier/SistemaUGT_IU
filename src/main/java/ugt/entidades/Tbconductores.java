@@ -39,6 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Tbconductores.findByApellidos", query = "SELECT t FROM Tbconductores t WHERE t.apellidos = :apellidos")
     , @NamedQuery(name = "Tbconductores.findByFechanac", query = "SELECT t FROM Tbconductores t WHERE t.fechanac = :fechanac")
     , @NamedQuery(name = "Tbconductores.findByGenero", query = "SELECT t FROM Tbconductores t WHERE t.genero = :genero")
+    , @NamedQuery(name = "Tbconductores.findByTelefono", query = "SELECT t FROM Tbconductores t WHERE t.telefono = :telefono")
     , @NamedQuery(name = "Tbconductores.findByObservacion", query = "SELECT t FROM Tbconductores t WHERE t.observacion = :observacion")
     , @NamedQuery(name = "Tbconductores.findByEstado", query = "SELECT t FROM Tbconductores t WHERE t.estado = :estado")})
 public class Tbconductores implements Serializable {
@@ -74,6 +75,9 @@ public class Tbconductores implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "observacion")
     private String observacion;
+    @Size(min = 1, max = 15)
+    @Column(name = "telefono")
+    private String telefono;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cedulac")
     private Collection<Tblicencias> tblicenciasCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cedulaCond")
@@ -149,6 +153,14 @@ public class Tbconductores implements Serializable {
 
     public void setObservacion(String observacion) {
         this.observacion = observacion;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
     
     @XmlTransient
