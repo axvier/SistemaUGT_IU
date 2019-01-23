@@ -7,19 +7,26 @@ package utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
+import ugt.conductores.iu.GenConductorPDF;
 import ugt.entidades.Tbordenesmovilizaciones;
+import ugt.entidades.Tbpasajeros;
 import ugt.entidades.Tbpdf;
 import ugt.entidades.Tbusuariosentidad;
 import ugt.pdf.iu.classpdf;
+import ugt.reportes.ConductorRepNomina;
 import ugt.reportes.iu.ConductoresReporteEstadosIU;
 import ugt.salvoconducto.OrdenMovilizacionPDF;
 import ugt.servicios.swOrdenMovilizacion;
@@ -84,15 +91,24 @@ public class NewMain {
 //        }
 //        String ruta = ordenPDF.generarPDF();
 //        System.out.println(ruta);
-//        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
-        String result = "";
-        String objJSON = swReportes.reporteEstadoConductor();
-        if (objJSON.length() > 2) {
-            ConductoresReporteEstadosIU repCondEstado = g.fromJson(objJSON, ConductoresReporteEstadosIU.class);
-            result = repCondEstado.generarPIEEstados();
+        String ruta = "";
+//        String objJSON = swReportes.reporteEstadoConductor();
+//        if (objJSON.length() > 2) {
+//            ConductoresReporteEstadosIU repCondEstado = g.fromJson(objJSON, ConductoresReporteEstadosIU.class);
+//            result = repCondEstado.generarPIEEstados();
+//        }
+        GenConductorPDF conductorPDF = new GenConductorPDF();
+        String nomina = swReportes.reporteNominaConductor();
+        if (nomina.length() > 2) {
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<ConductorRepNomina>>() {
+            }.getType();
+            List<ConductorRepNomina> lista = gson.fromJson(nomina, listType);
+            conductorPDF.setListaConductor(lista);
         }
-        System.out.println("solicitudes full() => " + result);
-
+        ruta = conductorPDF.generarPDF();
+        System.out.println("solicitudes full() => " + ruta);
+        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
     }
 
 }

@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Tblicencias.findByTipo", query = "SELECT t FROM Tblicencias t WHERE t.tipo = :tipo")
     , @NamedQuery(name = "Tblicencias.findByFechaexpedicion", query = "SELECT t FROM Tblicencias t WHERE t.fechaexpedicion = :fechaexpedicion")
     , @NamedQuery(name = "Tblicencias.findByFechaexpiracion", query = "SELECT t FROM Tblicencias t WHERE t.fechaexpiracion = :fechaexpiracion")
+    , @NamedQuery(name = "Tblicencias.findByPuntos", query = "SELECT t FROM Tblicencias t WHERE t.puntos = :puntos")
     , @NamedQuery(name = "Tblicencias.findByIdlicencia", query = "SELECT t FROM Tblicencias t WHERE t.idlicencia = :idlicencia")})
 public class Tblicencias implements Serializable {
 
@@ -61,6 +62,9 @@ public class Tblicencias implements Serializable {
     @JoinColumn(name = "cedulac", referencedColumnName = "cedula")
     @ManyToOne(optional = false)
     private Tbconductores cedulac;
+    @Basic(optional = false)
+    @Column(name = "puntos")
+    private Integer puntos;
 
     public Tblicencias() {
     }
@@ -114,6 +118,14 @@ public class Tblicencias implements Serializable {
 
     public void setCedulac(Tbconductores cedulac) {
         this.cedulac = cedulac;
+    }
+
+    public Integer getPuntos() {
+        return puntos;
+    }
+
+    public void setPuntos(Integer puntos) {
+        this.puntos = puntos;
     }
 
     @Override
