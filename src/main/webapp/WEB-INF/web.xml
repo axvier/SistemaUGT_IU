@@ -82,6 +82,11 @@
         <servlet-name>GenerarSalvoConducto</servlet-name>
         <servlet-class>ugt.salvoconducto.GenerarSalvoConducto</servlet-class>
     </servlet>
+    <servlet>
+        <description>pagina para descargar nomina conductores</description>
+        <servlet-name>NominaConductorPDF</servlet-name>
+        <servlet-class>ugt.conductores.iu.NominaConductorPDF</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SolicitudPDF</servlet-name>
         <url-pattern>/SolicitudPDFServelet</url-pattern>
@@ -89,6 +94,10 @@
     <servlet-mapping>
         <servlet-name>GenerarSalvoConducto</servlet-name>
         <url-pattern>/GenerarSalvoConducto</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NominaConductorPDF</servlet-name>
+        <url-pattern>/NominaConductorPDF</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>

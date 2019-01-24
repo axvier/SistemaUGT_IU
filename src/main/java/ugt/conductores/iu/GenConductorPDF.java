@@ -19,7 +19,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,11 +51,10 @@ public class GenConductorPDF {
         this.listaConductor = listaConductor;
     }
 
-//    public ByteArrayOutputStream generarNominaPDF() {
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    public String generarPDF() {
-
-        String result = "";
+    public ByteArrayOutputStream generarNominaPDF() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//    public String generarPDF() {
+//        String baos = "";
         try {
             /**
              * Instancia de la clase encabezad, enviando como datos el parrafo
@@ -68,9 +70,9 @@ public class GenConductorPDF {
             /**
              * inicio Para caso de prueba en consola
              */
-            File myfile = new File("D:\\pdfs\\out.pdf");
-            result = myfile.getName();
-            FileOutputStream baos = new FileOutputStream(myfile);
+//            File myfile = new File("D:\\pdfs\\out.pdf");
+//            result = myfile.getName();
+//            FileOutputStream baos = new FileOutputStream(myfile);
             /**
              * fin de prueba de consola
              */
@@ -96,7 +98,12 @@ public class GenConductorPDF {
             /**
              * Parrafo titulo
              */
-            Paragraph titulo = new Paragraph("NÓMINA DE CONDUCTORES INSTITUCIONALES", timesNewRomanBold(12));
+            Paragraph titulo = new Paragraph();
+            titulo =new Paragraph(getFechaActual()+" hora "+getHoraActual(),timesNewRomanCursiva(9));
+            titulo.setAlignment(Element.ALIGN_RIGHT);
+            document.add(titulo);
+            
+            titulo = new Paragraph("NÓMINA DE CONDUCTORES INSTITUCIONALES", timesNewRomanBold(12));
             titulo.setAlignment(Element.ALIGN_CENTER);
             document.add(titulo);
             document.add(new Paragraph(" "));
@@ -247,7 +254,7 @@ public class GenConductorPDF {
                     if (conductor.getLicencia() != null && conductor.getLicencia().getTipo() != null) {
                         valor.add(conductor.getLicencia().getTipo().toString());
                     } else {
-                        valor.add("S/L");
+                        valor.add("-");
                     }
                     valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
                     valor.setAlignment(Element.ALIGN_CENTER);
@@ -262,7 +269,7 @@ public class GenConductorPDF {
                     if (conductor.getLicencia() != null && conductor.getLicencia().getPuntos() != null) {
                         valor.add(conductor.getLicencia().getPuntos().toString());
                     } else {
-                        valor.add("S/P");
+                        valor.add("0");
                     }
                     valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
                     valor.setAlignment(Element.ALIGN_CENTER);
@@ -281,6 +288,34 @@ public class GenConductorPDF {
             document.close();
         } catch (DocumentException | IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en generar conductor pdf - nominaPDF ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return baos;
+    }
+    
+    private String getHoraActual() {
+        String result = "_";
+        try {
+            Date date = new Date();
+            String strDateFormat = "HH:mm";
+            DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+            result = dateFormat.format(date);
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en xtraer fecha actual oficio ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+
+    private String getFechaActual() {
+        String result = "_";
+        try {
+            DateFormat sdf = new SimpleDateFormat("dd 'de' MMMMM 'de' yyyy");
+            Date actualDate = new Date();
+            String dateTxt = sdf.format(actualDate);
+            result = "Riobamba, " + dateTxt;
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en xtraer fecha actual oficio ", e.getClass().getName() + "****" + e.getMessage());
             System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
         }
         return result;

@@ -106,7 +106,7 @@ public class NewMain {
             List<ConductorRepNomina> lista = gson.fromJson(nomina, listType);
             conductorPDF.setListaConductor(lista);
         }
-        ruta = conductorPDF.generarPDF();
+//        ruta = conductorPDF.generarPDF();
         System.out.println("solicitudes full() => " + ruta);
         Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
     }

@@ -4,6 +4,7 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.reportes.ConductoresRepGenero"%>
 <%@page import="ugt.reportes.iu.ConductoresReporteEstadosIU"%>
 <%@page import="ugt.servicios.swReportes"%>
 <%@page import="com.google.gson.GsonBuilder"%>
@@ -30,6 +31,19 @@
                 session.setAttribute("repCondEstado", objJSON);
             }
             response.sendRedirect("ReportesControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("conductoresReporteGenero")) {
+            String objJSON = swReportes.reporteGeneroConductor();
+            if (objJSON.length() > 2) {
+                ConductoresRepGenero repGenero = g.fromJson(objJSON, ConductoresRepGenero.class);
+                session.setAttribute("repGenero", repGenero);
+            }
+            response.sendRedirect("ReportesControlador.jsp?opc=mostrar&accion="+opc);
+        } else if (opc.equals("conductoresChartGenero")) {
+            String objJSON = swReportes.reporteGeneroConductor();
+            if (objJSON.length() > 2) {
+                session.setAttribute("respuestaJSON", objJSON);
+            }
+            response.sendRedirect("ReportesControlador.jsp?opc=mostrar&accion=respuestaJSON");
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

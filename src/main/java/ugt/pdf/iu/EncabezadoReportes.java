@@ -62,7 +62,7 @@ public class EncabezadoReportes extends PdfPageEventHelper {
         parrafo.setAlignment(Element.ALIGN_CENTER);
         espoch.addElement(parrafo);
         espoch.setBorder(Rectangle.NO_BORDER);
-        espoch.setBackgroundColor(new BaseColor(81, 189, 100));
+        espoch.setBackgroundColor(new BaseColor(66, 169, 74));
         espoch.setHorizontalAlignment(Element.ALIGN_CENTER);
         table.addCell(espoch);
 

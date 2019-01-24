@@ -651,7 +651,7 @@ var fncDibujarMisSolicitudes = function (idtabla) {
                 var idObservacionSolmn = "mnobservacion";
                 console.log(rowData.estado);
                 if (typeof (rowData.estado) !== 'undefined') {
-                    if (rowData.estado === 'finalizada' || rowData.estado === 'asignada') {
+                    if (rowData.estado === 'finalizada' || rowData.estado === 'asignada' || rowData.estado === 'aprobada') {
                         $(".list-inline #mnSolGenerar").addClass("inactive");
                         $(".list-inline #mnSolGenerar").attr("onclick", null);
                     } else {

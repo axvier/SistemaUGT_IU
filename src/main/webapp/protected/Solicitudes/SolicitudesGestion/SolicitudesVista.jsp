@@ -649,7 +649,7 @@
     LocalDate ahora = LocalDate.now();
     LocalDate fechaNac = conductorAux.getFechanac().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     Period periodo = Period.between(fechaNac, ahora);
-    String edad = periodo.getYears() + " años con " + periodo.getMonths()+" m.";
+    String edad = periodo.getYears() + " años con " + periodo.getMonths() + " m.";
     String observacion = (conductorAux.getObservacion() != null) ? conductorAux.getObservacion() : "";
 %>
 <div class="modal-header">
@@ -688,6 +688,8 @@
                 smf = new SimpleDateFormat("yyyy-MM-dd");
                 String expedicion = smf.format(licenciaAux.getFechaexpedicion());
                 String expiracion = smf.format(licenciaAux.getFechaexpiracion());
+                String puntos = String.valueOf(licenciaAux.getPuntos());
+                puntos = (puntos == "null") ? "0" : puntos;
         %>
         <h3>Licencia</h3>
         <div class='form-group'>
@@ -700,6 +702,12 @@
             <label  class='col-sm-2 control-label' >Tipo</label>
             <div class='col-sm-10'>
                 <input type='text' class='form-control' value="<%=licenciaAux.getTipo()%>" readonly/>
+            </div>
+        </div>
+        <div class='form-group'>
+            <label  class='col-sm-2 control-label' >Puntos</label>
+            <div class='col-sm-10'>
+                <input type='text' class='form-control' value="<%=puntos%>" readonly/>
             </div>
         </div>
         <div class='form-group'>

@@ -10,7 +10,6 @@ var fncDibujarGraficosConductores = function (idplaceholder) {
         data: {opc: "conductoresChartEstado"},
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
-            console.log(datos);
             var ctx = document.getElementById("myChart");
             var myChart = new Chart(ctx, {
                 type: 'horizontalBar',
@@ -56,4 +55,55 @@ var fncDibujarGraficosConductores = function (idplaceholder) {
     });
 };
 
+var fncDibujarGraficosConductoresGenero = function () {
+    $.ajax({
+        url: "protected/Administrador/Reportes/ReportesControlador.jsp",
+        type: "GET",
+        data: {opc: "conductoresChartGenero"},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ["Femenino", "Masculino", "Otros"],
+                    datasets: [
+                        {
+                            label: "Numero de conductores ",
+                            backgroundColor: ["#FB5DD7", "#4380C5", "#5DB9FB"],
+                            data: [datos.femenino,datos.masculino,datos.otros]
+                        }
+                    ]
+                },
+                options: {
+                    legend: {display: false},
+                    title: {
+                        display: true,
+                        text: 'Total generos conductores'
+                    }
+                }
+            });
+        },
+        error: function (error) {
+            location.reload();
+        }
+    });
+};
+
+var fncReporteConductoresGenero = function () {
+    $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
+    $.ajax({
+        url: "protected/Administrador/Reportes/ReportesControlador.jsp",
+        type: "GET",
+        data: {opc: "conductoresReporteGenero"},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            $("#contenidoDinamico").html(datos);
+            fncDibujarGraficosConductoresGenero();//iniciar grafico
+        },
+        error: function (error) {
+            location.reload();
+        }
+    });
+};
 
