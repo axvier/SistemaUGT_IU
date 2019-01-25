@@ -516,7 +516,7 @@ var fncDibujarMisSolicitudes = function (idtabla) {
         mtype: "POST",
         datatype: "json",
         colModel: [
-            {label: 'ID', name: 'numero', jsonmap: "solicitud.numero", key: true, width: 50, editable: false, sorttype: 'integer', align: 'center', sorttype: 'integer'},
+            {label: 'ID', name: 'numero', jsonmap: "solicitud.numero", key: true, width: 50, editable: false, sorttype: 'integer', align: 'center'},
             {label: 'fecha', name: 'fecha', jsonmap: "solicitud.fecha", width: 130, editable: false,
                 formatter: 'date',
                 formatoptions: {
@@ -683,7 +683,7 @@ var fncDibujarMisSolicitudes = function (idtabla) {
                     tr = $("#" + rowid);
             // you can use getCell or getRowData to examine the contain of
             // the selected row to decide whether the row is editable or not
-            if (selRowId !== rowid && rowdata.estado === 'finalizada' || selRowId !== rowid && rowdata.estado === 'aprobada' || selRowId !== rowid && rowdata.estado === 'asignada') {
+            if (selRowId !== rowid && !rowdata.estado === 'enviado' || !selRowId !== rowid && rowdata.estado !== 'rechazada') {
                 // eneble the "Edit" button in the navigator
 //                console.log(rowdata.estado);
 //                console.log(this.id);

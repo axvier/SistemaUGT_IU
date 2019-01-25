@@ -769,7 +769,7 @@ var fncDibujarSolicitudesAprobadasSecVA = function (idtabla) {
                 }
             },
             {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 140, editable: false, search: false, sortable: false},
-            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: true,
+            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: false, search: true,
                 edittype: 'select',
                 editoptions: {
                     value: 'aprobada:aprobada;asignada:asignada;enviada:inicio'

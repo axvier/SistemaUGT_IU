@@ -580,7 +580,7 @@
                     });
                 },
 //                source: projects,
-                minLength: 1,
+                minLength: 3,
                 select: function (event, ui) {
 //                    fncCatchSelectS(ui);
                     $("#json_solicitud_pasajeros").val(ui.item.json);

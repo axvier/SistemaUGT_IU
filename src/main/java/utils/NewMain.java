@@ -21,6 +21,7 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 import ugt.conductores.iu.GenConductorPDF;
+import ugt.entidades.Tbconductores;
 import ugt.entidades.Tbordenesmovilizaciones;
 import ugt.entidades.Tbpasajeros;
 import ugt.entidades.Tbpdf;
@@ -97,18 +98,19 @@ public class NewMain {
 //            ConductoresReporteEstadosIU repCondEstado = g.fromJson(objJSON, ConductoresReporteEstadosIU.class);
 //            result = repCondEstado.generarPIEEstados();
 //        }
-        GenConductorPDF conductorPDF = new GenConductorPDF();
-        String nomina = swReportes.reporteNominaConductor();
-        if (nomina.length() > 2) {
-            Gson gson = new Gson();
-            Type listType = new TypeToken<ArrayList<ConductorRepNomina>>() {
-            }.getType();
-            List<ConductorRepNomina> lista = gson.fromJson(nomina, listType);
-            conductorPDF.setListaConductor(lista);
-        }
+//        GenConductorPDF conductorPDF = new GenConductorPDF();
+//        String nomina = swReportes.reporteNominaConductor();
+//        if (nomina.length() > 2) {
+//            Gson gson = new Gson();
+//            Type listType = new TypeToken<ArrayList<ConductorRepNomina>>() {
+//            }.getType();
+//            List<ConductorRepNomina> lista = gson.fromJson(nomina, listType);
+//            conductorPDF.setListaConductor(lista);
+//        }
 //        ruta = conductorPDF.generarPDF();
-        System.out.println("solicitudes full() => " + ruta);
-        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
+        Tbconductores nuevo = new Tbconductores();
+        System.out.println("solicitudes full() => "+nuevo.getClass().getSimpleName().toLowerCase());
+//        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
     }
 
 }

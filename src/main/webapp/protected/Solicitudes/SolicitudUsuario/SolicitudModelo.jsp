@@ -3,6 +3,7 @@
     Created on : 8/12/2018, 01:31:07 PM
     Author     : Xavy PC
 --%>
+<%@page import="ugt.registros.iu.RegistrosM"%>
 <%@page import="ugt.entidades.Tbdisponibilidadvc"%>
 <%@page import="ugt.servicios.swDisponibilidadVC"%>
 <%@page import="java.util.Arrays"%>
@@ -112,6 +113,7 @@
             solicitud.setNumero(0);
             String objJSON = swSolicitudes.insertSolicitud(g.toJson(solicitud));
             if (objJSON.length() > 2) {
+                RegistrosM.Insertar(login, g.fromJson(objJSON, Tbsolicitudes.class));
                 solicitud = g.fromJson(objJSON, Tbsolicitudes.class); // set nuevos datos de la solicitud insertada
                 Solicitudesfull solfull = new Solicitudesfull();
                 //insertar pdf y actualizar idpdf a solcitud
@@ -302,24 +304,26 @@
                 String respuesta = "";
                 Tbsolicitudes sol = g.fromJson(objJSON, Tbsolicitudes.class);
                 String idPDF = (sol.getIdpdf() != null) ? sol.getIdpdf().toString() : "";
-                if (idPDF.length() > 0) {
-                    String deletePDF = swPDF.eliminarPDF(idPDF);
-                    if (deletePDF.equals("200") || deletePDF.equals("204") || deletePDF.equals("202")) {
-                        respuesta += "";
-                    }else{
-                        respuesta += "Pdf requistitos no eliminado, ";
-                    }
-                }
-                String deleteSolicitud = swSolicitudes.eliminarSolicitud(idSolicitud);
-                if (deleteSolicitud.equals("200") || deleteSolicitud.equals("204") || deleteSolicitud.equals("202")) {
-                    respuesta += "";
-                }else
-                    respuesta += "No se ha podido eliminar la solicitud";
-                if (respuesta.length() > 0) {
-                    session.setAttribute("statusCodigo", "KO");
-                } else {
+//                if (idPDF.length() > 0) {
+//                    String deletePDF = swPDF.eliminarPDF(idPDF);
+//                    if (deletePDF.equals("200") || deletePDF.equals("204") || deletePDF.equals("202")) {
+//                        respuesta += "";
+//                    }else{
+//                        respuesta += "Pdf requistitos no eliminado, ";
+//                    }
+//                }
+//                String deleteSolicitud = swSolicitudes.eliminarSolicitud(idSolicitud);
+//                if (deleteSolicitud.equals("200") || deleteSolicitud.equals("204") || deleteSolicitud.equals("202")) {
+//                    respuesta += "";
+//                }else
+//                    respuesta += "No se ha podido eliminar la solicitud";
+                sol.setEstado("eliminada");
+                if (swSolicitudes.modificarSolicitudID(idSolicitud, g.toJson(sol)).length()>2) {
                     respuesta ="Se ha eliminado el registro";
                     session.setAttribute("statusCodigo", "OK");
+                    RegistrosM.Insertar(login, sol);
+                } else {
+                    session.setAttribute("statusCodigo", "KO");
                 }
                 session.setAttribute("statusDelete", respuesta);
             }
