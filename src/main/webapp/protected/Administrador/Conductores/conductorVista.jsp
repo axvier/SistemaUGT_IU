@@ -218,11 +218,11 @@
                     <span class="fa-stack fa-lg"><i class="fa fa-check fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores
                 </a>
             </li>
-<!--            <li>
-                <a id="mnCondOcup" href="#" onclick="cambiarJQGConductor('jsonConducOcup')">
-                    <span class="fa-stack fa-lg"><i class="fa fa-exchange fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores con vehiculos
-                </a>
-            </li>-->
+            <!--            <li>
+                            <a id="mnCondOcup" href="#" onclick="cambiarJQGConductor('jsonConducOcup')">
+                                <span class="fa-stack fa-lg"><i class="fa fa-exchange fa-stack-1x"></i><i class="fa fa-file-o fa-stack-2x"></i></span>Conductores con vehiculos
+                            </a>
+                        </li>-->
             <li>
                 <a id="mnCondOcup" href="#" onclick="verLicenciaConductor()">
                     <span class="fa-stack fa-lg"><i class="fa fa-search fa-stack-1x"></i><i class="fa fa-credit-card fa-stack-2x"></i></span>Ver licencia
@@ -236,7 +236,8 @@
         </ul>
     </div>
     <div class="row">
-        <div class="col-lg-6 pull-right">
+        <div class="col-lg-4 pull-right">
+            <label class="col-sm-3 control-label">Busqueda general</label>
             <div class="input-group">
                 <input id="search_cells" type="search" class="form-control">
                 <span class="input-group-btn">
@@ -263,26 +264,26 @@
 </div>
 <script>
     $(document).ready(function () {
-            $("#addTelefono").keydown(function (e) {
-                // Allow: backspace, delete, tab, escape and enter
-                if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
-                        // Allow: Ctrl+A
-                                (e.keyCode === 65 && e.ctrlKey === true) ||
-                                // Allow: home, end, left, right
-                                        (e.keyCode >= 35 && e.keyCode <= 39)) {
-                            // let it happen, don't do anything
-                            return;
-                        }
-                        // Ensure that it is a number and stop the keypress
-                        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-                            e.preventDefault();
-                        }
-                    });
-            $("#formGenSalvoC").submit(function () {
-                $('#modGeneralSalvoConducto').modal('hide'); //or  $('#IDModal').modal('hide');
-                saveOrdenSolicitud("SolicitudGenerar", "addGenKMinicio");
-            });
+        $("#addTelefono").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape and enter
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
+                    // Allow: Ctrl+A
+                            (e.keyCode === 65 && e.ctrlKey === true) ||
+                            // Allow: home, end, left, right
+                                    (e.keyCode >= 35 && e.keyCode <= 39)) {
+                        // let it happen, don't do anything
+                        return;
+                    }
+                    // Ensure that it is a number and stop the keypress
+                    if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                        e.preventDefault();
+                    }
+                });
+        $("#formGenSalvoC").submit(function () {
+            $('#modGeneralSalvoConducto').modal('hide'); //or  $('#IDModal').modal('hide');
+            saveOrdenSolicitud("SolicitudGenerar", "addGenKMinicio");
         });
+    });
 </script>
 <%
 } else if (accion.equals("jsonConductores")) {

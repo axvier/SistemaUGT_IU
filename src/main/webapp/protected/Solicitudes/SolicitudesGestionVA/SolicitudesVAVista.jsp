@@ -111,7 +111,8 @@
     </div>
     <div class="main-content" id="gSolicitudes_body">
         <div class="row">
-            <div class="col-lg-6 pull-right">
+            <div class="col-lg-4 pull-right">
+                <label class="col-sm-3 control-label">Busqueda general</label>
                 <div class="input-group">
                     <input id="search_cells" type="text" class="form-control x-campaigns-filter">
                     <span class="input-group-btn">

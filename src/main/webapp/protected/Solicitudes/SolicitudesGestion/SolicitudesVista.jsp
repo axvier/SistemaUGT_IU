@@ -138,7 +138,8 @@
     </div>
     <div class="main-content" id="gSolicitudes_body">
         <div class="row">
-            <div class="col-lg-6 pull-right">
+            <div class="col-lg-4 pull-right">
+                <label class="col-sm-3 control-label">Busqueda general</label>
                 <div class="input-group">
                     <input id="search_cells" type="text" class="form-control x-campaigns-filter">
                     <span class="input-group-btn">
@@ -240,7 +241,8 @@
                     </div>    
                 </div>    
             </div>
-            <div class="col-lg-6 pull-right">
+            <div class="col-lg-4 pull-right">
+                <label class="col-sm-3 control-label">Busqueda general</label>
                 <div class="input-group">
                     <input id="search_cells" type="text" class="form-control x-campaigns-filter">
                     <span class="input-group-btn">
@@ -456,7 +458,7 @@
                                     </div>    
                                 </div>    
                                 <div class="form-group">
-                                    <button type="button" id="btn-aprobarDVC" class="btn btn-success" onclick="fncAprobarVehiculoConductor()"><i class="fa fa-check fa-2x"></i> Asignar </button>
+                                    <button type="button" id="btn-aprobarDVC" class="btn btn-success" onclick="fncAprobarVehiculoConductor('addDisponivilidadVC')"><i class="fa fa-check fa-2x"></i> Asignar </button>
                                     <button type="button" id="btn-quick-event" class="btn btn-custom-primary" onclick="fncVerAgendaPlaca()"><i class="fa fa-eye fa-2x"></i> Agenda </button>
                                     <button type="button" id="btn-modal-dts-vehiculo" class="btn btn-info" onclick="fncModVerDatosVehiculo('addDVehiculoC', 'modGeneralSolicitudes')"><i class="fa fa-car fa-2x"></i> Datos vehículo </button>
                                     <input type="hidden" value="" id="inputHSolititud">

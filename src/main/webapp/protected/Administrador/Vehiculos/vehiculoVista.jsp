@@ -208,7 +208,8 @@
         </ul>
     </div>
     <div class="row">
-        <div class="col-lg-6 pull-right">
+        <div class="col-lg-4 pull-right">
+            <label class="col-sm-3 control-label">Busqueda general</label>
             <div class="input-group">
                 <input id="search_cells" type="search" class="form-control">
                 <span class="input-group-btn">

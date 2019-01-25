@@ -76,7 +76,7 @@ var fncRecargarJQGListaSalvo = function (idtabla) {
 
     $(".list-inline #" + idpdfmn).addClass("inactive");
     $(".list-inline #" + idpdfmn).attr("onclick", null);
-    
+
     $(".list-inline #" + idordenPDF).addClass("inactive");
     $(".list-inline #" + idordenPDF).attr("onclick", null);
 
@@ -105,7 +105,7 @@ var fncModalGenerarSalvoConducto = function (idmodal, idtabla, rowid) {
         var solicitud = {};
         solicitud.estado = objeto.estado;
         solicitud.fecha = objeto.fecha;
-        solicitud.solicitud = objeto.numero;
+        solicitud.numero = objeto.numero;
         if (typeof objeto.idpdf !== "undefined")
             solicitud.idpdf = objeto.idpdf;
         if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null)
@@ -141,8 +141,6 @@ var fncModalGenerarSalvoConductoDNuevo = function (idmodal, idtabla, rowid) {
 var saveOrdenSolicitudDNuevo = function (idinputuri, idkminicio) {
     var dataJSON = decodeURI($("#" + idinputuri).val());
     var km = (typeof $("#" + idkminicio).val() !== "undefined") ? $("#" + idkminicio).val() : "";
-    console.log(dataJSON);
-    console.log(km);
     $.ajax({
         url: "protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp",
         type: "GET",
@@ -260,6 +258,95 @@ var fncSubirOrdenPDF = function (idform, idmodal) {
         }
         $('#' + idmodal).modal('hide');
     }
+};
+
+var verDisponibilidadVC = function (idmodal, idtabla, data,recargar) {
+    $("#gSolicitudes_body").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
+    var $grid = $("#" + idtabla);
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        var dcode = decodeURI(data);
+        var objeto = JSON.parse(dcode);
+        var solicitanteCedula = 'todos';
+        if (typeof objeto.solicitante !== "undefined")
+            if (typeof objeto.solicitante.cedulau !== "undefined")
+                if (typeof objeto.solicitante.cedulau.cedula !== "undefined")
+                    solicitanteCedula = objeto.solicitante.cedulau.cedula;
+
+        $.ajax({
+            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            type: "GET",
+            data: {opc: "disponibilidadVehiculoConductor", cedulaSolicitante: solicitanteCedula},
+            contentType: "application/json ; charset=UTF-8",
+            success: function (datos) {
+                $("#gSolicitudes_body").html(datos);
+//                $(".list-inline #mnRefresh").removeClass("inactive");
+                $(".list-inline #mnRefresh").attr("onclick", "fncGenerarOrden()");
+                $("#gSolicitudes_body #inputHSolititud").val(data);
+                $("#gSolicitudes_body #btn-modal-dts-vehiculo").attr("onclick", "fncModVerDatosVehiculo('addDVehiculoC', '" + idmodal + "')");
+                $("#gSolicitudes_body #btn-modal-dts-conductor").attr("onclick", "fncModVerDatosConductor('addDVConductor', '" + idmodal + "')");
+                $("#gSolicitudes_body #btn-aprobarDVC").attr("onclick", "fncAprobarVehiculoConductorOnly('addOnlyDisponivilidadVC','"+recargar+"')");
+//                fncIniciarCalendar();
+            },
+            error: function (error) {
+                location.reload();
+            }
+        });
+    }
+};
+
+var fncAprobarVehiculoConductorOnly = function (opc, recargar) {
+    var objJSONDV_C = fncJSONDisponibilidadV_C();
+    if (typeof objJSONDV_C !== "undefined") {
+        var data = $("#inputHSolititud").val();
+        var dcode = decodeURI(data);
+        var objSolFull = JSON.parse(dcode);
+        var viaje = (typeof objSolFull.viaje !== "undefined") ? " con el viaje " + objSolFull.viaje.origen + " hacia " + objSolFull.viaje.destino : "";
+        swal({
+            title: "Notificación de asignación",
+            text: "Esta seguro de asignar el vehículo " + objJSONDV_C.matricula.marca + " " + objJSONDV_C.matricula.modelo
+                    + " con el conductor(ra) " + objJSONDV_C.cedulaCond.nombres + " " + objJSONDV_C.cedulaCond.apellidos
+                    + " a la solicitud " + objJSONDV_C.solicitud.numero
+                    + viaje,
+            type: "info",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'SI',
+            cancelButtonText: 'NO'
+        }).then((valor) => {
+            if (valor) {
+                $.ajax({
+                    url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+                    type: "GET",
+                    data: {opc: opc, jsonDisponVC: JSON.stringify(objJSONDV_C), jsonSolicitud: JSON.stringify(objJSONDV_C.solicitud)},
+                    contentType: "application/json ; charset=UTF-8",
+                    success: function (datos) {
+                        datos = JSON.parse(datos);
+                        if (datos.codigo === "OK")
+                            swalNormal("Estado asginacion", datos.codigo + " " + datos.respuesta, "success");
+                        else
+                            swalNormal("Estado asginacion", datos.codigo + " " + datos.respuesta, "error");
+                        if (recargar === "generarOrden") {
+                            fncGenerarOrden();
+                        }
+                        if(recargar === "listaOrden" ){
+                            fncGeListaOrden();
+                        }
+                        if(recargar === "solProcesada" ){
+                            fncGeListaOrden();
+                        }
+                    },
+                    error: function (error) {
+                        location.reload();
+                    }
+                });
+            }
+        }, function (dismiss) {
+            return true;
+        });
+    }
+
 };
 
 var fncDibujarSolSalvoConducto = function (idtabla) {
@@ -494,6 +581,23 @@ var fncDibujarSolSalvoConducto = function (idtabla) {
                                 .addClass("ui-pg-div ui-inline-edit")
                                 .append('<span class="fa fa-download fa-2x text-primary"></span>')
                                 .appendTo($(this).children("div"));
+
+                        /**Creación del botón para llamar a la funcion gDisponibilidadVC*/
+                        $("<div>",
+                                {
+                                    title: "Asignacion",
+                                    id: "nwbtn_" + i,
+                                    onmouseover: "jQuery(this).addClass('ui-state-hover');",
+                                    onmouseout: "jQuery(this).removeClass('ui-state-hover');",
+                                    click: function (e) {
+                                        verDisponibilidadVC('modGeneralSalvoConducto', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json"),"generarOrden");
+                                    }
+                                }
+
+                        ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                                .addClass("ui-pg-div ui-inline-edit")
+                                .append('<span class="fa fa-car fa-2x text-warning"></span>')
+                                .appendTo($(this).children("div"));
                         i++;
                     });
         }
@@ -633,7 +737,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
             {label: 'Observación', name: 'observacion', jsonmap: "solicitud.observacion", width: 150, editable: true, search: false, sortable: false,
                 edittype: 'textarea',
                 editoptions: {
-                    cols: 34,
+                    cols: 32,
                     rows: 5
                 }
             },

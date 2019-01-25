@@ -56,6 +56,12 @@
                 String jsonSolicitud = request.getParameter("jsonSolicitud");
                 session.setAttribute("jsonSolicitud", jsonSolicitud);
                 response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("addOnlyDisponivilidadVC")) {
+                String jsonDisponVC = request.getParameter("jsonDisponVC");
+                session.setAttribute("jsonDisponVC", jsonDisponVC);
+                String jsonSolicitud = request.getParameter("jsonSolicitud");
+                session.setAttribute("jsonSolicitud", jsonSolicitud);
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
             } else if (opc.equals("modificarSolicitud")) {
                 String jsonSolicitud = request.getParameter("jsonSolicitud");
                 session.setAttribute("jsonSolicitud", jsonSolicitud);

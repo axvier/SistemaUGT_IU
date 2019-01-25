@@ -213,6 +213,42 @@
                 session.setAttribute("statusGuardar", "Solicitud procesada, ahora puede aprobar la solicitud para enviarlo a Vicerrectorado Administrativo");
             }
             response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=guardarStatus");
+        } else if (opc.equals("addOnlyDisponivilidadVC")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String jsonDisponVC = (String) session.getAttribute("jsonDisponVC");
+            String jsonSolicitud = (String) session.getAttribute("jsonSolicitud");
+            session.setAttribute("jsonDisponVC", null);
+            session.setAttribute("jsonSolicitud", null);
+            Tbsolicitudes solActualizar = g.fromJson(jsonSolicitud, Tbsolicitudes.class);
+
+            String jsonObject = "";
+            //preguntamos i ya existe una disponibilidad con un id de solicitud
+            String objJSONDisponibilidad = swDisponibilidadVC.getDisponibilidadVCSolicitud(solActualizar.getNumero().toString());
+            if (objJSONDisponibilidad.length() > 2) { // Si existe actualizamos
+                //convertimos disponibilidad de la base a clase
+                Tbdisponibilidadvc disponVC = g.fromJson(objJSONDisponibilidad, Tbdisponibilidadvc.class);
+                //convertimos la disponibilidad nuevva a un objetojson
+                JSONObject objNuevo = new JSONObject(jsonDisponVC);
+                //insertamos el id antguo en la nueva disponiblidad
+                objNuevo.append("iddisponibilidad", disponVC.getIddisponibilidad());
+                //actualizamos la nueva disponiblidad con id del anterior
+                jsonObject = swDisponibilidadVC.modificarDisponibilidadVCID(disponVC.getIddisponibilidad().toString(), objNuevo.toString());
+            } else {//si no insertamos la disponibilidad nueva
+                jsonObject = swDisponibilidadVC.insertDisponibilidadVC(jsonDisponVC);
+            }
+            String respuesta = "";
+            if (jsonObject.length() > 2) {
+                session.setAttribute("statusCodigo", "OK");
+            } else {
+                respuesta += "Error al momento de asignar el vehículo-conductor";
+                session.setAttribute("statusCodigo", "KO");
+            }
+            if (respuesta.length() > 5) {
+                session.setAttribute("statusGuardar", respuesta);
+            } else {
+                session.setAttribute("statusGuardar", "Solicitud procesada, se ha asignado correctamente el vehículo conductor");
+            }
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=guardarStatus");
         } else if (opc.equals("disponibilidadVehiculoConductor")) {
             g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             String cedula = (String) session.getAttribute("cedulaSolicitante");

@@ -385,7 +385,7 @@ var fncFiltrarAutos = function (idfiltro, iddestino) {
     }
 };
 
-var fncAprobarVehiculoConductor = function () {
+var fncAprobarVehiculoConductor = function (opc) {
     var objJSONDV_C = fncJSONDisponibilidadV_C();
     if (typeof objJSONDV_C !== "undefined") {
         var data = $("#inputHSolititud").val();
@@ -410,7 +410,7 @@ var fncAprobarVehiculoConductor = function () {
                 $.ajax({
                     url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
                     type: "GET",
-                    data: {opc: "addDisponivilidadVC", jsonDisponVC: JSON.stringify(objJSONDV_C), jsonSolicitud: JSON.stringify(objJSONDV_C.solicitud)},
+                    data: {opc: opc, jsonDisponVC: JSON.stringify(objJSONDV_C), jsonSolicitud: JSON.stringify(objJSONDV_C.solicitud)},
                     contentType: "application/json ; charset=UTF-8",
                     success: function (datos) {
                         datos = JSON.parse(datos);
@@ -887,7 +887,7 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
 };
 
 var fncDibujarSolicitudesProcesadas = function (idtabla) {
-    var estados = 'rechazada:rechazada;aprobadaUGT:aprobadaUGT;finalizada:finalizada';
+    var estados = 'rechazada:rechazada;aprobadaUGT:aprobadaUGT;finalizada:finalizada;enviado:enviado';
     contagenda = 0;
     var $grid = $("#" + idtabla);
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
