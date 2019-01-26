@@ -4,6 +4,9 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.reportes.iu.RElementosIU"%>
+<%@page import="ugt.reportes.RDataset"%>
+<%@page import="ugt.reportes.RElemento"%>
 <%@page import="ugt.reportes.ConductoresRepGenero"%>
 <%@page import="ugt.reportes.iu.ConductoresReporteEstadosIU"%>
 <%@page import="com.google.gson.Gson"%>
@@ -23,6 +26,11 @@
             response.setContentType("application/json");
             response.getWriter().write(repCondEstado);
         } else if (accion.equals("respuestaJSON")) {
+            String respuestaJSON = (String) session.getAttribute("respuestaJSON");
+            session.setAttribute("respuestaJSON", null);
+            response.setContentType("application/json");
+            response.getWriter().write(respuestaJSON);
+        } else if (accion.equals("vehiculosChartEstadosesion")) {
             String respuestaJSON = (String) session.getAttribute("respuestaJSON");
             session.setAttribute("respuestaJSON", null);
             response.setContentType("application/json");
@@ -131,12 +139,12 @@
 </div> 
 </div>
 <%
-        } else if (accion.equals("conductoresReporteGenero")) {
-            ConductoresRepGenero repCondEstado = (ConductoresRepGenero) session.getAttribute("repGenero");
-            session.setAttribute("repGenero", null);
-            int femenino = (repCondEstado != null) ? repCondEstado.getFemenino(): 0;
-            int masculino = (repCondEstado != null) ? repCondEstado.getMasculino(): 0;
-            int otros = (repCondEstado != null) ? repCondEstado.getOtros(): 0;
+} else if (accion.equals("conductoresReporteGenero")) {
+    ConductoresRepGenero repCondEstado = (ConductoresRepGenero) session.getAttribute("repGenero");
+    session.setAttribute("repGenero", null);
+    int femenino = (repCondEstado != null) ? repCondEstado.getFemenino() : 0;
+    int masculino = (repCondEstado != null) ? repCondEstado.getMasculino() : 0;
+    int otros = (repCondEstado != null) ? repCondEstado.getOtros() : 0;
 %>
 <div class="main-content">
     <!-- MODAL DIALOG -->
@@ -170,7 +178,7 @@
         <div class="col-md-2">
             <div class="contextual-summary-info contextual-background green-bg">
                 <i class="fa fa-users"></i>
-                <p class="pull-right"><span>Totales</span><%=masculino+femenino+otros%></p>
+                <p class="pull-right"><span>Totales</span><%=masculino + femenino + otros%></p>
             </div>
         </div>
     </div>
@@ -207,6 +215,93 @@
         </div>
     </div>
 </div> 
+<%
+} else if (accion.equals("vehiculosReporte")) {
+    RElementosIU elemento = (RElementosIU) session.getAttribute("elementosRep");
+    session.setAttribute("elementosRep", null);
+%>
+<div class="main-content">
+    <!-- MODAL DIALOG -->
+    <div class="modal fade" id="modGeneralRepvehiculos" tabindex="-1" role="dialog" aria-labelledby="modGeneralSolicitudes" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+    <!-- END MODAL DIALOG -->
+    <div class="row" id="estadostotales">
+        <%
+            long total = 0;
+            if (elemento != null && elemento.getLista() != null && elemento.itemPos(0) != null) {
+                for (RDataset dato : elemento.itemPos(0).getData()) {
+                    total += dato.getData();
+                    String icon = "";
+                    if (dato.getLabel().equals("Disponibles")) {
+                        icon = "fa-check-circle";
+                    }
+                    if (dato.getLabel().equals("Ocupados")) {
+                        icon = "fa-user";
+                    }
+                    if (dato.getLabel().equals("Rematados")) {
+                        icon = "fa-close";
+                    }
+        %>
+        <div class="col-sm-2">
+            <div class="contextual-summary-info contextual-background " style="background-color: <%=dato.getBackground()%>;">
+                <i class="fa <%=icon%>"></i>
+                <p class="pull-right"><span><%=dato.getLabel()%></span> <%=dato.getData()%></p>
+            </div>
+        </div>
+        <%
+                }
+            }
+            if (total > 0) {
+        %>
+        <div class="col-md-2">
+            <div class="contextual-summary-info contextual-background btn-custom-secondary">
+                <i class="fa fa-users"></i>
+                <p class="pull-right"><span>Totales</span><%=total%></p>
+            </div>
+        </div>
+        <%
+            }
+        %>
+    </div>
+    <div style="margin-top: 15px;"></div>
+    <div class="main-content" id="gSolicitudes_body">
+        <div id="mnOpcionesReportes">
+            <div class="col-sm-4 col-md-3 sidebar">
+                <div class="list-group">
+                    <!--                    <span href="#" class="list-group-item main-nav">
+                                            Submenu
+                                        </span>-->
+                    <a href="NominaVehiculosPDF" class="list-group-item" title="Generar lista de vehiculos a exepción de los rematados">
+                        <i class="fa fa-check"></i> Nómina vehículos pdf
+                    </a>
+                    <!--                    <a href="#" class="list-group-item" onclick="fncReporteConductores()">
+                                            <i class="fa fa-level-up"></i> total por estado
+                                        </a>
+                                        <a href="#" class="list-group-item" onclick="fncReporteConductoresGenero()">
+                                            <i class="fa fa-level-down"></i> total por genero
+                                        </a>-->
+                </div>        
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="widget">
+                <div class="widget-header">
+                    <h3><i class="fa fa-bar-chart-o"></i> Gráfico de conductores</h3> <em> - estados</em>
+                </div>
+                <div class="widget-content">
+                    <!--<div class="demo-flot-chart" id="placeholder"></div>-->
+                    <canvas id="myChart" width="60" height="35"></canvas>
+                </div>
+            </div>                         
+        </div>
+    </div>
+</div> 
+</div>
 <%
         }
     } else {

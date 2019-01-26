@@ -4,6 +4,7 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.reportes.iu.RElementosIU"%>
 <%@page import="ugt.reportes.ConductoresRepGenero"%>
 <%@page import="ugt.reportes.iu.ConductoresReporteEstadosIU"%>
 <%@page import="ugt.servicios.swReportes"%>
@@ -37,13 +38,22 @@
                 ConductoresRepGenero repGenero = g.fromJson(objJSON, ConductoresRepGenero.class);
                 session.setAttribute("repGenero", repGenero);
             }
-            response.sendRedirect("ReportesControlador.jsp?opc=mostrar&accion="+opc);
+            response.sendRedirect("ReportesControlador.jsp?opc=mostrar&accion=" + opc);
         } else if (opc.equals("conductoresChartGenero")) {
             String objJSON = swReportes.reporteGeneroConductor();
             if (objJSON.length() > 2) {
                 session.setAttribute("respuestaJSON", objJSON);
             }
             response.sendRedirect("ReportesControlador.jsp?opc=mostrar&accion=respuestaJSON");
+        } else if (opc.equals("vehiculosReporte")) {
+            String arrayJSON = swReportes.reporteVehiculosTipo("estados");
+            if (arrayJSON.length() > 2) {
+                RElementosIU elementos = new RElementosIU();
+                elementos.setListaJSON(arrayJSON);
+                session.setAttribute("respuestaJSON", arrayJSON);
+                session.setAttribute("elementosRep", elementos);
+            }
+            response.sendRedirect("ReportesControlador.jsp?opc=mostrar&accion=" + opc);
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

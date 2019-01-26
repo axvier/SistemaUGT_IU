@@ -23,6 +23,8 @@
                 response.sendRedirect("ReportesModelo.jsp?opc=" + opc);
             } else if (opc.equals("conductoresChartGenero")) {
                 response.sendRedirect("ReportesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("vehiculosReporte")) {
+                response.sendRedirect("ReportesModelo.jsp?opc=" + opc);
             }
         }
     } else {

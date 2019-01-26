@@ -71,7 +71,7 @@ var fncDibujarGraficosConductoresGenero = function () {
                         {
                             label: "Numero de conductores ",
                             backgroundColor: ["#FB5DD7", "#4380C5", "#5DB9FB"],
-                            data: [datos.femenino,datos.masculino,datos.otros]
+                            data: [datos.femenino, datos.masculino, datos.otros]
                         }
                     ]
                 },
@@ -107,3 +107,76 @@ var fncReporteConductoresGenero = function () {
     });
 };
 
+var fncDibujarGraficosVehiculosEstado = function () {
+    $.ajax({
+        url: "protected/Administrador/Reportes/ReportesControlador.jsp",
+        type: "GET",
+        data: {opc: "mostrar", accion: "vehiculosChartEstadosesion"},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            datos = fncParseElementosToChartJS(datos);
+            console.log(JSON.stringify(datos));
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: datos.labels,
+                    datasets: [{
+                            label: datos.datasets[0].label,
+                            data: datos.datasets[0].data,
+                            backgroundColor: datos.datasets[0].backgroundColor,
+                            borderWidth: 1
+                        }]
+                },
+                options: {
+                    legend: {display: datos.leyenda},
+                    title: {
+                        display: true,
+                        text: datos.titulo
+                    },
+                    scales: {
+                        yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                    }
+                }
+            });
+        },
+        error: function (error) {
+            location.reload();
+        }
+    });
+};
+
+var fncParseElementosToChartJS = function (datos) {
+    var data = {};
+    if (datos[0]) {
+        var valores = [];
+        var colores = [];
+        var bordes = [];
+        var labels = [];
+        for (var j = 0; j < datos[0].data.length; j++) {
+            if (datos[0].data[j]) {
+                valores.push(datos[0].data[j].data);
+                labels.push(datos[0].data[j].label);
+                colores.push(datos[0].data[j].background);
+                bordes.push(datos[0].data[j].borderColor);
+            }
+        }
+        var config = [];
+        config.push({
+            label: "Cantidad",
+            backgroundColor: colores,
+            borderColor: bordes,
+            data: valores,
+            borderWidth: 1
+        });
+        data.labels = labels;
+        data.datasets = config;
+        data.leyenda = datos[0].leyenda;
+        data.titulo = datos[0].titulo;
+    }
+    return data;
+};

@@ -322,7 +322,7 @@ var fncReporteVehiculos = function () {
         contentType: "application/json ; charset=UTF-8",
         success: function (datos) {
             $("#contenidoDinamico").html(datos);
-            fncDibujarGraficosConductores("placeholder");//iniciar grafico
+            fncDibujarGraficosVehiculosEstado();//iniciar grafico
         },
         error: function (error) {
             location.reload();
