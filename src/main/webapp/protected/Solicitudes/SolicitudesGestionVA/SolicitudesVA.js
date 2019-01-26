@@ -216,13 +216,20 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
                 }
             },
             {label: 'Motivo', name: 'descripcion', jsonmap: "motivo.descripcion", width: 140, editable: false, search: false, sortable: false},
-            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: false, search: true},
+            {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: true,
+                edittype: 'select',
+                editoptions: {
+                    value: 'aprobadaUGT:aprobadaUGT;enviado:enviar a ugt'
+                }, align: 'center',
+                editrules: {required: true}
+            },
             {label: 'Observación', name: 'observacion', jsonmap: "solicitud.observacion", width: 140, editable: true, search: false, sortable: false,
                 edittype: 'textarea',
                 editoptions: {
                     cols: 38,
                     rows: 5
-                }
+                },
+                editrules: {required: true}
             },
             {label: 'Motivo', name: 'motivo', width: 130, jsonmap: "motivo", editable: false,
                 editrules: {
@@ -315,7 +322,7 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
             var data = $("#" + idtabla + " #" + postdata.numero).attr("data-json");
             var rowData = JSON.parse(decodeURI(data));
             var solicitud = {
-                estado: rowDatajqg.estado,
+                estado: postdata.estado,
                 fecha: rowData.fecha,
                 observacion: postdata.observacion,
                 idpdf: rowData.idpdf,
@@ -494,7 +501,7 @@ var fncDibujarSolicitudesAprobadas = function (idtabla) {
             {label: 'Estado', name: 'estado', jsonmap: "solicitud.estado", width: 70, editable: true, search: true,
                 edittype: 'select',
                 editoptions: {
-                    value: 'aprobada:aprobada;asignada:asignada;enviada:inicio'
+                    value: 'aprobada:aprobada;aprobadaUGT:aprobadaUGT;enviado:enviar a ugt'
                 },
                 align: 'center',
                 formatter: function (cellvalue, options, rowObject) {
@@ -887,7 +894,7 @@ var fncDibujarSolicitudesAprobadasSecVA = function (idtabla) {
             var rowData = JSON.parse(decodeURI(data));
             postdata.numero = rowData.numero;
             var solicitud = {
-                estado: postdata.estado,
+                estado: rowData.estado,
                 fecha: rowData.fecha,
                 observacion: postdata.observacion,
                 idpdf: rowData.idpdf,
@@ -961,20 +968,20 @@ var fncDibujarSolicitudesAprobadasSecVA = function (idtabla) {
                         var i = 0;
                         /**Creación del boton para rechazar la solicitud con las funciones al dar click*/
                         $("<div>",
-                                    {
-                                        title: "Subir y combinar PDF",
-                                        id: "btnRecibido_" + i,
-                                        onmouseover: "jQuery(this).addClass('ui-state-hover');",
-                                        onmouseout: "jQuery(this).removeClass('ui-state-hover');",
-                                        click: function (e) {
-                                            fncModSubirCombinarPDF('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("id"));
-                                        }
+                                {
+                                    title: "Subir y combinar PDF",
+                                    id: "btnRecibido_" + i,
+                                    onmouseover: "jQuery(this).addClass('ui-state-hover');",
+                                    onmouseout: "jQuery(this).removeClass('ui-state-hover');",
+                                    click: function (e) {
+                                        fncModSubirCombinarPDF('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("id"));
                                     }
+                                }
 
-                            ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
-                                    .addClass("ui-pg-div ui-inline-edit")
-                                    .append('<span class="fa fa-cloud-upload fa-2x text-primary"></span>')
-                                    .appendTo($(this).children("div"));
+                        ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                                .addClass("ui-pg-div ui-inline-edit")
+                                .append('<span class="fa fa-cloud-upload fa-2x text-primary"></span>')
+                                .appendTo($(this).children("div"));
                         i++;
                     });
         }

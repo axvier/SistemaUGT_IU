@@ -25,8 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import ugt.entidades.Tbordenesmovilizaciones;
 import ugt.entidades.Tbsolicitudes;
+import ugt.registros.iu.RegistrosM;
 import ugt.servicios.swOrdenMovilizacion;
 import ugt.servicios.swSolicitudes;
+import utg.login.Login;
 
 /**
  *
@@ -92,7 +94,7 @@ public class GenerarSalvoConducto extends HttpServlet {
                 try {
                     Date date = sf.parse(sf.format(today.getTime()));
                     ord.setFechagenerar(date);
-                    swOrdenMovilizacion.modificaOrdenMovilizacionID(ord.getNumeroOrden(),g.toJson(ord));
+                    swOrdenMovilizacion.modificaOrdenMovilizacionID(ord.getNumeroOrden(), g.toJson(ord));
                 } catch (ParseException ex) {
                     Logger.getLogger(GenerarSalvoConducto.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -133,7 +135,7 @@ public class GenerarSalvoConducto extends HttpServlet {
 
             String jsonSolFull = swSolicitudes.getSolicitudFullID(solicitud.getNumero().toString());
             OrdenMovilizacionPDF ordenPDF = g.fromJson(jsonSolFull, OrdenMovilizacionPDF.class);
-            if(nombresApellidos!= null && cargoentidad!=null){
+            if (nombresApellidos != null && cargoentidad != null) {
                 ordenPDF.setNombresApellidos(nombresApellidos);
                 ordenPDF.setCargoEntidad(cargoentidad);
             }
@@ -145,7 +147,9 @@ public class GenerarSalvoConducto extends HttpServlet {
                 try {
                     Date date = sf.parse(sf.format(today.getTime()));
                     ord.setFechagenerar(date);
-                    swOrdenMovilizacion.modificaOrdenMovilizacionID(ord.getNumeroOrden(),g.toJson(ord));
+                    swOrdenMovilizacion.modificaOrdenMovilizacionID(ord.getNumeroOrden(), g.toJson(ord));
+                    Login login = (Login) request.getSession(false).getAttribute("login");
+                    RegistrosM.Insertar(login, ord, "orden generada");
                 } catch (ParseException ex) {
                     Logger.getLogger(GenerarSalvoConducto.class.getName()).log(Level.SEVERE, null, ex);
                 }

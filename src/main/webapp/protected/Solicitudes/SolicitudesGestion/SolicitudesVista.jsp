@@ -4,6 +4,8 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.entidades.Tbregistros"%>
+<%@page import="ugt.registros.iu.RegistrosIU"%>
 <%@page import="java.time.ZoneId"%>
 <%@page import="java.time.LocalDate"%>
 <%@page import="java.time.Period"%>
@@ -735,7 +737,47 @@
     <button type='button' class='btn btn-default' data-dismiss='modal'><i class='fa fa-times-circle'></i> Cerrar</button>
 </div>
 <%/**
-             * fin contenido modal para ver datos de conductor DVC
+     * fin contenido modal para ver datos de conductor DVC
+     */
+} else if (accion.equals("modRegDocsSol")) {
+    /**
+     * Inicio modal registro solicitud
+     */
+    RegistrosIU registros = (RegistrosIU) session.getAttribute("registros");
+    session.setAttribute("registros", null);
+%>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="modalLicenciaTitulo"> Registros | pasos de la solicitud </h4>
+</div>
+<div class="modal-body">
+    <form data-parsley-validate novalidate class="form-horizontal" role="form" id="formCombinarPDF">
+        <div class='project-section activity'>
+            <ul class="list-unstyled activity-list">
+                <%
+                    if (registros != null) {
+                        for (Tbregistros registro : registros.getLista()) {
+                            SimpleDateFormat sdf = new SimpleDateFormat("E',' dd 'de' MMMM 'de' yyyy 'Hora: ' HH:mm:ss");
+                            String fecha = sdf.format(registro.getFecha());
+                %>
+                <li>
+                    <i class="fa fa-check activity-icon pull-left icon-success"></i>
+                    <p><%=registro.getAccion()%><a href="#"><%=registro.getResponsable()%></a><span class="timestamp"><%=fecha%></span></p>
+                </li>
+                <%
+                        }
+                    }
+                %>
+            </ul>
+        </div>
+    </form>
+</div>
+<div class='modal-footer'>
+    <button type='button' class='btn btn-default' data-dismiss='modal'><i class='fa fa-times-circle'></i> Cerrar</button>
+</div>
+<%
+            /**
+             * Fin modal registro solicitud
              */
         }
     } else {

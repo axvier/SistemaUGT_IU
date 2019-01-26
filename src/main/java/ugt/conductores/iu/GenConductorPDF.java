@@ -12,6 +12,7 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import ugt.entidades.Tbconductores;
+import ugt.entidades.Tbvehiculosdependencias;
 import ugt.pdf.iu.EncabezadoReportes;
 import ugt.reportes.ConductorRepNomina;
 
@@ -51,10 +53,10 @@ public class GenConductorPDF {
         this.listaConductor = listaConductor;
     }
 
-    public ByteArrayOutputStream generarNominaPDF() {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//    public String generarPDF() {
-//        String baos = "";
+//    public ByteArrayOutputStream generarNominaPDF() {
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    public String generarPDF() {
+        String result = "";
         try {
             /**
              * Instancia de la clase encabezad, enviando como datos el parrafo
@@ -70,9 +72,9 @@ public class GenConductorPDF {
             /**
              * inicio Para caso de prueba en consola
              */
-//            File myfile = new File("D:\\pdfs\\out.pdf");
-//            result = myfile.getName();
-//            FileOutputStream baos = new FileOutputStream(myfile);
+            File myfile = new File("D:\\pdfs\\out.pdf");
+            result = myfile.getName();
+            FileOutputStream baos = new FileOutputStream(myfile);
             /**
              * fin de prueba de consola
              */
@@ -99,10 +101,10 @@ public class GenConductorPDF {
              * Parrafo titulo
              */
             Paragraph titulo = new Paragraph();
-            titulo =new Paragraph(getFechaActual()+" hora "+getHoraActual(),timesNewRomanCursiva(9));
+            titulo = new Paragraph(getFechaActual() + " hora " + getHoraActual(), timesNewRomanCursiva(9));
             titulo.setAlignment(Element.ALIGN_RIGHT);
             document.add(titulo);
-            
+
             titulo = new Paragraph("NÓMINA DE CONDUCTORES INSTITUCIONALES", timesNewRomanBold(12));
             titulo.setAlignment(Element.ALIGN_CENTER);
             document.add(titulo);
@@ -110,9 +112,9 @@ public class GenConductorPDF {
             /**
              * Inicio tabla nomina
              */
-            PdfPTable tablaNomina = new PdfPTable(7);
+            PdfPTable tablaNomina = new PdfPTable(8);
             tablaNomina.setWidthPercentage(100f);
-            tablaNomina.setWidths(new float[]{5, 25, 25, 15, 15, 8, 7});
+            tablaNomina.setWidths(new float[]{5, 31, 15, 15, 8, 12, 7, 7});
             /**
              * Inicio de encabezado de tablas
              */
@@ -122,12 +124,11 @@ public class GenConductorPDF {
 //            celda.setBorderColor(new BaseColor(118, 118, 118));
             tablaNomina.addCell(celda);
 
-            celda = new PdfPCell(new Paragraph("APELLIDOS", timesNewRomanNormalColor(FONTSIZEGENERAL, BaseColor.WHITE)));
-            celda.setHorizontalAlignment(Element.ALIGN_CENTER);
-            celda.setBackgroundColor(new BaseColor(118, 118, 118));
-//            celda.setBorderColor(new BaseColor(118, 118, 118));
-            tablaNomina.addCell(celda);
-
+//            celda = new PdfPCell(new Paragraph("APELLIDOS", timesNewRomanNormalColor(FONTSIZEGENERAL, BaseColor.WHITE)));
+//            celda.setHorizontalAlignment(Element.ALIGN_CENTER);
+//            celda.setBackgroundColor(new BaseColor(118, 118, 118));
+////            celda.setBorderColor(new BaseColor(118, 118, 118));
+//            tablaNomina.addCell(celda);
             celda = new PdfPCell(new Paragraph("NOMBRES", timesNewRomanNormalColor(FONTSIZEGENERAL, BaseColor.WHITE)));
             celda.setHorizontalAlignment(Element.ALIGN_CENTER);
             celda.setBackgroundColor(new BaseColor(118, 118, 118));
@@ -141,6 +142,18 @@ public class GenConductorPDF {
             tablaNomina.addCell(celda);
 
             celda = new PdfPCell(new Paragraph("TELÉFONO", timesNewRomanNormalColor(FONTSIZEGENERAL, BaseColor.WHITE)));
+            celda.setHorizontalAlignment(Element.ALIGN_CENTER);
+            celda.setBackgroundColor(new BaseColor(118, 118, 118));
+//            celda.setBorderColor(new BaseColor(118, 118, 118));
+            tablaNomina.addCell(celda);
+
+            celda = new PdfPCell(new Paragraph("VEHÍCULOS", timesNewRomanNormalColor(FONTSIZEGENERAL, BaseColor.WHITE)));
+            celda.setHorizontalAlignment(Element.ALIGN_CENTER);
+            celda.setBackgroundColor(new BaseColor(118, 118, 118));
+//            celda.setBorderColor(new BaseColor(118, 118, 118));
+            tablaNomina.addCell(celda);
+
+            celda = new PdfPCell(new Paragraph("DEPENDENCIAS", timesNewRomanNormalColor(FONTSIZEGENERAL, BaseColor.WHITE)));
             celda.setHorizontalAlignment(Element.ALIGN_CENTER);
             celda.setBackgroundColor(new BaseColor(118, 118, 118));
 //            celda.setBorderColor(new BaseColor(118, 118, 118));
@@ -164,120 +177,164 @@ public class GenConductorPDF {
              * Inicio lista de nomina
              */
             int cont = 0;
-            for (int i = 0; i < 20; i++) {
-                for (ConductorRepNomina conductor : this.getListaConductor()) {
-                    /**
-                     * Ingreso de numero orden
-                     */
-                    Paragraph valor = new Paragraph();
-                    celda = new PdfPCell();
-                    valor = new Paragraph(String.valueOf(cont++), timesNewRomanNormal(FONTSIZEGENERAL));
-                    valor.setAlignment(Element.ALIGN_CENTER);
-                    celda.addElement(valor);
-                    celda.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
-                    tablaNomina.addCell(celda);
-                    /**
-                     * Ingerso de apellidos
-                     */
-                    celda = new PdfPCell();
-                    valor = new Paragraph();
-                    if (conductor.getConductor() != null) {
-                        if (conductor.getConductor().getApellidos() != null) {
-                            valor.add(conductor.getConductor().getApellidos());
-                        } else {
-                            valor.add("S/A");
-                        }
-                    } else {
-                        valor.add("S/A");
-                    }
-                    valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
-                    celda.addElement(valor);
-                    celda.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
-                    tablaNomina.addCell(celda);
-                    /**
-                     * Ingerso de Nombres
-                     */
-                    celda = new PdfPCell();
-                    valor = new Paragraph();
-                    if (conductor.getConductor() != null) {
-                        if (conductor.getConductor().getNombres() != null) {
-                            valor.add(conductor.getConductor().getNombres());
-                        } else {
-                            valor.add("S/N");
-                        }
-                    } else {
-                        valor.add("S/N");
-                    }
-                    valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
-                    celda.addElement(valor);
-                    celda.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
-                    tablaNomina.addCell(celda);
-                    /**
-                     * Ingerso de Cedula
-                     */
-                    celda = new PdfPCell();
-                    valor = new Paragraph();
-                    if (conductor.getConductor() != null) {
-                        if (conductor.getConductor().getCedula() != null) {
-                            valor.add(conductor.getConductor().getCedula());
-                        } else {
-                            valor.add("S/D");
-                        }
+//            for (int i = 0; i < 20; i++) {
+            for (ConductorRepNomina conductor : this.getListaConductor()) {
+                /**
+                 * Ingreso de numero orden
+                 */
+                Paragraph valor = new Paragraph();
+                celda = new PdfPCell();
+                valor = new Paragraph(String.valueOf(cont++), timesNewRomanNormal(FONTSIZEGENERAL));
+                valor.setAlignment(Element.ALIGN_CENTER);
+                celda.addElement(valor);
+                celda.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
+                tablaNomina.addCell(celda);
+                /**
+                 * Ingerso de apellidos
+                 */
+//                    celda = new PdfPCell();
+//                    valor = new Paragraph();
+//                    if (conductor.getConductor() != null) {
+//                        if (conductor.getConductor().getApellidos() != null) {
+//                            valor.add(conductor.getConductor().getApellidos());
+//                        } else {
+//                            valor.add("S/A");
+//                        }
+//                    } else {
+//                        valor.add("S/A");
+//                    }
+//                    valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
+//                    celda.addElement(valor);
+//                    celda.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
+//                    tablaNomina.addCell(celda);
+                /**
+                 * Ingerso de Nombres
+                 */
+                celda = new PdfPCell();
+                valor = new Paragraph();
+                if (conductor.getConductor() != null && (conductor.getConductor().getNombres() != null && conductor.getConductor().getApellidos() != null)) {
+                    valor.add(conductor.getConductor().getApellidos() + " " + conductor.getConductor().getNombres());
+                } else {
+                    valor.add("S/N");
+                }
+                valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
+                celda.addElement(valor);
+                celda.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
+                tablaNomina.addCell(celda);
+                /**
+                 * Ingerso de Cedula
+                 */
+                celda = new PdfPCell();
+                valor = new Paragraph();
+                if (conductor.getConductor() != null) {
+                    if (conductor.getConductor().getCedula() != null) {
+                        valor.add(conductor.getConductor().getCedula());
                     } else {
                         valor.add("S/D");
                     }
-                    valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
-                    valor.setAlignment(Element.ALIGN_CENTER);
-                    celda.addElement(valor);
-                    celda.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    tablaNomina.addCell(celda);
-                    /**
-                     * Ingerso de Telefono
-                     */
-                    celda = new PdfPCell();
-                    valor = new Paragraph();
-                    if (conductor.getConductor() != null && conductor.getConductor().getTelefono() != null) {
-                        valor.add(conductor.getConductor().getTelefono());
-                    } else {
-                        valor.add("S/T");
-                    }
-                    valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
-                    valor.setAlignment(Element.ALIGN_CENTER);
-                    celda.addElement(valor);
-                    celda.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    tablaNomina.addCell(celda);
-                    /**
-                     * Ingerso de tipo Licencia
-                     */
-                    celda = new PdfPCell();
-                    valor = new Paragraph();
-                    if (conductor.getLicencia() != null && conductor.getLicencia().getTipo() != null) {
-                        valor.add(conductor.getLicencia().getTipo().toString());
-                    } else {
-                        valor.add("-");
-                    }
-                    valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
-                    valor.setAlignment(Element.ALIGN_CENTER);
-                    celda.addElement(valor);
-                    celda.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    tablaNomina.addCell(celda);
-                    /**
-                     * Ingerso de puntos licencia
-                     */
-                    celda = new PdfPCell();
-                    valor = new Paragraph();
-                    if (conductor.getLicencia() != null && conductor.getLicencia().getPuntos() != null) {
-                        valor.add(conductor.getLicencia().getPuntos().toString());
-                    } else {
-                        valor.add("0");
-                    }
-                    valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
-                    valor.setAlignment(Element.ALIGN_CENTER);
-                    celda.addElement(valor);
-                    celda.setHorizontalAlignment(Element.ALIGN_CENTER);
-                    tablaNomina.addCell(celda);
+                } else {
+                    valor.add("S/D");
                 }
+                valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
+                valor.setAlignment(Element.ALIGN_CENTER);
+                celda.addElement(valor);
+                celda.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tablaNomina.addCell(celda);
+                /**
+                 * Ingerso de Telefono
+                 */
+                celda = new PdfPCell();
+                valor = new Paragraph();
+                if (conductor.getConductor() != null && conductor.getConductor().getTelefono() != null) {
+                    valor.add(conductor.getConductor().getTelefono());
+                } else {
+                    valor.add("S/T");
+                }
+                valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
+                valor.setAlignment(Element.ALIGN_CENTER);
+                celda.addElement(valor);
+                celda.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tablaNomina.addCell(celda);
+                /**
+                 * Ingerso de vehículo disco
+                 */
+                celda = new PdfPCell();
+                valor = new Paragraph();
+                if (conductor.getListavehiculo() != null) {
+                    PdfPTable tableVehDep = new PdfPTable(1);
+                    for (Tbvehiculosdependencias en : conductor.getListavehiculo()) {
+                        PdfPCell celdaVehDep = new PdfPCell();
+                        if (en.getTbvehiculos() != null) {
+                            celdaVehDep.addElement(new Paragraph("* " + en.getTbvehiculos().getDisco(), timesNewRomanNormal(FONTSIZEGENERAL)));
+                        } else {
+                            celdaVehDep.addElement(new Paragraph(" "));
+                        }
+                        celdaVehDep.setBorder(Rectangle.NO_BORDER);
+                        tableVehDep.addCell(celdaVehDep);
+                    }
+                    valor.add(tableVehDep);
+                } else {
+                    valor.add(" ");
+                }
+                valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
+                celda.addElement(valor);
+                tablaNomina.addCell(celda);
+                /**
+                 * Ingerso de Dependencia codigo
+                 */
+                celda = new PdfPCell();
+                valor = new Paragraph();
+                if (conductor.getListavehiculo() != null) {
+                    PdfPTable tableVehDep = new PdfPTable(1);
+                    for (Tbvehiculosdependencias en : conductor.getListavehiculo()) {
+                        PdfPCell celdaVehDep = new PdfPCell();
+                        if (en.getTbdependencias() != null && en.getTbdependencias().getCodigoentidad()!= null) {
+                            celdaVehDep.addElement(new Paragraph("* " + en.getTbdependencias().getCodigoentidad(), timesNewRomanNormal(FONTSIZEGENERAL)));
+                        } else {
+                            celdaVehDep.addElement(new Paragraph(" "));
+                        }
+                        celdaVehDep.setBorder(Rectangle.NO_BORDER);
+                        tableVehDep.addCell(celdaVehDep);
+                    }
+                    valor.add(tableVehDep);
+                } else {
+                    valor.add(" ");
+                }
+                valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
+                celda.addElement(valor);
+                tablaNomina.addCell(celda);
+                /**
+                 * Ingerso de tipo Licencia
+                 */
+                celda = new PdfPCell();
+                valor = new Paragraph();
+                if (conductor.getLicencia() != null && conductor.getLicencia().getTipo() != null) {
+                    valor.add(conductor.getLicencia().getTipo().toString());
+                } else {
+                    valor.add("-");
+                }
+                valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
+                valor.setAlignment(Element.ALIGN_CENTER);
+                celda.addElement(valor);
+                celda.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tablaNomina.addCell(celda);
+                /**
+                 * Ingerso de puntos licencia
+                 */
+                celda = new PdfPCell();
+                valor = new Paragraph();
+                if (conductor.getLicencia() != null && conductor.getLicencia().getPuntos() != null) {
+                    valor.add(conductor.getLicencia().getPuntos().toString());
+                } else {
+                    valor.add("0");
+                }
+                valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
+                valor.setAlignment(Element.ALIGN_CENTER);
+                celda.addElement(valor);
+                celda.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tablaNomina.addCell(celda);
             }
+//            }
             /**
              * Fin lista de nomina
              */
@@ -290,9 +347,9 @@ public class GenConductorPDF {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en generar conductor pdf - nominaPDF ", e.getClass().getName() + "****" + e.getMessage());
             System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
         }
-        return baos;
+        return result;
     }
-    
+
     private String getHoraActual() {
         String result = "_";
         try {

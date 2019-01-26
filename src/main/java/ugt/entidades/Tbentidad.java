@@ -52,6 +52,8 @@ public class Tbentidad implements Serializable {
     private String nombre;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "tbentidad")
     private Collection<Tbusuariosentidad> tbusuariosentidadCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tbentidad")
+    private Collection<Tbvehiculosdependencias> tbvehiculosdependenciasCollection;
     @OneToMany(mappedBy = "idpadre")
     private Collection<Tbentidad> tbentidadCollection;
     @JoinColumn(name = "idpadre", referencedColumnName = "identidad")
@@ -99,6 +101,15 @@ public class Tbentidad implements Serializable {
 
     public void setTbusuariosentidadCollection(Collection<Tbusuariosentidad> tbusuariosentidadCollection) {
         this.tbusuariosentidadCollection = tbusuariosentidadCollection;
+    }
+    
+    @XmlTransient
+    public Collection<Tbvehiculosdependencias> getTbvehiculosdependenciasCollection() {
+        return tbvehiculosdependenciasCollection;
+    }
+
+    public void setTbvehiculosdependenciasCollection(Collection<Tbvehiculosdependencias> tbusuariosentidadCollection) {
+        this.tbvehiculosdependenciasCollection = tbusuariosentidadCollection;
     }
 
     @XmlTransient

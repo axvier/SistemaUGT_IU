@@ -600,6 +600,34 @@ var fncModVerDatosConductor = function (idSelecConductor, idmodal) {
         swalNormal("Error", "Seleccione un conductor primero", "error");
 };
 
+var fncModConsultarReg= function(idmodal,idtabla,rowid){
+     var data = $("#" + idtabla + " #" + rowid).attr("data-json");
+    var objeto = JSON.parse(decodeURI(data));
+    if (typeof objeto !== "undefined") {
+        var solicitud = {};
+        solicitud.estado = objeto.estado;
+        solicitud.fecha = objeto.fecha;
+        solicitud.numero = objeto.numero;
+        if (typeof objeto.idpdf !== "undefined")
+            solicitud.idpdf = objeto.idpdf;
+        if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null)
+            solicitud.observacion = objeto.observacion;
+        $.ajax({
+            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            type: "GET",
+            data: {opc: "modRegDocsSol", jsonSolicitud: JSON.stringify(solicitud)},
+            contentType: "application/json ; charset=UTF-8",
+            success: function (datos) {
+                $("#"+idmodal+" .modal-content").html(datos);
+                $("#"+idmodal).modal("show");
+            },
+            error: function (error) {
+                location.reload();
+            }
+        });
+    }
+};
+
 var fncDibujarSolicitudesNuevas = function (idtabla) {
     contagenda = 0;
     var $grid = $("#" + idtabla);
@@ -637,7 +665,8 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
                 edittype: 'textarea',
                 editoptions: {
                     cols: 30
-                }
+                },
+                editrules: {required: true}
             },
             {label: 'Motivo', name: 'motivo', width: 130, jsonmap: "motivo", editable: false,
                 editrules: {
@@ -887,7 +916,7 @@ var fncDibujarSolicitudesNuevas = function (idtabla) {
 };
 
 var fncDibujarSolicitudesProcesadas = function (idtabla) {
-    var estados = 'rechazada:rechazada;aprobadaUGT:aprobadaUGT;finalizada:finalizada;enviado:enviado';
+    var estados = 'rechazada:rechazada;aprobadaUGT:aprobadaUGT;finalizada:finalizada;enviado:enviado;eliminada:eliminado';
     contagenda = 0;
     var $grid = $("#" + idtabla);
     var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
@@ -1096,36 +1125,36 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
                 $(".list-inline #" + idasigVCmn).removeClass("inactive");
                 $(".list-inline #" + idasigVCmn).attr("onclick", "disponibilidadVCSolModal('modGeneralSolicitudes','" + idtabla + "','" + data + "')");
             }
-//        },
-//        loadComplete: function () {
-//            var grid = $grid,
-//                    iCol = 11; // 'act' - name of the actions column
-//            grid.children("tbody")
-//                    .children("tr.jqgrow")
-//                    .children("td:nth-child(" + (iCol + 1) + ")")
-//                    .each(function () {
-//                        var i = 0;
+        },
+        loadComplete: function () {
+            var grid = $grid,
+                    iCol = 11; // 'act' - name of the actions column
+            grid.children("tbody")
+                    .children("tr.jqgrow")
+                    .children("td:nth-child(" + (iCol + 1) + ")")
+                    .each(function () {
+                        var i = 0;
 //                        var data = JSON.parse(decodeURI($("#" + idtabla + " #" + $(this).closest("tr.jqgrow").attr("id")).attr("data-json")));
 //                        if (data.estado === "aprobada" || data.estado === "finalizada") {
-//                            /**creación y asignación del botón para comibnar un pdf con los demas requerimientos*/
-//                            $("<div>",
-//                                    {
-//                                        title: "Subir y combinar PDF",
-//                                        id: "btnRecibido_" + i,
-//                                        onmouseover: "jQuery(this).addClass('ui-state-hover');",
-//                                        onmouseout: "jQuery(this).removeClass('ui-state-hover');",
-//                                        click: function (e) {
-//                                            fncModSubirCombinarPDF('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("id"));
-//                                        }
-//                                    }
-//
-//                            ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
-//                                    .addClass("ui-pg-div ui-inline-edit")
-//                                    .append('<span class="fa fa-upload fa-2x text-primary"></span>')
-//                                    .appendTo($(this).children("div"));
+                            /**creación y asignación del botón para comibnar un pdf con los demas requerimientos*/
+                            $("<div>",
+                                    {
+                                        title: "Ver registro de cambios",
+                                        id: "btnVerReg_" + i,
+                                        onmouseover: "jQuery(this).addClass('ui-state-hover');",
+                                        onmouseout: "jQuery(this).removeClass('ui-state-hover');",
+                                        click: function (e) {
+                                            fncModConsultarReg('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("id"));
+                                        }
+                                    }
+
+                            ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                                    .addClass("ui-pg-div ui-inline-edit")
+                                    .append('<span class="fa fa-info-circle fa-2x text-primary"></span>')
+                                    .appendTo($(this).children("div"));
 //                        }
-//                        i++;
-//                    });
+                        i++;
+                    });
         }
     });
 

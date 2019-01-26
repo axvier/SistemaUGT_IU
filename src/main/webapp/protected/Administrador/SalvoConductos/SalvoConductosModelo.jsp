@@ -4,6 +4,7 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.registros.iu.RegistrosM"%>
 <%@page import="java.util.logging.Level"%>
 <%@page import="java.util.logging.Logger"%>
 <%@page import="ugt.servicios.swPDF"%>
@@ -58,6 +59,7 @@
             }
             response.sendRedirect("SalvoConductosControlador.jsp?opc=mostrar&accion=modificarStatus");
         } else if (opc.equals("modificarOrden")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             String idSolicitud = (String) session.getAttribute("idSolicitud");
             String jsonsSolicitud = (String) session.getAttribute("jsonSolicitud");
             String idOrden = (String) session.getAttribute("idOrden");
@@ -68,9 +70,11 @@
             session.setAttribute("jsonOrdenv", null);
             String jsonMod = swSolicitudes.modificarSolicitudID(idSolicitud, jsonsSolicitud);
             if (jsonMod.length() > 2) {
-                JSONObject objOrden = new JSONObject(jsonsOrden);
-                objOrden.append("solicitud", jsonMod);
-                if (swOrdenMovilizacion.modificaOrdenMovilizacionID(objOrden.getString("numeroOrden"), objOrden.toString()).length() > 2) {
+                RegistrosM.Insertar(login, g.fromJson(jsonMod, Tbsolicitudes.class), "finalizada mod");
+                Tbordenesmovilizaciones orden = g.fromJson(jsonsOrden, Tbordenesmovilizaciones.class);
+                orden.setSolicitud(g.fromJson(jsonMod, Tbsolicitudes.class));
+                if (swOrdenMovilizacion.modificaOrdenMovilizacionID(idOrden, g.toJson(orden)).length() > 2) {
+                    RegistrosM.Insertar(login, orden, "modificar");
                     session.setAttribute("statusMod", "Se ha actualizado los datos orden solicitud");
                     session.setAttribute("statusCodigo", "OK");
                 } else {
@@ -98,22 +102,23 @@
                 int year = Calendar.getInstance().get(Calendar.YEAR);
                 Tbordenesmovilizaciones orden = new Tbordenesmovilizaciones();
                 orden.setFechagenerar(date);
-                if (kminicio != null) {
-                    if (kminicio.length() > 0) {
-                        orden.setKminicio(kminicio);
-                    }
+                if (kminicio != null && kminicio.length() > 0) {
+                    orden.setKminicio(kminicio);
                 }
                 orden.setNumeroOrden(solicitud.getNumero() + "-UGT-" + year);
                 orden.setSolicitud(solicitud);
                 String resAUX = swOrdenMovilizacion.insertOrdenMovilizacion(g.toJson(orden));
                 if (resAUX.length() > 2) {
+                    RegistrosM.Insertar(login, orden, "Orden Insertada");
                     swSolicitudes.modificarSolicitudID(solicitud.getNumero().toString(), g.toJson(solicitud));
+                    RegistrosM.Insertar(login, solicitud, solicitud.getEstado());
                     session.setAttribute("statusMod", "Se ha insertado los datos");
                     session.setAttribute("statusCodigo", "OK");
                 }
             } else {
                 String solAUX = swSolicitudes.modificarSolicitudID(solicitud.getNumero().toString(), g.toJson(solicitud));
                 if (solAUX.length() > 2) {
+                    RegistrosM.Insertar(login, solicitud, solicitud.getEstado());
                     session.setAttribute("statusMod", "Se ha actualizado los datos");
                     session.setAttribute("statusCodigo", "OK");
                 } else {
@@ -143,6 +148,7 @@
 
                                 String jsonPDF = swPDF.modificarPDFID(orden.getIdpdf().toString(), pdfJSON);
                                 if (jsonPDF.length() > 2) {
+                                    RegistrosM.Insertar(login, orden, "orden pdf actualizado");
                                     session.setAttribute("statusMod", "La orden de movilización se ha actualizado correctamente con el nuevo PDF");
                                     session.setAttribute("statusCodigo", "OK");
                                 } else {
@@ -174,9 +180,11 @@
                                 if (jsonPDF.length() > 2) {
                                     JSONObject obj = new JSONObject(jsonPDF);
                                     orden.setIdpdf(obj.getInt("idpdf"));
-                                    if (swOrdenMovilizacion.modificaOrdenMovilizacionID(orden.getNumeroOrden(), g.toJson(orden)).length() > 2) {
+                                    String rsOrden = swOrdenMovilizacion.modificaOrdenMovilizacionID(orden.getNumeroOrden(), g.toJson(orden));
+                                    if (rsOrden.length() > 2) {
                                         session.setAttribute("statusMod", "Se ha subido su archivo pdf...");
                                         session.setAttribute("statusCodigo", "OK");
+                                        RegistrosM.Insertar(login, g.fromJson(rsOrden, Tbordenesmovilizaciones.class), "orden pdf insertada");
                                     } else {
                                         session.setAttribute("statusMod", "No se ha podido subir sus archivos");
                                         session.setAttribute("statusCodigo", "KO");

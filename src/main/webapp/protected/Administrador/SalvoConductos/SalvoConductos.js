@@ -181,7 +181,7 @@ var saveOrdenSolicitud = function (idinputuri, idkminicio) {
 };
 
 var disponVCSolOrdenModal = function (idmodal, idtabla, data) {
-    console.log(data);
+//    console.log(data);
     var $grid = $("#" + idtabla);
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
@@ -199,7 +199,7 @@ var disponVCSolOrdenModal = function (idmodal, idtabla, data) {
 var fncModalSubirOrdenPDF = function (idmodal, idtabla, rowid) {
     var objeto = JSON.parse(decodeURI($("#" + idtabla + " #" + rowid).attr("data-json")));
     if (typeof objeto !== "undefined") {
-        console.log(objeto);
+//        console.log(objeto);
         $('#' + idmodal + ' .modal-content').load(
                 'protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=mostrar&accion=modSubirOrden',
                 function () {
@@ -260,7 +260,7 @@ var fncSubirOrdenPDF = function (idform, idmodal) {
     }
 };
 
-var verDisponibilidadVC = function (idmodal, idtabla, data,recargar) {
+var verDisponibilidadVC = function (idmodal, idtabla, data, recargar) {
     $("#gSolicitudes_body").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
     var $grid = $("#" + idtabla);
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
@@ -285,7 +285,7 @@ var verDisponibilidadVC = function (idmodal, idtabla, data,recargar) {
                 $("#gSolicitudes_body #inputHSolititud").val(data);
                 $("#gSolicitudes_body #btn-modal-dts-vehiculo").attr("onclick", "fncModVerDatosVehiculo('addDVehiculoC', '" + idmodal + "')");
                 $("#gSolicitudes_body #btn-modal-dts-conductor").attr("onclick", "fncModVerDatosConductor('addDVConductor', '" + idmodal + "')");
-                $("#gSolicitudes_body #btn-aprobarDVC").attr("onclick", "fncAprobarVehiculoConductorOnly('addOnlyDisponivilidadVC','"+recargar+"')");
+                $("#gSolicitudes_body #btn-aprobarDVC").attr("onclick", "fncAprobarVehiculoConductorOnly('addOnlyDisponivilidadVC','" + recargar + "')");
 //                fncIniciarCalendar();
             },
             error: function (error) {
@@ -330,10 +330,10 @@ var fncAprobarVehiculoConductorOnly = function (opc, recargar) {
                         if (recargar === "generarOrden") {
                             fncGenerarOrden();
                         }
-                        if(recargar === "listaOrden" ){
+                        if (recargar === "listaOrden") {
                             fncGeListaOrden();
                         }
-                        if(recargar === "solProcesada" ){
+                        if (recargar === "solProcesada") {
                             fncGeListaOrden();
                         }
                     },
@@ -347,6 +347,34 @@ var fncAprobarVehiculoConductorOnly = function (opc, recargar) {
         });
     }
 
+};
+
+var fncModConsultarRegOrd = function (idmodal, idtabla, rowid) {
+    var data = $("#" + idtabla + " #" + rowid).attr("data-json");
+    var objeto = JSON.parse(decodeURI(data));
+    var rowData = $("#" + idtabla).jqGrid('getRowData', rowid);
+    if (typeof objeto !== "undefined") {
+        var orden = {
+            fechagenerar: objeto.fechagenerar,
+            idpdf: objeto.idpdf,
+            kmfin: rowData.kmfin,
+            kminicio: rowData.kminicio,
+            numeroOrden: rowData.numero
+        };
+        $.ajax({
+            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            type: "GET",
+            data: {opc: "modRegDocsOrden", jsonOrden: JSON.stringify(orden)},
+            contentType: "application/json ; charset=UTF-8",
+            success: function (datos) {
+                $("#"+idmodal+" .modal-content").html(datos);
+                $("#"+idmodal).modal("show");
+            },
+            error: function (error) {
+                location.reload();
+            }
+        });
+    }
 };
 
 var fncDibujarSolSalvoConducto = function (idtabla) {
@@ -590,7 +618,7 @@ var fncDibujarSolSalvoConducto = function (idtabla) {
                                     onmouseover: "jQuery(this).addClass('ui-state-hover');",
                                     onmouseout: "jQuery(this).removeClass('ui-state-hover');",
                                     click: function (e) {
-                                        verDisponibilidadVC('modGeneralSalvoConducto', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json"),"generarOrden");
+                                        verDisponibilidadVC('modGeneralSalvoConducto', idtabla, $(e.target).closest("tr.jqgrow").attr("data-json"), "generarOrden");
                                     }
                                 }
 
@@ -806,7 +834,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                 name: "actions",
                 sortable: false,
                 search: false,
-                width: 90,
+                width: 100,
                 formatter: "actions",
                 formatoptions: {
                     keys: true,
@@ -845,7 +873,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
             var data = JSON.parse(decodeURI($("#" + idtabla + " #" + postdata.numero).attr("data-json")));
 
             var orden = {
-                fechagenerar: rowData.fechagenerar,
+                fechagenerar: data.fechagenerar,
                 idpdf: data.idpdf,
                 kmfin: postdata.kmfin,
                 kminicio: postdata.kminicio,
@@ -884,7 +912,6 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                 } else {
                     $(".list-inline #" + idordenPDF).removeClass("inactive");
                     $(".list-inline #" + idordenPDF).attr("onclick", "verSolRequisitosPDF('" + rowData.idpdf + "','" + idtabla + "','" + rowData.numero + "')");
-                    console.log(rowData.idpdf);
                 }
                 if (typeof rowData.viaje === "undefined") {
                     $(".list-inline #" + idviajemn).addClass("inactive");
@@ -945,7 +972,7 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                                     }
                                 }
 
-                        ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                        ).css({"margin-left": "6px", "margin-top": "2px", float: "left", cursor: "pointer"})
                                 .addClass("ui-pg-div ui-inline-edit")
                                 .append('<span class="fa fa-download fa-2x text-primary"></span>')
                                 .appendTo($(this).children("div"));
@@ -961,9 +988,26 @@ var fncDibujaListaSalvoConductos = function (idtabla) {
                                     }
                                 }
 
-                        ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                        ).css({"margin-left": "6px", "margin-top": "2px", float: "left", cursor: "pointer"})
                                 .addClass("ui-pg-div ui-inline-edit")
                                 .append('<span class="fa fa-cloud-upload fa-2x text-success"></span>')
+                                .appendTo($(this).children("div"));
+
+                        /**creación y asignación del botón para comibnar un pdf con los demas requerimientos*/
+                        $("<div>",
+                                {
+                                    title: "Ver registro de cambios",
+                                    id: "btnVerReg_" + i,
+                                    onmouseover: "jQuery(this).addClass('ui-state-hover');",
+                                    onmouseout: "jQuery(this).removeClass('ui-state-hover');",
+                                    click: function (e) {
+                                        fncModConsultarRegOrd('modGeneralSalvoConducto', idtabla, $(e.target).closest("tr.jqgrow").attr("id"));
+                                    }
+                                }
+
+                        ).css({"margin-left": "6px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                                .addClass("ui-pg-div ui-inline-edit")
+                                .append('<span class="fa fa-info-circle fa-2x icon-info"></span>')
                                 .appendTo($(this).children("div"));
                         i++;
                     });

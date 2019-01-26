@@ -1,7 +1,9 @@
 package ugt.reportes;
 
+import java.util.List;
 import ugt.entidades.Tbconductores;
 import ugt.entidades.Tblicencias;
+import ugt.entidades.Tbvehiculosdependencias;
 
 /**
  *
@@ -11,6 +13,15 @@ public class ConductorRepNomina {
 
     private Tbconductores conductor;
     private Tblicencias licencia;
+    private List<Tbvehiculosdependencias> listavehiculo;
+
+    public List<Tbvehiculosdependencias> getListavehiculo() {
+        return listavehiculo;
+    }
+
+    public void setListavehiculo(List<Tbvehiculosdependencias> listavehiculo) {
+        this.listavehiculo = listavehiculo;
+    }
 
     public Tbconductores getConductor() {
         return conductor;

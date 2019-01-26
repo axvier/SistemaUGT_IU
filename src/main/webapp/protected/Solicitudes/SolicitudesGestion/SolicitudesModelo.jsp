@@ -4,6 +4,10 @@
     Author     : Xavy PC
 --%>
 
+<%@page import="ugt.entidades.Tbordenesmovilizaciones"%>
+<%@page import="ugt.registros.iu.RegistrosIU"%>
+<%@page import="ugt.servicios.swRegistros"%>
+<%@page import="ugt.registros.iu.RegistrosM"%>
 <%@page import="ugt.licencias.IU.LicenciasIU"%>
 <%@page import="ugt.entidades.Tblicencias"%>
 <%@page import="ugt.servicios.swLicencia"%>
@@ -65,6 +69,7 @@
                 response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=jsonVacio");
             }
         } else if (opc.equals("modificarSolicitud")) {
+            new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             String idSolicitud = (String) session.getAttribute("idSolicitud");
             String jsonsSolicitud = (String) session.getAttribute("jsonSolicitud");
             session.setAttribute("idSolicitud", null);
@@ -73,6 +78,8 @@
             if (jsonMod.length() > 2) {
                 session.setAttribute("statusMod", "Se ha actualizado los datos");
                 session.setAttribute("statusCodigo", "OK");
+                Tbsolicitudes sol = g.fromJson(jsonMod, Tbsolicitudes.class);
+                RegistrosM.Insertar(login, sol, sol.getEstado() + " " + opc);
             } else {
                 session.setAttribute("statusMod", "Error al intentar acuatlizar los datos - contacte con el proveedor");
                 session.setAttribute("statusCodigo", "KO");
@@ -128,6 +135,7 @@
             if (jsonObject.length() > 2) {
                 session.setAttribute("statusGuardar", "Fecha solicitud actualizado");
                 session.setAttribute("statusCodigo", "OK");
+                RegistrosM.Insertar(login, solActualizar, "Fecha recibido");
             } else {
                 session.setAttribute("statusGuardar", "ERROR NO SE HA PODIDO actualizar la fecha de la solicitud");
                 session.setAttribute("statusCodigo", "KO");
@@ -140,20 +148,21 @@
             Tbsolicitudes solActualizar = g.fromJson(json, Tbsolicitudes.class);
             solActualizar.setEstado("aprobadaUGT");
 
-            String ojbExiste = swDisponibilidadVC.getDisponibilidadVCSolicitud(solActualizar.getNumero().toString());
-            if (ojbExiste.length() > 2) {
-                String jsonObject = swSolicitudes.modificarSolicitudID(solActualizar.getNumero().toString(), g.toJson(solActualizar));
-                if (jsonObject.length() > 2) {
-                    session.setAttribute("statusGuardar", "Solicitud enviada a Vicerrectorado Administrativo");
-                    session.setAttribute("statusCodigo", "OK");
-                } else {
-                    session.setAttribute("statusGuardar", "ERROR NO SE HA PODIDO enviar la solicitud");
-                    session.setAttribute("statusCodigo", "KO");
-                }
+//            String ojbExiste = swDisponibilidadVC.getDisponibilidadVCSolicitud(solActualizar.getNumero().toString());
+//            if (ojbExiste.length() > 2) {
+            String jsonObject = swSolicitudes.modificarSolicitudID(solActualizar.getNumero().toString(), g.toJson(solActualizar));
+            if (jsonObject.length() > 2) {
+                RegistrosM.Insertar(login, solActualizar, solActualizar.getEstado());
+                session.setAttribute("statusGuardar", "Solicitud enviada a Vicerrectorado Administrativo");
+                session.setAttribute("statusCodigo", "OK");
             } else {
-                session.setAttribute("statusGuardar", "No se ha asignado un vehiculo ni conductor a la solicitud");
+                session.setAttribute("statusGuardar", "ERROR NO SE HA PODIDO enviar la solicitud");
                 session.setAttribute("statusCodigo", "KO");
             }
+//            } else {
+//                session.setAttribute("statusGuardar", "No se ha asignado un vehiculo ni conductor a la solicitud");
+//                session.setAttribute("statusCodigo", "KO");
+//            }
             response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=guardarStatus");
         } else if (opc.equals("modificarSolicitud")) {
             String jsonSolicitud = (String) session.getAttribute("jsonSolicitud");
@@ -199,6 +208,7 @@
                 jsonObject = swSolicitudes.modificarSolicitudID(solActualizar.getNumero().toString(), g.toJson(solActualizar));
                 if (jsonObject.length() > 2) {
                     session.setAttribute("statusCodigo", "OK");
+                    RegistrosM.Insertar(login, solActualizar, solActualizar.getEstado() + " VC");
                 } else {
                     respuesta += "Error al momento de actualizar estado solicitud " + solActualizar.getNumero();
                     session.setAttribute("statusCodigo", "KO");
@@ -239,6 +249,7 @@
             String respuesta = "";
             if (jsonObject.length() > 2) {
                 session.setAttribute("statusCodigo", "OK");
+                RegistrosM.Insertar(login, solActualizar, "asignar VC");
             } else {
                 respuesta += "Error al momento de asignar el vehículo-conductor";
                 session.setAttribute("statusCodigo", "KO");
@@ -312,6 +323,7 @@
                             .put("idpdf", solicitu.getIdpdf().toString())
                             .put("archivo", b64Combinado);
                     if (swPDF.modificarPDFID(solicitu.getIdpdf().toString(), obj.toString()).length() > 2) {
+                        RegistrosM.Insertar(login, solicitu, solicitu.getEstado() + " requisitos " + opc);
                         session.setAttribute("statusCodigo", "OK");
                         session.setAttribute("statusGuardar", "Se ha combinado exitosamente, ahora puede descargarlo en el icono de requisitos");
                     } else {
@@ -350,29 +362,55 @@
             String json = (String) session.getAttribute("jsonVehiculo");
             session.setAttribute("jsonVehiculo", null);
             Tbvehiculos vehiculoAux = g.fromJson(json, Tbvehiculos.class);
-            if(vehiculoAux != null)
+            if (vehiculoAux != null) {
                 session.setAttribute("vehiculoDVC", vehiculoAux);
+            }
             String objJSON = swRevisionesMecanicas.filtrarXSolicitud(vehiculoAux.getPlaca());
             if (objJSON.length() > 2) {
                 RevisionesMecanicasIU revisiones = new RevisionesMecanicasIU();
                 revisiones.setListaJSON(objJSON);
                 session.setAttribute("revisionmecanicaDVC", revisiones.itemPos(0));
             }
-            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion="+opc);
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=" + opc);
         } else if (opc.equals("modDatosConductorDVC")) {
             g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             String json = (String) session.getAttribute("jsonConductor");
             session.setAttribute("jsonVehiculo", null);
             Tbconductores conductorAux = g.fromJson(json, Tbconductores.class);
-            if(conductorAux != null)
+            if (conductorAux != null) {
                 session.setAttribute("conductorDVC", conductorAux);
+            }
             String objJSON = swLicencia.licenciaID(conductorAux.getCedula());
             if (objJSON.length() > 2) {
-                LicenciasIU licencias  = new LicenciasIU();
+                LicenciasIU licencias = new LicenciasIU();
                 licencias.setListaJSON(objJSON);
                 session.setAttribute("licenciaDVC", licencias.itemPos(0));
             }
-            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion="+opc);
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("modRegDocsSol")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String json = (String) session.getAttribute("jsonSolicitud");
+            session.setAttribute("jsonSolicitud", null);
+            Tbsolicitudes sol = g.fromJson(json, Tbsolicitudes.class);
+            String objJSON = swRegistros.filtarRegistroDocFDesc(sol.getClass().getSimpleName(), sol.getNumero().toString());
+            if (objJSON.length() > 2) {
+                RegistrosIU registros = new RegistrosIU();
+                registros.setListaJSON(objJSON);
+                session.setAttribute("registros", registros);
+            }
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("modRegDocsOrden")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String json = (String) session.getAttribute("jsonOrden");
+            session.setAttribute("jsonSolicitud", null);
+            Tbordenesmovilizaciones orden = g.fromJson(json, Tbordenesmovilizaciones.class);
+            String objJSON = swRegistros.filtarRegistroDocFDesc(orden.getClass().getSimpleName(), orden.getNumeroOrden());
+            if (objJSON.length() > 2) {
+                RegistrosIU registros = new RegistrosIU();
+                registros.setListaJSON(objJSON);
+                session.setAttribute("registros", registros);
+            }
+            response.sendRedirect("SolicitudesControlador.jsp?opc=mostrar&accion=modRegDocsSol" );
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

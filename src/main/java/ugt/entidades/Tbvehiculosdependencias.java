@@ -40,9 +40,9 @@ public class Tbvehiculosdependencias implements Serializable {
     @Column(name = "fechafin")
     @Temporal(TemporalType.DATE)
     private Date fechafin;
-    @JoinColumn(name = "iddependencia", referencedColumnName = "iddependencia", insertable = false, updatable = false)
+    @JoinColumn(name = "iddependencia", referencedColumnName = "identidad", insertable = false, updatable = false)
     @ManyToOne(optional = false)
-    private Tbdependencias tbdependencias;
+    private Tbentidad tbentidad;
     @JoinColumn(name = "matricula", referencedColumnName = "placa", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Tbvehiculos tbvehiculos;
@@ -74,12 +74,12 @@ public class Tbvehiculosdependencias implements Serializable {
         this.fechafin = fechafin;
     }
 
-    public Tbdependencias getTbdependencias() {
-        return tbdependencias;
+    public Tbentidad getTbdependencias() {
+        return tbentidad;
     }
 
-    public void setTbdependencias(Tbdependencias tbdependencias) {
-        this.tbdependencias = tbdependencias;
+    public void setTbdependencias(Tbentidad tbdependencias) {
+        this.tbentidad = tbdependencias;
     }
 
     public Tbvehiculos getTbvehiculos() {

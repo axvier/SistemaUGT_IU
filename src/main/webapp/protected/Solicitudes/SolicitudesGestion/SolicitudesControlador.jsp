@@ -76,6 +76,14 @@
                 String jsonConductor = request.getParameter("jsonConductor");
                 session.setAttribute("jsonConductor", jsonConductor);
                 response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("modRegDocsSol")) {
+                String jsonSolicitud = request.getParameter("jsonSolicitud");
+                session.setAttribute("jsonSolicitud", jsonSolicitud);
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("modRegDocsOrden")) {
+                String jsonSolicitud = request.getParameter("jsonOrden");
+                session.setAttribute("jsonOrden", jsonSolicitud);
+                response.sendRedirect("SolicitudesModelo.jsp?opc=" + opc);
             } else if (opc.equals("combinarPDFs")) {
                 if (ServletFileUpload.isMultipartContent(request)) {
                     try {

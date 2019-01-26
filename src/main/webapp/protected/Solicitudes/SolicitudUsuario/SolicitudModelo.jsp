@@ -113,7 +113,7 @@
             solicitud.setNumero(0);
             String objJSON = swSolicitudes.insertSolicitud(g.toJson(solicitud));
             if (objJSON.length() > 2) {
-                RegistrosM.Insertar(login, g.fromJson(objJSON, Tbsolicitudes.class));
+                RegistrosM.Insertar(login, g.fromJson(objJSON, Tbsolicitudes.class),solicitud.getEstado());
                 solicitud = g.fromJson(objJSON, Tbsolicitudes.class); // set nuevos datos de la solicitud insertada
                 Solicitudesfull solfull = new Solicitudesfull();
                 //insertar pdf y actualizar idpdf a solcitud
@@ -321,7 +321,7 @@
                 if (swSolicitudes.modificarSolicitudID(idSolicitud, g.toJson(sol)).length()>2) {
                     respuesta ="Se ha eliminado el registro";
                     session.setAttribute("statusCodigo", "OK");
-                    RegistrosM.Insertar(login, sol);
+                    RegistrosM.Insertar(login, sol,sol.getEstado());
                 } else {
                     session.setAttribute("statusCodigo", "KO");
                 }

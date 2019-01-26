@@ -39,13 +39,13 @@ public class RegistrosM {
      * @return result define el valor del rtegistro en formato json string
      */
     //<editor-fold defaultstate="collapsed" desc="Insertar registro tbsolicitudes">
-    public static String Insertar(Login login, Tbsolicitudes entity) {
+    public static String Insertar(Login login, Tbsolicitudes entity,String accion) {
         String result = "";
         try {
             Gson g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             Tbregistros registro = new Tbregistros();
             registro.setFecha(today());
-            registro.setAccion(entity.getEstado());
+            registro.setAccion(accion);
             registro.setIdregistro(0);
             registro.setIdtabla(entity.getNumero().toString());
             insertResponbale(login, registro);
@@ -69,13 +69,13 @@ public class RegistrosM {
      * @return result define el valor del rtegistro en formato json string
      */
     //<editor-fold defaultstate="collapsed" desc="Insertar registro tbordenes">
-    public static String Insertar(Login login, Tbordenesmovilizaciones entity) {
+    public static String Insertar(Login login, Tbordenesmovilizaciones entity, String accion) {
         String result = "";
         try {
             Gson g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             Tbregistros registro = new Tbregistros();
             registro.setFecha(today());
-            registro.setAccion(entity.getSolicitud().getEstado()+"+"+entity.getNumeroOrden());
+            registro.setAccion(accion);
             registro.setIdregistro(0);
             registro.setIdtabla(entity.getNumeroOrden());
             insertResponbale(login, registro);

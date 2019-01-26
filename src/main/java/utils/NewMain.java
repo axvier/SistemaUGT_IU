@@ -98,19 +98,19 @@ public class NewMain {
 //            ConductoresReporteEstadosIU repCondEstado = g.fromJson(objJSON, ConductoresReporteEstadosIU.class);
 //            result = repCondEstado.generarPIEEstados();
 //        }
-//        GenConductorPDF conductorPDF = new GenConductorPDF();
-//        String nomina = swReportes.reporteNominaConductor();
-//        if (nomina.length() > 2) {
-//            Gson gson = new Gson();
-//            Type listType = new TypeToken<ArrayList<ConductorRepNomina>>() {
-//            }.getType();
-//            List<ConductorRepNomina> lista = gson.fromJson(nomina, listType);
-//            conductorPDF.setListaConductor(lista);
-//        }
-//        ruta = conductorPDF.generarPDF();
+        GenConductorPDF conductorPDF = new GenConductorPDF();
+        String nomina = swReportes.reporteNominaConductor();
+        if (nomina.length() > 2) {
+            Gson gson = new Gson();
+            Type listType = new TypeToken<ArrayList<ConductorRepNomina>>() {
+            }.getType();
+            List<ConductorRepNomina> lista = gson.fromJson(nomina, listType);
+            conductorPDF.setListaConductor(lista);
+        }
+        ruta = conductorPDF.generarPDF();
         Tbconductores nuevo = new Tbconductores();
         System.out.println("solicitudes full() => "+nuevo.getClass().getSimpleName().toLowerCase());
-//        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
+        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler D:/pdfs/" + ruta);
     }
 
 }
