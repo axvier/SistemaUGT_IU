@@ -53,8 +53,8 @@ public class Tbdependencias implements Serializable {
     @Size(min = 1, max = 20)
     @Column(name = "codigo")
     private String codigo;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tbdependencias")
-    private Collection<Tbvehiculosdependencias> tbvehiculosdependenciasCollection;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "tbdependencias")
+//    private Collection<Tbvehiculosdependencias> tbvehiculosdependenciasCollection;
 
     public Tbdependencias() {
     }
@@ -93,14 +93,14 @@ public class Tbdependencias implements Serializable {
         this.codigo = codigo;
     }
 
-    @XmlTransient
-    public Collection<Tbvehiculosdependencias> getTbvehiculosdependenciasCollection() {
-        return tbvehiculosdependenciasCollection;
-    }
-
-    public void setTbvehiculosdependenciasCollection(Collection<Tbvehiculosdependencias> tbvehiculosdependenciasCollection) {
-        this.tbvehiculosdependenciasCollection = tbvehiculosdependenciasCollection;
-    }
+//    @XmlTransient
+//    public Collection<Tbvehiculosdependencias> getTbvehiculosdependenciasCollection() {
+//        return tbvehiculosdependenciasCollection;
+//    }
+//
+//    public void setTbvehiculosdependenciasCollection(Collection<Tbvehiculosdependencias> tbvehiculosdependenciasCollection) {
+//        this.tbvehiculosdependenciasCollection = tbvehiculosdependenciasCollection;
+//    }
 
     @Override
     public int hashCode() {

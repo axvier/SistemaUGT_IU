@@ -74,12 +74,12 @@ public class Tbvehiculosdependencias implements Serializable {
         this.fechafin = fechafin;
     }
 
-    public Tbentidad getTbdependencias() {
+    public Tbentidad getTbentidad() {
         return tbentidad;
     }
 
-    public void setTbdependencias(Tbentidad tbdependencias) {
-        this.tbentidad = tbdependencias;
+    public void setTbentidad(Tbentidad tbentidad) {
+        this.tbentidad = tbentidad;
     }
 
     public Tbvehiculos getTbvehiculos() {

@@ -32,10 +32,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Tbordenesmovilizaciones.findAll", query = "SELECT t FROM Tbordenesmovilizaciones t")
     , @NamedQuery(name = "Tbordenesmovilizaciones.findByNumeroOrden", query = "SELECT t FROM Tbordenesmovilizaciones t WHERE t.numeroOrden = :numeroOrden")
-    , @NamedQuery(name = "Tbordenesmovilizaciones.findByKminicio", query = "SELECT t FROM Tbordenesmovilizaciones t WHERE t.kminicio = :kminicio")
-    , @NamedQuery(name = "Tbordenesmovilizaciones.findByKmfin", query = "SELECT t FROM Tbordenesmovilizaciones t WHERE t.kmfin = :kmfin")
+    , @NamedQuery(name = "Tbordenesmovilizaciones.findByFechagenerar", query = "SELECT t FROM Tbordenesmovilizaciones t WHERE t.fechagenerar = :fechagenerar")
     , @NamedQuery(name = "Tbordenesmovilizaciones.findByIdpdf", query = "SELECT t FROM Tbordenesmovilizaciones t WHERE t.idpdf = :idpdf")
-    , @NamedQuery(name = "Tbordenesmovilizaciones.findByFechagenerar", query = "SELECT t FROM Tbordenesmovilizaciones t WHERE t.fechagenerar = :fechagenerar")})
+    , @NamedQuery(name = "Tbordenesmovilizaciones.findByKminicio", query = "SELECT t FROM Tbordenesmovilizaciones t WHERE t.kminicio = :kminicio")
+    , @NamedQuery(name = "Tbordenesmovilizaciones.findByKmfin", query = "SELECT t FROM Tbordenesmovilizaciones t WHERE t.kmfin = :kmfin")})
 public class Tbordenesmovilizaciones implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -48,16 +48,16 @@ public class Tbordenesmovilizaciones implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "fechagenerar")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechagenerar;
+    @Column(name = "idpdf")
+    private Integer idpdf;
     @Size(max = 50)
     @Column(name = "kminicio")
     private String kminicio;
     @Size(max = 50)
     @Column(name = "kmfin")
     private String kmfin;
-    @Column(name = "idpdf")
-    private Integer idpdf;
     @JoinColumn(name = "solicitud", referencedColumnName = "numero")
     @ManyToOne(optional = false)
     private Tbsolicitudes solicitud;

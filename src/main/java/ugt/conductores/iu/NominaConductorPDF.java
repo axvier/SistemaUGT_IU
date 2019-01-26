@@ -77,17 +77,17 @@ public class NominaConductorPDF extends HttpServlet {
             response.setHeader("Content-disposition", "attachment; filename=nomina" + year + ".pdf");
             
             GenConductorPDF conductorPDF = new GenConductorPDF();
-//            String nomina = swReportes.reporteNominaConductor();
-//            if (nomina.length() > 2) {
-//                Gson gson = new Gson();
-//                Type listType = new TypeToken<ArrayList<ConductorRepNomina>>() {
-//                }.getType();
-//                List<ConductorRepNomina> lista = gson.fromJson(nomina, listType);
-//                conductorPDF.setListaConductor(lista);
-//            }
-//            ByteArrayOutputStream baos = conductorPDF.generarNominaPDF();
+            String nomina = swReportes.reporteNominaConductor();
+            if (nomina.length() > 2) {
+                Gson gson = new Gson();
+                Type listType = new TypeToken<ArrayList<ConductorRepNomina>>() {
+                }.getType();
+                List<ConductorRepNomina> lista = gson.fromJson(nomina, listType);
+                conductorPDF.setListaConductor(lista);
+            }
+            ByteArrayOutputStream baos = conductorPDF.generarNominaPDF();
             OutputStream os = response.getOutputStream();
-//            baos.writeTo(os);
+            baos.writeTo(os);
             os.flush();
         } catch (JsonSyntaxException | IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en ejecutar el servlet generar nomina de conductores ", e.getClass().getName() + "****" + e.getMessage());

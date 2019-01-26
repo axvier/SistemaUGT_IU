@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Tbseccionsolicitantes.findAll", query = "SELECT t FROM Tbseccionsolicitantes t")
     , @NamedQuery(name = "Tbseccionsolicitantes.findByIdsolicitante", query = "SELECT t FROM Tbseccionsolicitantes t WHERE t.idsolicitante = :idsolicitante")
-    , @NamedQuery(name = "Tbseccionsolicitantes.findByExtension", query = "SELECT t FROM Tbseccionsolicitantes t WHERE t.extension = :extension")})
+    , @NamedQuery(name = "Tbseccionsolicitantes.findByExtension", query = "SELECT t FROM Tbseccionsolicitantes t WHERE t.extensionl = :extensionl")})
 public class Tbseccionsolicitantes implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,8 +40,8 @@ public class Tbseccionsolicitantes implements Serializable {
     @Column(name = "idsolicitante")
     private Integer idsolicitante;
     @Size(max = 25)
-    @Column(name = "extension")
-    private String extension;
+    @Column(name = "extensionl")
+    private String extensionl;
     @JoinColumn(name = "solicitud", referencedColumnName = "numero")
     @ManyToOne
     private Tbsolicitudes solicitud;
@@ -65,11 +65,11 @@ public class Tbseccionsolicitantes implements Serializable {
     }
 
     public String getExtension() {
-        return extension;
+        return extensionl;
     }
 
     public void setExtension(String extension) {
-        this.extension = extension;
+        this.extensionl = extension;
     }
 
     public Tbsolicitudes getSolicitud() {
