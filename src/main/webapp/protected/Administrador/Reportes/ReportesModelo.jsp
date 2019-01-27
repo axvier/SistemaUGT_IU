@@ -63,6 +63,15 @@
                 session.setAttribute("elementosRep", elementos);
             }
             response.sendRedirect("ReportesControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("ordenesReporte")) {
+            String arrayJSON = swReportes.reporteSolicitudestipo("OMestado", "0", "0");
+            if (arrayJSON.length() > 2) {
+                RElementosIU elementos = new RElementosIU();
+                elementos.setListaJSON(arrayJSON);
+                session.setAttribute("respuestaJSON", arrayJSON);
+                session.setAttribute("elementosRep", elementos);
+            }
+            response.sendRedirect("ReportesControlador.jsp?opc=mostrar&accion=" + opc);
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

@@ -19,6 +19,7 @@ import utils.Constantes;
  * @author Xavy PC
  */
 public class swReportes {
+
     //<editor-fold defaultstate="collapsed" desc="Listar solicitudes">
     public static String reporteEstadoConductor() {
         String result = "";
@@ -42,7 +43,7 @@ public class swReportes {
         return result;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Listar Conductores nomina orden apellidos">
     public static String reporteNominaConductor() {
         String result = "";
@@ -66,7 +67,7 @@ public class swReportes {
         return result;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Reporte conductores por genero">
     public static String reporteGeneroConductor() {
         String result = "";
@@ -90,12 +91,12 @@ public class swReportes {
         return result;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Reporte vehiculos por tipo">
     public static String reporteVehiculosTipo(String tipo) {
         String result = "";
         try {
-            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/reportevehiculos/"+tipo);
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/reportevehiculos/" + tipo);
             HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
             conexion.setRequestMethod("GET");
             conexion.setDoOutput(true);
@@ -114,7 +115,7 @@ public class swReportes {
         return result;
     }
     //</editor-fold>
-    
+
     //<editor-fold defaultstate="collapsed" desc="Reporte solicitudes totales">
     public static String reporteSolicitudesTotal() {
         String result = "";
@@ -133,6 +134,30 @@ public class swReportes {
             conexion.disconnect();
         } catch (Exception e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para reporte de solicitudes tipo estado ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Reporte solicitudes por tipo">
+    public static String reporteSolicitudestipo(String tipo, String startFecha, String endFecha) {
+        String result = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/reporteSolicitudes/" + tipo + "/" + startFecha + "/" + endFecha);
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setRequestMethod("GET");
+            conexion.setDoOutput(true);
+            conexion.setDoInput(true);
+            InputStream contenido = (InputStream) conexion.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(contenido, "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result = line;
+            }
+            conexion.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para reporte de solicitudes tipo estado mas fechas ", e.getClass().getName() + "****" + e.getMessage());
             System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
         }
         return result;

@@ -192,6 +192,49 @@ var fncDibujarGraficosSolicitudEstado = function () {
             console.log(JSON.stringify(datos));
             var ctx = document.getElementById("myChart");
             var myChart = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: datos.labels,
+                    datasets: [{
+                            label: datos.datasets[0].label,
+                            data: datos.datasets[0].data,
+                            backgroundColor: datos.datasets[0].backgroundColor,
+                            borderWidth: 1
+                        }]
+                },
+                options: {
+                    legend: {display: datos.leyenda},
+                    title: {
+                        display: true,
+                        text: datos.titulo
+                    },
+                    scales: {
+                        yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                    }
+                }
+            });
+        },
+        error: function (error) {
+            location.reload();
+        }
+    });
+};
+
+var fncDibujarGraficosOrdenesEstado = function () {
+    $.ajax({
+        url: "protected/Administrador/Reportes/ReportesControlador.jsp",
+        type: "GET",
+        data: {opc: "mostrar", accion: "respuestaJSON"},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            datos = fncParseElementosToChartJS(datos);
+            console.log(JSON.stringify(datos));
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: datos.labels,
@@ -221,5 +264,12 @@ var fncDibujarGraficosSolicitudEstado = function () {
         error: function (error) {
             location.reload();
         }
+    });
+};
+
+var fcModalInformeViajes = function (idmodal) {
+    $('#' + idmodal + ' .modal-content').load('protected/Administrador/Reportes/ReportesControlador.jsp?opc=mostrar&accion=modalInformeViajes', function () {
+        $('#' + idmodal).modal({show: true, backdrop: 'static', keyboard: false});
+        $('#' + idmodal + ' .modal-content .form-horizontal').prop("action","InformeOrdenesPDF");
     });
 };
