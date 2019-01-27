@@ -180,3 +180,46 @@ var fncParseElementosToChartJS = function (datos) {
     }
     return data;
 };
+
+var fncDibujarGraficosSolicitudEstado = function () {
+    $.ajax({
+        url: "protected/Administrador/Reportes/ReportesControlador.jsp",
+        type: "GET",
+        data: {opc: "mostrar", accion: "vehiculosChartEstadosesion"},
+        contentType: "application/json ; charset=UTF-8",
+        success: function (datos) {
+            datos = fncParseElementosToChartJS(datos);
+            console.log(JSON.stringify(datos));
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: datos.labels,
+                    datasets: [{
+                            label: datos.datasets[0].label,
+                            data: datos.datasets[0].data,
+                            backgroundColor: datos.datasets[0].backgroundColor,
+                            borderWidth: 1
+                        }]
+                },
+                options: {
+                    legend: {display: datos.leyenda},
+                    title: {
+                        display: true,
+                        text: datos.titulo
+                    },
+                    scales: {
+                        yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                    }
+                }
+            });
+        },
+        error: function (error) {
+            location.reload();
+        }
+    });
+};

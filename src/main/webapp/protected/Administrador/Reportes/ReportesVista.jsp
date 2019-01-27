@@ -45,7 +45,7 @@
 %>
 <div class="main-content">
     <!-- MODAL DIALOG -->
-    <div class="modal fade" id="modGeneralRepconductor" tabindex="-1" role="dialog" aria-labelledby="modGeneralSolicitudes" aria-hidden="true">
+    <div class="modal fade" id="modGeneralReportes" tabindex="-1" role="dialog" aria-labelledby="modGeneralSolicitudes" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
 
@@ -137,7 +137,6 @@
         </div>
     </div>
 </div> 
-</div>
 <%
 } else if (accion.equals("conductoresReporteGenero")) {
     ConductoresRepGenero repCondEstado = (ConductoresRepGenero) session.getAttribute("repGenero");
@@ -148,7 +147,7 @@
 %>
 <div class="main-content">
     <!-- MODAL DIALOG -->
-    <div class="modal fade" id="modGeneralRepconductor" tabindex="-1" role="dialog" aria-labelledby="modGeneralSolicitudes" aria-hidden="true">
+    <div class="modal fade" id="modGeneralReportes" tabindex="-1" role="dialog" aria-labelledby="modGeneralSolicitudes" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
 
@@ -222,7 +221,7 @@
 %>
 <div class="main-content">
     <!-- MODAL DIALOG -->
-    <div class="modal fade" id="modGeneralRepvehiculos" tabindex="-1" role="dialog" aria-labelledby="modGeneralSolicitudes" aria-hidden="true">
+    <div class="modal fade" id="modGeneralReportes" tabindex="-1" role="dialog" aria-labelledby="modGeneralSolicitudes" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
 
@@ -301,7 +300,108 @@
         </div>
     </div>
 </div> 
-</div>
+<%
+} else if (accion.equals("solicitudesReporte")) {
+    RElementosIU elemento = (RElementosIU) session.getAttribute("elementosRep");
+    session.setAttribute("elementosRep", null);
+%>
+<div class="main-content">
+    <!-- MODAL DIALOG -->
+    <div class="modal fade" id="modGeneralReportes" tabindex="-1" role="dialog" aria-labelledby="modGeneralSolicitudes" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+            </div>
+        </div>
+    </div>
+    <!-- END MODAL DIALOG -->
+    <div class="col-sm-12" id="estadostotales">
+        <div class="row">
+            <%
+                long total = 0;
+                int cont = 0;
+                if (elemento != null && elemento.getLista() != null && elemento.itemPos(0) != null) {
+                    for (RDataset dato : elemento.itemPos(0).getData()) {
+//                        if(cont++ == 4){
+//                            out.println("</div><div style='margin-top: 5px;'></div><div class='row'>");
+//                            cont=0;
+//                        }
+                        total += dato.getData();
+                        String icon = "";
+                        if (dato.getLabel().equals("Finalizados")) {
+                            icon = "fa-check-circle";
+                        }
+                        if (dato.getLabel().equals("Rechazados")) {
+                            icon = "fa-thumbs-o-down";
+                        }
+                        if (dato.getLabel().equals("Creados")) {
+                            icon = "fa-envelope-o";
+                        }
+                        if (dato.getLabel().equals("Eliminados")) {
+                            icon = "fa-close";
+                        }
+                        if (dato.getLabel().equals("Aprobado UGT")) {
+                            icon = "fa-star";
+                        }
+                        if (dato.getLabel().equals("Aprobado VR")) {
+                            icon = "fa-thumbs-o-up";
+                        }
+            %>
+            <div class="col-sm-2">
+                <div class="contextual-summary-info contextual-background " style="background-color: <%=dato.getBackground()%>;">
+                    <i class="fa <%=icon%>"></i>
+                    <p class="pull-right"><span><%=dato.getLabel()%></span> <%=dato.getData()%></p>
+                </div>
+            </div>
+            <%
+                    }
+                }
+                if (total > 0) {
+            %>
+            <div class="col-md-2">
+                <div class="contextual-summary-info contextual-background btn-custom-secondary">
+                    <i class="fa fa-users"></i>
+                    <p class="pull-right"><span>Totales</span><%=total%></p>
+                </div>
+            </div>
+            <%
+                }
+            %>
+        </div>
+    </div>
+    <div class="col-sm-12" style="margin-top: 15px;"></div>
+    <div class="main-content" id="gSolicitudes_body">
+        <div id="mnOpcionesReportes">
+            <div class="col-sm-4 col-md-3 sidebar">
+                <div class="list-group">
+                    <!--                    <span href="#" class="list-group-item main-nav">
+                                            Submenu
+                                        </span>-->
+                    <a href="NominaVehiculosPDF" class="list-group-item" title="Generar lista de vehiculos a exepción de los rematados">
+                        <i class="fa fa-check"></i> Solicitudes PDF
+                    </a>
+                    <!--                    <a href="#" class="list-group-item" onclick="fncReporteConductores()">
+                                            <i class="fa fa-level-up"></i> total por estado
+                                        </a>
+                                        <a href="#" class="list-group-item" onclick="fncReporteConductoresGenero()">
+                                            <i class="fa fa-level-down"></i> total por genero
+                                        </a>-->
+                </div>        
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="widget">
+                <div class="widget-header">
+                    <h3><i class="fa fa-bar-chart-o"></i> Gráfico de conductores</h3> <em> - estados</em>
+                </div>
+                <div class="widget-content">
+                    <!--<div class="demo-flot-chart" id="placeholder"></div>-->
+                    <canvas id="myChart" width="60" height="35"></canvas>
+                </div>
+            </div>                         
+        </div>
+    </div>
+</div> 
 <%
         }
     } else {

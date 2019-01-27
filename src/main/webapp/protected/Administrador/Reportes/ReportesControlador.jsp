@@ -25,6 +25,8 @@
                 response.sendRedirect("ReportesModelo.jsp?opc=" + opc);
             } else if (opc.equals("vehiculosReporte")) {
                 response.sendRedirect("ReportesModelo.jsp?opc=" + opc);
+            } else if (opc.equals("solicitudesReporte")) {
+                response.sendRedirect("ReportesModelo.jsp?opc=" + opc);
             }
         }
     } else {
