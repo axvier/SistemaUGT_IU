@@ -87,6 +87,18 @@
         <servlet-name>NominaConductorPDF</servlet-name>
         <servlet-class>ugt.conductores.iu.NominaConductorPDF</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>InformeVehicularOrdenes</servlet-name>
+        <servlet-class>ugt.salvoconducto.InformeVehicularOrdenes</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>resumenKmConductores</servlet-name>
+        <servlet-class>ugt.conductores.iu.resumenKmConductores</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>NominaVehiculosPDF</servlet-name>
+        <servlet-class>ugt.vehiculos.iu.NominaVehiculosPDF</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SolicitudPDF</servlet-name>
         <url-pattern>/SolicitudPDFServelet</url-pattern>
@@ -98,6 +110,18 @@
     <servlet-mapping>
         <servlet-name>NominaConductorPDF</servlet-name>
         <url-pattern>/NominaConductorPDF</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InformeVehicularOrdenes</servlet-name>
+        <url-pattern>/InformeVehicularOrdenes</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>resumenKmConductores</servlet-name>
+        <url-pattern>/resumenKmConductores</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>NominaVehiculosPDF</servlet-name>
+        <url-pattern>/NominaVehiculosPDF</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>

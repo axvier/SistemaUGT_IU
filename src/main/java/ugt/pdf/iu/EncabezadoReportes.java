@@ -68,6 +68,45 @@ public class EncabezadoReportes extends PdfPageEventHelper {
 
         tableHeight = table.getTotalHeight();
     }
+    
+    public EncabezadoReportes(Paragraph parrafo, float ancho, float alto) throws BadElementException, IOException, DocumentException {
+        table = new PdfPTable(2);
+        //establecer el ancho
+        table.setTotalWidth(ancho);
+        table.setLockedWidth(true);
+        table.setWidths(new float[]{(14*alto/100), (88*alto/100)});
+        // instancia de la imgen localicada en src
+        Image imagen = Image.getInstance(Constantes.SRCIMGENORDEN);
+        imagen.scaleToFit((75*alto)/100, (100*alto)/100);
+        PdfPCell espoch = new PdfPCell(imagen);
+        espoch.setBorder(Rectangle.NO_BORDER);
+        espoch.setPaddingRight(14*alto/100);
+        espoch.setVerticalAlignment(Element.ALIGN_LEFT);
+        espoch.setRowspan(3);
+        table.addCell(espoch);
+        //instancia de la celda para la tabla
+        espoch = new PdfPCell(new Paragraph("ESPOCH", timesNewRomanBold(30*alto/100)));
+        espoch.setBorder(Rectangle.NO_BORDER);
+        espoch.setHorizontalAlignment(Element.ALIGN_LEFT);
+        espoch.setPaddingTop(10*alto/100);
+        table.addCell(espoch);
+
+        espoch = new PdfPCell(new Paragraph("ESCUELA SUPERIOR POLITÉCNICA DEL CHIMBORAZO", timesNewRomanNormal((float) (14*alto/100))));
+        espoch.setBorder(Rectangle.NO_BORDER);
+        espoch.setHorizontalAlignment(Element.ALIGN_LEFT);
+        espoch.setPaddingBottom(10*alto/100);
+        table.addCell(espoch);
+
+        espoch = new PdfPCell();
+        parrafo.setAlignment(Element.ALIGN_CENTER);
+        espoch.addElement(parrafo);
+        espoch.setBorder(Rectangle.NO_BORDER);
+        espoch.setBackgroundColor(new BaseColor(66, 169, 74));
+        espoch.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table.addCell(espoch);
+
+        tableHeight = table.getTotalHeight();
+    }
 
     public float getTableHeight() {
         return tableHeight;
@@ -94,6 +133,14 @@ public class EncabezadoReportes extends PdfPageEventHelper {
         fuenteTotal.setFamily("Times Roman");
         fuenteTotal.setColor(BaseColor.BLACK);
         return fuenteTotal;
+    }
+
+    public PdfPTable getTable() {
+        return table;
+    }
+
+    public void setTable(PdfPTable table) {
+        this.table = table;
     }
 
 }

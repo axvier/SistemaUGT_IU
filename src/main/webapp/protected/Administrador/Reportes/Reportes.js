@@ -132,7 +132,7 @@ var fncDibujarGraficosVehiculosEstado = function () {
                     legend: {display: datos.leyenda},
                     title: {
                         display: true,
-                        text: datos.titulo
+                        text: "Vehículos"
                     },
                     scales: {
                         yAxes: [{
@@ -206,7 +206,7 @@ var fncDibujarGraficosSolicitudEstado = function () {
                     legend: {display: datos.leyenda},
                     title: {
                         display: true,
-                        text: datos.titulo
+                        text: "Solicitudes"
                     },
                     scales: {
                         yAxes: [{
@@ -249,7 +249,7 @@ var fncDibujarGraficosOrdenesEstado = function () {
                     legend: {display: datos.leyenda},
                     title: {
                         display: true,
-                        text: datos.titulo
+                        text: "Ordenes de Movilizacion"
                     },
                     scales: {
                         yAxes: [{
@@ -270,6 +270,13 @@ var fncDibujarGraficosOrdenesEstado = function () {
 var fcModalInformeViajes = function (idmodal) {
     $('#' + idmodal + ' .modal-content').load('protected/Administrador/Reportes/ReportesControlador.jsp?opc=mostrar&accion=modalInformeViajes', function () {
         $('#' + idmodal).modal({show: true, backdrop: 'static', keyboard: false});
-        $('#' + idmodal + ' .modal-content .form-horizontal').prop("action","InformeOrdenesPDF");
+        $('#' + idmodal + ' .modal-content .form-horizontal').prop("action","InformeVehicularOrdenes");
+    });
+};
+
+var fcModalInformeViajesConductores = function (idmodal) {
+    $('#' + idmodal + ' .modal-content').load('protected/Administrador/Reportes/ReportesControlador.jsp?opc=mostrar&accion=modalInformeConductores', function () {
+        $('#' + idmodal).modal({show: true, backdrop: 'static', keyboard: false});
+        $('#' + idmodal + ' .modal-content .form-horizontal').prop("action","resumenKmConductores");
     });
 };
