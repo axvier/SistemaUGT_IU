@@ -36,7 +36,7 @@ var modalcierre = function (idmodal, funcionCall) {
 };
 
 var fncGenerarSOlcitud = function (idmodal, datos, notfnccerrar, actionform) {
-    $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modConfirmSolPDF&idSolicitud=' + datos.idSolicitud, function () {
+    $('#' + idmodal + ' .modal-content').load('../protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modConfirmSolPDF&idSolicitud=' + datos.idSolicitud, function () {
         if (typeof notfnccerrar !== 'undefined') {
             if (notfnccerrar === "fncNuevaSolicitud()") {
                 $('#' + idmodal + ' .modal-body .btn-default').attr("onclick", "modalcierre('" + idmodal + "','fncNuevaSolicitud')");
@@ -59,7 +59,7 @@ var fncAddInfoSolPDF = function (idform, idSolicitud) {
     var nom_apell = $('#' + idform + ' #addNombres_Apellidos').val();
     var rol_entidad = $('#' + idform + ' #addRol_entidad').val();
     $.ajax({
-        url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
+        url: "../protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
         type: "POST",
         data: {opc: 'generarPDFSolID', idSolicitud: idSolicitud, nombre_apellido: nom_apell, rol_entidad: rol_entidad}
 //        success: function () {
@@ -467,7 +467,7 @@ var downloadReqSolicitud = function (idpdfreq) {
     if (idpdfreq !== null) {
         swalTimerLoading("Consultando requisitos", "Esto puede tardar un momento...", 9000);
         $.ajax({
-            url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
+            url: "../protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
             type: "POST",
             data: {opc: 'downloadReqSol', idSolicitud: idpdfreq},
             success: function (data) {
@@ -489,7 +489,7 @@ var verSolDisponV_C = function (idmodal, idtabla) {
     if (selRowId !== null) {
         swalTimerLoading("Consultado datos", "Esto puede tardar un momento...", 9000);
         var rowData = $grid.jqGrid('getRowData', selRowId);
-        $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + rowData.numero, function () {
+        $('#' + idmodal + ' .modal-content').load('../protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + rowData.numero, function () {
             swal.close();
             $('#' + idmodal).modal({show: true});
         });

@@ -194,9 +194,9 @@ public class GenConductoresKMPDF {
                 valor = new Paragraph();
                 valor.add(this.getConductorApellidos(condOrdenes));
                 valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
-                valor.setAlignment(Element.ALIGN_CENTER);
+                valor.setAlignment(Element.ALIGN_JUSTIFIED);
                 celda.addElement(valor);
-                celda.setHorizontalAlignment(Element.ALIGN_CENTER);
+                celda.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
                 tablaNomina.addCell(celda);
                 /**
                  * Ingreso de Nombres

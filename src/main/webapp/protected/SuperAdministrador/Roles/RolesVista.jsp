@@ -83,7 +83,7 @@
                 </a>
             </li>
             <li>
-                <a id="mnCondOcup" href="#" onclick="fncRecargarJQG('tbRolesG', 'protected/SuperAdministrador/Roles/', 'RolesControlador.jsp?opc=jsonRoles')">
+                <a id="mnCondOcup" href="#" onclick="fncRecargarJQG('tbRolesG', '../protected/SuperAdministrador/Roles/', 'RolesControlador.jsp?opc=jsonRoles')">
                     <span class="fa-stack fa-lg"></i><i class="fa fa-retweet fa-stack-2x"></i></span>Recargar
                 </a>
             </li>

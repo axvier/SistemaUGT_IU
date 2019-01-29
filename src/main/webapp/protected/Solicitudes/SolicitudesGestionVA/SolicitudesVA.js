@@ -11,7 +11,7 @@ var fncAprobarSolictud = function (idmodal, idtabla, rowid) {
         if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null)
             solicitud.observacion = objeto.observacion;
         $.ajax({
-            url: "protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
+            url: "../protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
             type: "GET",
             data: {opc: "aprobarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero},
             contentType: "application/json ; charset=UTF-8",
@@ -44,7 +44,7 @@ var fncRechazarSolicitud = function (idmodal, idtabla, rowid) {
         if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null) {
             solicitud.observacion = objeto.observacion;
             $.ajax({
-                url: "protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
+                url: "../protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
                 type: "GET",
                 data: {opc: "rechazarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero},
                 contentType: "application/json ; charset=UTF-8",
@@ -82,7 +82,7 @@ var fncRechazarSolicitudAprobadas = function (idmodal, idtabla, rowid) {
         if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null) {
             solicitud.observacion = objeto.observacion;
             $.ajax({
-                url: "protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
+                url: "../protected/Solicitudes/SolicitudesGestionVA/SolicitudesVAControlador.jsp",
                 type: "GET",
                 data: {opc: "rechazarSolicitud", jsonSolicitud: JSON.stringify(solicitud), idSolicitud: solicitud.numero},
                 contentType: "application/json ; charset=UTF-8",
@@ -133,7 +133,7 @@ var fncModSubirCombinarPDFSec = function (idmodal, idtabla, rowid) {
             solicitud.observacion = objeto.observacion;
 
         $('#' + idmodal + ' .modal-content').load(
-                'protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=mostrar&accion=modCombinarSolicitud',
+                '../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=mostrar&accion=modCombinarSolicitud',
                 function () {
                     $('#' + idmodal).modal({show: true});
                     $('#' + idmodal + " #jsonSolFormPDF").val(data);
@@ -165,7 +165,7 @@ var fncCombinarPDFSec = function (idform, idmodal) {
                 fd.append("jsonSolicitud", encodeURI(json));
                 console.log(fd);
                 $.ajax({
-                    url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=combinarPDFs",
+                    url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=combinarPDFs",
                     data: fd,
                     cache: false,
                     processData: false,

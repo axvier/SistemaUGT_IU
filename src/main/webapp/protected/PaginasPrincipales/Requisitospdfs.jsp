@@ -1,3 +1,8 @@
+<%-- 
+    Document   : Requisitos
+    Created on : 28/01/2019, 10:43:13 PM
+    Author     : Xavy PC
+--%>
 
 <%@page import="ugt.entidades.Tbusuariosentidad"%>
 <%@page import="utg.login.Login"%>
@@ -13,25 +18,25 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <!-- CSS -->
-        <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-        <link href="assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="assets/css/main.css" rel="stylesheet" type="text/css">
-        <link href="assets/css/my-custom-styles.css" rel="stylesheet" type="text/css">
+        <link href="../../assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+        <link href="../../assets/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="../../assets/css/main.css" rel="stylesheet" type="text/css">
+        <link href="../../assets/css/my-custom-styles.css" rel="stylesheet" type="text/css">
         <!--[if lte IE 9]>
-                <link href="assets/css/main-ie.css" rel="stylesheet" type="text/css"/>
-                <link href="assets/css/main-ie-part2.css" rel="stylesheet" type="text/css"/>
+                <link href="../../assets/css/main-ie.css" rel="stylesheet" type="text/css"/>
+                <link href="../../assets/css/main-ie-part2.css" rel="stylesheet" type="text/css"/>
         <![endif]-->
         <!-- CSS for demo style switcher. you can remove this -->
         <!-- Fav and touch icons -->
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/kingadmin-favicon144x144.png">
-        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/kingadmin-favicon114x114.png">
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/kingadmin-favicon72x72.png">
-        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="assets/ico/kingadmin-favicon57x57.png">
-        <link rel="shortcut icon" href="assets/ico/favicon.ico">
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../../assets/ico/kingadmin-favicon144x144.png">
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../../assets/ico/kingadmin-favicon114x114.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../../assets/ico/kingadmin-favicon72x72.png">
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="../../assets/ico/kingadmin-favicon57x57.png">
+        <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
     </head>
 
     <body class="sidebar-fixed topnav-fixed ">
-        <link href="assets/css/skins/darkblue.css" rel="stylesheet" type="text/css"/>
+        <link href="../../assets/css/skins/darkblue.css" rel="stylesheet" type="text/css"/>
         <!-- WRAPPER -->
         <div id="wrapper" class="wrapper">
             <!-- TOP BAR -->
@@ -40,7 +45,7 @@
                     <div class="clearfix">
                         <!-- logo -->
                         <div class="pull-left left logo">
-                            <a href="index.jsp"><img src="assets/img/logoDEAC.png"  /></a>
+                            <a href="index.jsp"><img src="../../assets/img/logoDEAC.png"  /></a>
                         </div>
                         <!-- end logo -->
                         <div class="pull-right right">
@@ -53,14 +58,14 @@
                                             Login login = (Login) session.getAttribute("login");
                                             if (login != null) {
                                         %>
-                                        <a class="btn btn-link" href="protected/index.jsp" >
+                                        <a class="btn btn-link" href="../index.jsp" >
                                             <i class="fa fa-wrench fa-2x"></i>
                                             <span class="text" style="font-size: 20px;">Pagina gestión</span>
                                         </a>
                                         <%
                                         } else {
                                         %>
-                                        <a class="btn text-success" href="protected/index.jsp" >
+                                        <a class="btn text-success" href="../index.jsp" >
                                             <i class="fa fa-sign-in fa-2x"></i>
                                             <span class="text" style="font-size: 20px;">Ingresar</span>
                                         </a>
@@ -86,13 +91,13 @@
                 <nav class="main-nav">
                     <ul class="main-menu">
                         <li style='cursor: pointer'>
-                            <a href="protected/PaginasPrincipales/Funciones.jsp">
+                            <a href="Funciones.jsp">
                                 <i class="fa fa-book"></i><span class="text">Funciones unidad</span>
                             </a>
                         </li>
                         <li style='cursor: pointer'>
-                            <a href="protected/PaginasPrincipales/Requisitospdfs.jsp">
-                                <i class="fa fa-file-pdf-o"></i><span class="text">PDF requisitos</span>
+                            <a href="Requisitospdfs.jsp">
+                                <i class="fa fa-file-pdf-o"></i><span class="text">PDF normas</span>
                             </a>
                         </li>
                     </ul>
@@ -108,7 +113,7 @@
                 <div class="row">
                     <div class="col-lg-4 ">
                         <ul class="breadcrumb">
-                            <li><i class="fa fa-home"></i><a href="index.jsp">Home</a></li>
+                            <li><i class="fa fa-home"></i><a href="../../index.jsp">Home</a></li>
                         </ul>
                     </div>
                 </div>
@@ -117,30 +122,22 @@
                     <div class="main-content">
                         <div class="text-center">
                             <div class="row list-group king-gallery">
-                                <img src="assets/img/ugtLogo.png" width="250" alt="Fixed Slidebar" class="list-group-image"/>
+                                <img src="../../assets/img/ugtLogo.png" width="100" alt="Fixed Slidebar" class="list-group-image"/>
                             </div>
                             <div class="bottom-30px"></div>
                             <p class="lead">UNIDAD DE GESTIÓN DE TRASNPORTE.</p>
                             <p><h4><i class="fa fa-university"></i> Escuela Superior Politécnica del Chimborazo.</h4></p>
                         </div>
                         <div class="text-justify">
-                            <p><h5>La ESPOCH tiene su propia cooperativa de transporte constituida por 31 vehículos, 
-                                dentro de los cuales tenemos 5 buses que se encargan de movilizar durante todo el día y la noche a estudiantes, 
-                                y 26 automóviles más que se utilizan para movilizar a empleados y autoridades. Los precios son más bajo que los del servicio público.</h5></p>
-                            <p><h5>BENEFICIOS</h5></p>
-                            <ul> 
-                                <li> Precios bajos</li>
-                                <li> Trasnporte seguro</li>
-                                <li> Horarios de atención cómodos</li>
-                                <li> De lunes a viernes de 6h15 a 22h30</li>
-                            </ul>
+                            <div><a href="">Requistos Contraloría</a></div>
+                            <div><a href="../../assets/docs/reglamento_S_P_E.pdf">Reglamento de bienes publicos</a></div>
                         </div>
                     </div>
                 </div>
                 <!-- /main -->
                 <!-- FOOTER -->
                 <footer class="footer">
-                    <div> <a href="http://dtic.espoch.edu.ec/" target="_blank"> <img width="45" height="15" src="assets/img/dtic.png" > Escuela Superior Politécnica de Chimborazo 2018</a></div>
+                    <div> <a href="http://dtic.espoch.edu.ec/" target="_blank"> <img width="45" height="15" src="../../assets/img/dtic.png" > Escuela Superior Politécnica de Chimborazo 2018</a></div>
                 </footer>
                 <!-- END FOOTER -->
             </div>
@@ -148,13 +145,14 @@
         </div>
         <!-- END WRAPPER -->
         <!-- Javascript -->
-        <script src="assets/js/jquery/jquery-2.1.0.min.js"></script>
-        <script src="assets/js/bootstrap/bootstrap.js"></script>
-        <script src="assets/js/plugins/modernizr/modernizr.js"></script>
-        <script src="assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
-        <script src="assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-        <script src="assets/js/king-common.js"></script>
-        <script src="demo-style-switcher/assets/js/deliswitch.js"></script>
+        <script src="../../assets/js/jquery/jquery-2.1.0.min.js"></script>
+        <script src="../../assets/js/bootstrap/bootstrap.js"></script>
+        <script src="../../assets/js/plugins/modernizr/modernizr.js"></script>
+        <script src="../../assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
+        <script src="../../assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+        <script src="../../assets/js/king-common.js"></script>
+        <script src="demo-style-switcher/../../assets/js/deliswitch.js"></script>
     </body>
 
 </html>
+

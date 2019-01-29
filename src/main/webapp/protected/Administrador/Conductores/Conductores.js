@@ -25,7 +25,7 @@ function  guardarConductor(conductor, licencia) {
     var jsonConductor = JSON.stringify(conductor);
     var jsonLicencia = JSON.stringify(licencia);
     $.ajax({
-        url: "protected/Administrador/Conductores/conductorControlador.jsp",
+        url: "../protected/Administrador/Conductores/conductorControlador.jsp",
         type: "POST",
         dataType: "text",
         data: {jsonConductor: jsonConductor, opc: "saveConductor", jsonLicencia: jsonLicencia},
@@ -117,7 +117,7 @@ var asignarVehiculosModal = function () {
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
         var rowData = $grid.jqGrid('getRowData', selRowId);
-        $('#modGeneralCond .modal-content').load('protected/Administrador/Conductores/conductorControlador.jsp?opc=modalAsignarVehiculo&cedulaCondVehiculo=' + rowData.cedula, function () {
+        $('#modGeneralCond .modal-content').load('../protected/Administrador/Conductores/conductorControlador.jsp?opc=modalAsignarVehiculo&cedulaCondVehiculo=' + rowData.cedula, function () {
             $('#modGeneralCond').modal({show: true});
         });
     } else
@@ -129,7 +129,7 @@ var fncAddVehiculosConductor = function () {
     if (obj !== null) {
         var json = JSON.stringify(obj);
         $.ajax({
-            url: "protected/Administrador/Conductores/conductorControlador.jsp",
+            url: "../protected/Administrador/Conductores/conductorControlador.jsp",
             type: "POST",
             dataType: "text",
             data: {opc: "saveAsignacionVC", jsonLista: json},

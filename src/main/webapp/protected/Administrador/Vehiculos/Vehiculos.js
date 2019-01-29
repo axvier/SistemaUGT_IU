@@ -10,7 +10,7 @@ function eliminarVehiculo(objeto) {
     var vehiculo = obtenerObjetoVehiculo(objeto);
     var jsonVehiculo = JSON.stringify(vehiculo);
     $.ajax({
-        url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
+        url: "../protected/Administrador/Vehiculos/vehiculoControlador.jsp",
         type: "POST",
         dataType: "text",
         data: {placa: placa, opc: "eliminarVehiculo", jsonVehiculo: jsonVehiculo},
@@ -28,7 +28,7 @@ function  guardarVehiculo(objeto) {
     console.log(objeto);
     console.log(jsonVehiculo);
     $.ajax({
-        url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
+        url: "../protected/Administrador/Vehiculos/vehiculoControlador.jsp",
         type: "POST",
         dataType: "text",
         data: {jsonVehiculo: jsonVehiculo, opc: "saveVehiculo", placa: objeto.placa},
@@ -54,7 +54,7 @@ function  modificarVehiculo(objeto) {
     var vehiculo = obtenerObjetoVehiculo(objeto);
     var jsonVehiculo = JSON.stringify(vehiculo);
     $.ajax({
-        url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
+        url: "../protected/Administrador/Vehiculos/vehiculoControlador.jsp",
         type: "POST",
         dataType: "text",
         data: {jsonVehiculo: jsonVehiculo, opc: "modificarVehiculo", placa: vehiculo.placaVehiculo},
@@ -98,7 +98,7 @@ var verVehiculoConductor = function (idModGeneral) {
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
         var rowData = $grid.jqGrid('getRowData', selRowId);
-        $('#modGeneralVehiculo .modal-content').load('protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=contentModalVerCond&placa=' + rowData.placa, function () {
+        $('#modGeneralVehiculo .modal-content').load('../protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=contentModalVerCond&placa=' + rowData.placa, function () {
             $('#' + idModGeneral).modal({show: true});
         });
     } else
@@ -137,7 +137,7 @@ var addModalRevisionMecanica = function (idmodal, idtabla) {
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
         var rowData = $grid.jqGrid('getRowData', selRowId);
-        $('#' + idmodal + ' .modal-content').load('protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=modRevisionM&placaRM=' + rowData.placa, function () {
+        $('#' + idmodal + ' .modal-content').load('../protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=modRevisionM&placaRM=' + rowData.placa, function () {
             $('#' + idmodal + " .modal-header .modal-title").html("<strong>[" + rowData.disco + "] Vehículo " + rowData.placa + "</strong> | Revisiones mecánicas ");
             $('#' + idmodal).modal({show: true});
         });
@@ -154,7 +154,7 @@ var downloadPDFOrden = function (idPDFRevision) {
     if (typeof idPDFRevision !== 'undefined' && idPDFRevision !== null && idPDFRevision !== "") {
         swalTimerLoading("Consultando pdf "+idPDFRevision, "Esto puede tardar un momento...", 9000);
         $.ajax({
-            url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp",
+            url: "../protected/Administrador/Vehiculos/vehiculoControlador.jsp",
             type: "POST",
             data: {opc: 'downloadPDFOrden', idPDFRevision: idPDFRevision},
             success: function (data) {
@@ -316,7 +316,7 @@ var fncAddRevisionMForm = function (idform, idmodal) {
                 fd.append("jsonRevisionM", encodeURI(JSON.stringify(revision)));
                 fd.append("placaRM", rowData);
                 $.ajax({
-                    url: "protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=addRevisionM",
+                    url: "../protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=addRevisionM",
                     data: fd,
                     cache: false,
                     processData: false,

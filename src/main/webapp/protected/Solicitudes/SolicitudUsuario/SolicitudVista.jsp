@@ -142,7 +142,7 @@
                     </a>
                 </li>
                 <li>
-                    <a id="mnCondOcup" href="#" onclick="fncRecargarJQG('tbRolesG', 'protected/SuperAdministrador/Roles/', 'RolesControlador.jsp?opc=jsonRoles')">
+                    <a id="mnCondOcup" href="#" onclick="fncRecargarJQG('tbRolesG', '../protected/SuperAdministrador/Roles/', 'RolesControlador.jsp?opc=jsonRoles')">
                         <span class="fa-stack fa-lg"></i><i class="fa fa-retweet fa-stack-2x"></i></span>Recargar
                     </a>
                 </li>
@@ -549,7 +549,7 @@
 
         Dropzone.autoDiscover = false;
         dropFile = $("#drop_pdfs").dropzone({
-            url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=saveSolicitud",
+            url: "../protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=saveSolicitud",
             paramName: "file",
             uploadMultiple: true,
             maxFiles: 1,
@@ -568,7 +568,7 @@
             $("#search_solicitud_pasajeros").autocomplete({
                 source: function (request, response) {
                     $.ajax({
-                        url: "protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=pasajeroAutocomplete",
+                        url: "../protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=pasajeroAutocomplete",
                         type: "GET",
                         data: {
                             term: request.term

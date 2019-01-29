@@ -8,7 +8,7 @@ var fncAddGUsuario = function (idForm) {
     if (obj !== null) {
         var json = JSON.stringify(obj);
         $.ajax({
-            url: "protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
+            url: "../protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
             type: "POST",
             dataType: "text",
             data: {opc: "saveUser", jsonUser: json},
@@ -45,7 +45,7 @@ var objAddGUser = function (idForm) {
 };
 
 var addModalUsuario = function (idmodal) {
-    $('#' + idmodal + ' .modal-content').load('protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp?opc=mostrar&accion=modalAddGUsuario', function () {
+    $('#' + idmodal + ' .modal-content').load('../protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp?opc=mostrar&accion=modalAddGUsuario', function () {
         $('#' + idmodal).modal({show: true});
     });
 };
@@ -54,7 +54,7 @@ var addModalEntidadRol = function (idmodal, idtabla) {
     var $grid = $("#" + idtabla);
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
-        $('#' + idmodal + ' .modal-content').load('protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp?opc=modalAddGEntidadRol&cedulaUG=' + selRowId, function () {
+        $('#' + idmodal + ' .modal-content').load('../protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp?opc=modalAddGEntidadRol&cedulaUG=' + selRowId, function () {
             $('#' + idmodal + " .modal-header .modal-title").html(" UGT | Entidad Rol - " + $grid.jqGrid('getRowData', selRowId).nombres + " ");
             $('#' + idmodal).modal({show: true});
         });
@@ -63,7 +63,7 @@ var addModalEntidadRol = function (idmodal, idtabla) {
 };
 
 var fncVerEntidadesRolesAsginados = function (idDivModal) {
-    $('#' + idDivModal).load('protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp?opc=divModalVerEntidadRol&cedulaUG=' + $("#cedulaGU").val());
+    $('#' + idDivModal).load('../protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp?opc=divModalVerEntidadRol&cedulaUG=' + $("#cedulaGU").val());
 };
 
 var fncAddGU_E_R = function (idForm) {
@@ -72,7 +72,7 @@ var fncAddGU_E_R = function (idForm) {
         obj.fechainicio += "T00:00:00-05:00";
         var json = JSON.stringify(obj);
         $.ajax({
-            url: "protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
+            url: "../protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
             type: "POST",
             dataType: "text",
             data: {opc: "saveUsuarioEntidad", jsonUsuarioEntidad: json},
@@ -117,7 +117,7 @@ var fncEliminarGU_E_R = function (str) {
     if (obj !== null) {
         var json = JSON.stringify(obj);
         $.ajax({
-            url: "protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
+            url: "../protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
             type: "POST",
             dataType: "text",
             data: {opc: "elimUsuarioEntidad", jsonUsuarioEntidad: json},
@@ -144,7 +144,7 @@ var fncTerminarGU_E_R = function (str) {
     if (obj !== null) {
         var json = JSON.stringify(obj);
         $.ajax({
-            url: "protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
+            url: "../protected/SuperAdministrador/Usuarios/UsuariosControlador.jsp",
             type: "POST",
             dataType: "text",
             data: {opc: "modUsuarioEntidad", jsonUsuarioEntidad: json},

@@ -3,7 +3,7 @@
 function Matar() {
     var Tipo = $("#Logeo").text();
     $.ajax({
-        url: "./final.jsp",
+        url: "../final.jsp",
         type: "POST",
         dataType: "text",
         data: {opcion: 'cerrar'},

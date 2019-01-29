@@ -461,12 +461,12 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
         }
         return result;
     }
-    
+
     private String getVehiculoMotor() {
         String result = "";
         try {
             if (this.getDVC_Vehiculo() != null) {
-                result = (this.getDVC_Vehiculo().getMotor()!= null)
+                result = (this.getDVC_Vehiculo().getMotor() != null)
                         ? String.valueOf(this.getDVC_Vehiculo().getMotor())
                         : "";
             }
@@ -539,6 +539,8 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
                 } else {
                     Tbpasajeros pasajero = this.getViajeComision();
                 }
+            } else {
+                result = this.getSolConductor() + "/DNI: " + this.getSolCedulaConductor();
             }
         } catch (Exception e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer el servidor pasajero", e.getClass().getName() + "****" + e.getMessage());

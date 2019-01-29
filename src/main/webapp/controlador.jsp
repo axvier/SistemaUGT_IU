@@ -22,7 +22,7 @@ Total_horas_perdidas_aqui = 0-->
         String strOpc = request.getParameter("opc");
         if (strOpc != null) {
             if (strOpc.equals("jsonVacio")) {
-                response.sendRedirect("protected/vista.jsp?accion="+strOpc);
+                response.sendRedirect("../protected/vista.jsp?accion="+strOpc);
             }
         } else {
             response.sendRedirect("index.jsp");

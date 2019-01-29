@@ -110,8 +110,8 @@ var fncModalGenerarSalvoConducto = function (idmodal, idtabla, rowid) {
             solicitud.idpdf = objeto.idpdf;
         if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null)
             solicitud.observacion = objeto.observacion;
-        $('#' + idmodal + ' .modal-content').load('protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=mostrar&accion=modGenerarSalvoConducto', function () {
-            $('#' + idmodal + ' .modal-body #formGenSalvoC').attr("action", "GenerarSalvoConducto");
+        $('#' + idmodal + ' .modal-content').load('../protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=mostrar&accion=modGenerarSalvoConducto', function () {
+            $('#' + idmodal + ' .modal-body #formGenSalvoC').attr("action", "../GenerarSalvoConducto");
             $("#" + idmodal + " #SolicitudGenerar").val(encodeURI(JSON.stringify(solicitud)));
             $("#" + idmodal + " #titlemodGeneralSalvoConducto").html(" Solicitud " + solicitud.numero + " | Generar salvo conducto ");
             $('#' + idmodal).modal({show: true});
@@ -129,8 +129,8 @@ var fncModalGenerarSalvoConductoDNuevo = function (idmodal, idtabla, rowid) {
         if (typeof rowData.observacion !== "undefined" && rowData.observacion !== "" && rowData.observacion !== null) {
             solicitud.observacion = rowData.observacion;
         }
-        $('#' + idmodal + ' .modal-content').load('protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=mostrar&accion=modGenerarSalvoConductoDNuevo', function () {
-            $('#' + idmodal + ' .modal-body #formGenSalvoC').attr("action", "GenerarSalvoConducto");
+        $('#' + idmodal + ' .modal-content').load('../protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=mostrar&accion=modGenerarSalvoConductoDNuevo', function () {
+            $('#' + idmodal + ' .modal-body #formGenSalvoC').attr("action", "../GenerarSalvoConducto");
             $("#" + idmodal + " #SolicitudGenerar").val(encodeURI(JSON.stringify(solicitud)));
             $("#" + idmodal + " #titlemodGeneralSalvoConducto").html(" Solicitud " + solicitud.numero.toString() + " | Generar salvo conducto ");
             $('#' + idmodal).modal({show: true});
@@ -142,7 +142,7 @@ var saveOrdenSolicitudDNuevo = function (idinputuri, idkminicio) {
     var dataJSON = decodeURI($("#" + idinputuri).val());
     var km = (typeof $("#" + idkminicio).val() !== "undefined") ? $("#" + idkminicio).val() : "";
     $.ajax({
-        url: "protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp",
+        url: "../protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp",
         type: "GET",
         data: {opc: "saveOrdenMov", jsonSolicitud: dataJSON, kminicio: km},
         contentType: "application/json ; charset=UTF-8",
@@ -164,7 +164,7 @@ var saveOrdenSolicitud = function (idinputuri, idkminicio) {
     console.log(dataJSON);
     console.log(km);
     $.ajax({
-        url: "protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp",
+        url: "../protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp",
         type: "GET",
         data: {opc: "saveOrdenMov", jsonSolicitud: dataJSON, kminicio: km},
         contentType: "application/json ; charset=UTF-8",
@@ -188,7 +188,7 @@ var disponVCSolOrdenModal = function (idmodal, idtabla, data) {
         swalTimerLoading("Consultado datos", "Esto puede tardar un momento...", 9000);
         var dcodes = decodeURI(data);
         var objeto = JSON.parse(dcodes);
-        $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + objeto.solicitud, function () {
+        $('#' + idmodal + ' .modal-content').load('../protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + objeto.solicitud, function () {
             swal.close();
             $('#' + idmodal).modal({show: true});
         });
@@ -201,7 +201,7 @@ var fncModalSubirOrdenPDF = function (idmodal, idtabla, rowid) {
     if (typeof objeto !== "undefined") {
 //        console.log(objeto);
         $('#' + idmodal + ' .modal-content').load(
-                'protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=mostrar&accion=modSubirOrden',
+                '../protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=mostrar&accion=modSubirOrden',
                 function () {
                     $('#' + idmodal).modal({show: true});
                     $('#' + idmodal + " #numeroOrden").val(objeto.numero);
@@ -234,7 +234,7 @@ var fncSubirOrdenPDF = function (idform, idmodal) {
                 fd.append("numeroOrden", numeroOrden);
                 console.log(fd);
                 $.ajax({
-                    url: "protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=subirOrdenPDF",
+                    url: "../protected/Administrador/SalvoConductos/SalvoConductosControlador.jsp?opc=subirOrdenPDF",
                     data: fd,
                     cache: false,
                     processData: false,
@@ -274,7 +274,7 @@ var verDisponibilidadVC = function (idmodal, idtabla, data, recargar) {
                     solicitanteCedula = objeto.solicitante.cedulau.cedula;
 
         $.ajax({
-            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
             type: "GET",
             data: {opc: "disponibilidadVehiculoConductor", cedulaSolicitante: solicitanteCedula},
             contentType: "application/json ; charset=UTF-8",
@@ -317,7 +317,7 @@ var fncAprobarVehiculoConductorOnly = function (opc, recargar) {
         }).then((valor) => {
             if (valor) {
                 $.ajax({
-                    url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+                    url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
                     type: "GET",
                     data: {opc: opc, jsonDisponVC: JSON.stringify(objJSONDV_C), jsonSolicitud: JSON.stringify(objJSONDV_C.solicitud)},
                     contentType: "application/json ; charset=UTF-8",
@@ -362,7 +362,7 @@ var fncModConsultarRegOrd = function (idmodal, idtabla, rowid) {
             numeroOrden: rowData.numero
         };
         $.ajax({
-            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
             type: "GET",
             data: {opc: "modRegDocsOrden", jsonOrden: JSON.stringify(orden)},
             contentType: "application/json ; charset=UTF-8",

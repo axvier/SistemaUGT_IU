@@ -5,7 +5,7 @@
  */
 
 var addModalGRol = function (idmodal) {
-    $('#' + idmodal + ' .modal-content').load('protected/SuperAdministrador/Roles/RolesControlador.jsp?opc=modalAddRol', function () {
+    $('#' + idmodal + ' .modal-content').load('../protected/SuperAdministrador/Roles/RolesControlador.jsp?opc=modalAddRol', function () {
         $('#' + idmodal).modal({show: true});
     });
 };
@@ -15,7 +15,7 @@ var fncAddGRol = function (idForm, idmodal, idtabla) {
     if (obj !== null) {
         var json = JSON.stringify(obj);
         $.ajax({
-            url: "protected/SuperAdministrador/Roles/RolesControlador.jsp",
+            url: "../protected/SuperAdministrador/Roles/RolesControlador.jsp",
             type: "POST",
             dataType: "text",
             data: {opc: "saveRol", jsonRol: json},
@@ -56,7 +56,7 @@ var addModalRolOpcion = function (idmodal, idtabla) {
     var $grid = $("#" + idtabla);
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
-        $('#' + idmodal + ' .modal-content').load('protected/SuperAdministrador/Roles/RolesControlador.jsp?opc=modalAddGRolOpcion&idRol=' + selRowId, function () {
+        $('#' + idmodal + ' .modal-content').load('../protected/SuperAdministrador/Roles/RolesControlador.jsp?opc=modalAddGRolOpcion&idRol=' + selRowId, function () {
             $('#' + idmodal + " .modal-header .modal-title").html(" UGT | " + $grid.jqGrid('getRowData', selRowId).descripcion + " - Opciones ");
             $('#' + idmodal).modal({show: true});
         });
@@ -66,7 +66,7 @@ var addModalRolOpcion = function (idmodal, idtabla) {
 
 var changeSelectRol = function (idSelectRol, idLoad) {
     var sel = $("#" + idSelectRol).find(':selected').attr('data-tokens');
-    $('#' + idLoad).load('protected/SuperAdministrador/Roles/RolesControlador.jsp?opc=chksOpcionesRol&idRol=' + sel, function () {
+    $('#' + idLoad).load('../protected/SuperAdministrador/Roles/RolesControlador.jsp?opc=chksOpcionesRol&idRol=' + sel, function () {
     });
 };
 
@@ -75,7 +75,7 @@ var fncAddGRol_Opcion = function (idForm) {
     var objOpciones = objAddGR_Opc(idForm);
     if (objRol !== null && objOpciones !== null) {
         $.ajax({
-            url: "protected/SuperAdministrador/Roles/RolesControlador.jsp",
+            url: "../protected/SuperAdministrador/Roles/RolesControlador.jsp",
             type: "POST",
             dataType: "text",
             data: {opc: "saveRolOpciones", jsonRol: JSON.stringify(objRol), jsonOpciones: JSON.stringify(objOpciones)},

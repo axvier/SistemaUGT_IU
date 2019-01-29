@@ -5,7 +5,7 @@
  */
 var fncDibujarGraficosConductores = function (idplaceholder) {
     $.ajax({
-        url: "protected/Administrador/Reportes/ReportesControlador.jsp",
+        url: "../protected/Administrador/Reportes/ReportesControlador.jsp",
         type: "GET",
         data: {opc: "conductoresChartEstado"},
         contentType: "application/json ; charset=UTF-8",
@@ -57,7 +57,7 @@ var fncDibujarGraficosConductores = function (idplaceholder) {
 
 var fncDibujarGraficosConductoresGenero = function () {
     $.ajax({
-        url: "protected/Administrador/Reportes/ReportesControlador.jsp",
+        url: "../protected/Administrador/Reportes/ReportesControlador.jsp",
         type: "GET",
         data: {opc: "conductoresChartGenero"},
         contentType: "application/json ; charset=UTF-8",
@@ -93,7 +93,7 @@ var fncDibujarGraficosConductoresGenero = function () {
 var fncReporteConductoresGenero = function () {
     $("#contenidoDinamico").html("<center><i class='fa fa-spinner fa-pulse fa-4x fa-fw'></i><span class='sr-only'>Cargando...</span></center>");
     $.ajax({
-        url: "protected/Administrador/Reportes/ReportesControlador.jsp",
+        url: "../protected/Administrador/Reportes/ReportesControlador.jsp",
         type: "GET",
         data: {opc: "conductoresReporteGenero"},
         contentType: "application/json ; charset=UTF-8",
@@ -109,7 +109,7 @@ var fncReporteConductoresGenero = function () {
 
 var fncDibujarGraficosVehiculosEstado = function () {
     $.ajax({
-        url: "protected/Administrador/Reportes/ReportesControlador.jsp",
+        url: "../protected/Administrador/Reportes/ReportesControlador.jsp",
         type: "GET",
         data: {opc: "mostrar", accion: "vehiculosChartEstadosesion"},
         contentType: "application/json ; charset=UTF-8",
@@ -183,7 +183,7 @@ var fncParseElementosToChartJS = function (datos) {
 
 var fncDibujarGraficosSolicitudEstado = function () {
     $.ajax({
-        url: "protected/Administrador/Reportes/ReportesControlador.jsp",
+        url: "../protected/Administrador/Reportes/ReportesControlador.jsp",
         type: "GET",
         data: {opc: "mostrar", accion: "vehiculosChartEstadosesion"},
         contentType: "application/json ; charset=UTF-8",
@@ -226,7 +226,7 @@ var fncDibujarGraficosSolicitudEstado = function () {
 
 var fncDibujarGraficosOrdenesEstado = function () {
     $.ajax({
-        url: "protected/Administrador/Reportes/ReportesControlador.jsp",
+        url: "../protected/Administrador/Reportes/ReportesControlador.jsp",
         type: "GET",
         data: {opc: "mostrar", accion: "respuestaJSON"},
         contentType: "application/json ; charset=UTF-8",
@@ -268,15 +268,15 @@ var fncDibujarGraficosOrdenesEstado = function () {
 };
 
 var fcModalInformeViajes = function (idmodal) {
-    $('#' + idmodal + ' .modal-content').load('protected/Administrador/Reportes/ReportesControlador.jsp?opc=mostrar&accion=modalInformeViajes', function () {
+    $('#' + idmodal + ' .modal-content').load('../protected/Administrador/Reportes/ReportesControlador.jsp?opc=mostrar&accion=modalInformeViajes', function () {
         $('#' + idmodal).modal({show: true, backdrop: 'static', keyboard: false});
-        $('#' + idmodal + ' .modal-content .form-horizontal').prop("action","InformeVehicularOrdenes");
+        $('#' + idmodal + ' .modal-content .form-horizontal').prop("action","../InformeVehicularOrdenes");
     });
 };
 
 var fcModalInformeViajesConductores = function (idmodal) {
-    $('#' + idmodal + ' .modal-content').load('protected/Administrador/Reportes/ReportesControlador.jsp?opc=mostrar&accion=modalInformeConductores', function () {
+    $('#' + idmodal + ' .modal-content').load('../protected/Administrador/Reportes/ReportesControlador.jsp?opc=mostrar&accion=modalInformeConductores', function () {
         $('#' + idmodal).modal({show: true, backdrop: 'static', keyboard: false});
-        $('#' + idmodal + ' .modal-content .form-horizontal').prop("action","resumenKmConductores");
+        $('#' + idmodal + ' .modal-content .form-horizontal').prop("action","../resumenKmConductores");
     });
 };

@@ -112,7 +112,7 @@
                     <!--                    <span href="#" class="list-group-item main-nav">
                                             Submenu
                                         </span>-->
-                    <a href="NominaConductorPDF" class="list-group-item" title="Generar lista de conductores a exepción de los jubilados">
+                    <a href="../NominaConductorPDF" class="list-group-item" title="Generar lista de conductores a exepción de los jubilados">
                         <i class="fa fa-check"></i> Nómina Conductores pdf
                     </a>
                     <a href="#" class="list-group-item" onclick="fncReporteConductores()">
@@ -189,7 +189,7 @@
                     <!--                    <span href="#" class="list-group-item main-nav">
                                             Submenu
                                         </span>-->
-                    <a href="NominaConductorPDF" class="list-group-item" title="Generar lista de conductores a exepción de los jubilados">
+                    <a href="../NominaConductorPDF" class="list-group-item" title="Generar lista de conductores a exepción de los jubilados">
                         <i class="fa fa-check"></i> Nómina Conductores pdf
                     </a>
                     <a href="#" class="list-group-item" onclick="fncReporteConductores()">
@@ -275,7 +275,7 @@
                     <!--                    <span href="#" class="list-group-item main-nav">
                                             Submenu
                                         </span>-->
-                    <a href="NominaVehiculosPDF" class="list-group-item" title="Generar lista de vehiculos a exepción de los rematados">
+                    <a href="../NominaVehiculosPDF" class="list-group-item" title="Generar lista de vehiculos a exepción de los rematados">
                         <i class="fa fa-check"></i> Nómina vehículos
                     </a>
                     <!--                    <a href="#" class="list-group-item" onclick="fncReporteConductores()">
@@ -380,7 +380,7 @@
                                                 <span href="#" class="list-group-item main-nav">
                                                     Submenu
                                                 </span>
-                            <a href="NominaVehiculosPDF" class="list-group-item" title="Generar lista de vehiculos a exepción de los rematados">
+                            <a href="../NominaVehiculosPDF" class="list-group-item" title="Generar lista de vehiculos a exepción de los rematados">
                                 <i class="fa fa-check"></i> Solicitudes PDF
                             </a>
                                                 <a href="#" class="list-group-item" onclick="fncReporteConductores()">

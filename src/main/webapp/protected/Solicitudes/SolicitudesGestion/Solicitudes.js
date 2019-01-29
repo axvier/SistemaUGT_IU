@@ -77,7 +77,7 @@ var usuarioSolModal = function (idmodal, idtabla, data) {
 //        var data = $("#" + idtabla + " #" + selRowId).attr("data-json");
     var objeto = JSON.parse(decodeURI(data)).solicitante;
     if (typeof objeto.cedulau !== 'undefined') {
-        $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=modSolicitanteInfo&cedulaSolicitante=' + objeto.cedulau.cedula + "&idSolicitud=" + objeto.solicitud.numero, function () {
+        $('#' + idmodal + ' .modal-content').load('../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=modSolicitanteInfo&cedulaSolicitante=' + objeto.cedulau.cedula + "&idSolicitud=" + objeto.solicitud.numero, function () {
             $('#' + idmodal).modal({show: true});
         });
     } else {
@@ -131,7 +131,7 @@ var fncModSubirCombinarPDF = function (idmodal, idtabla, rowid) {
             solicitud.observacion = objeto.observacion;
 
         $('#' + idmodal + ' .modal-content').load(
-                'protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=mostrar&accion=modCombinarSolicitud',
+                '../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=mostrar&accion=modCombinarSolicitud',
                 function () {
                     $('#' + idmodal).modal({show: true});
                     $('#' + idmodal + " #jsonSolFormPDF").val(data);
@@ -163,7 +163,7 @@ var fncCombinarPDF = function (idform, idmodal) {
                 fd.append("jsonSolicitud", encodeURI(json));
                 console.log(fd);
                 $.ajax({
-                    url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=combinarPDFs",
+                    url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=combinarPDFs",
                     data: fd,
                     cache: false,
                     processData: false,
@@ -245,7 +245,7 @@ var disponibilidadVCSolModal = function (idmodal, idtabla, data) {
         swalTimerLoading("Consultado datos", "Esto puede tardar un momento...", 9000);
         var dcodes = decodeURI(data);
         var objeto = JSON.parse(dcodes);
-        $('#' + idmodal + ' .modal-content').load('protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + objeto.numero, function () {
+        $('#' + idmodal + ' .modal-content').load('../protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp?opc=modDisponibilidadV_C&idSolicitud=' + objeto.numero, function () {
             swal.close();
             $('#' + idmodal).modal({show: true});
         });
@@ -267,7 +267,7 @@ var gDisponibilidadVC = function (idmodal, idtabla, data) {
                     solicitanteCedula = objeto.solicitante.cedulau.cedula;
 
         $.ajax({
-            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
             type: "GET",
             data: {opc: "disponibilidadVehiculoConductor", cedulaSolicitante: solicitanteCedula},
             contentType: "application/json ; charset=UTF-8",
@@ -298,7 +298,7 @@ var fncFechaRecibidoSolicitud = function (idmodal, idtabla, data) {
         if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null)
             solicitud.observacion = objeto.observacion;
         $.ajax({
-            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
             type: "GET",
             data: {opc: "fechaRecividoSol", solicitudRecib: JSON.stringify(solicitud)},
             contentType: "application/json ; charset=UTF-8",
@@ -338,7 +338,7 @@ var fnVistoBuenoSolicitud = function (idmodal, idtabla, data) {
         if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null)
             solicitud.observacion = objeto.observacion;
         $.ajax({
-            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
             type: "GET",
             data: {opc: "vistoBuenoSol", solicitudRecib: JSON.stringify(solicitud)},
             contentType: "application/json ; charset=UTF-8",
@@ -370,7 +370,7 @@ var fncFiltrarAutos = function (idfiltro, iddestino) {
 //    console.log(idgrupo);
     if (typeof idgrupo !== "undefined") {
         $.ajax({
-            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
             type: "GET",
             data: {opc: "filtrarGrupoAuto", idgrupov: idgrupo},
             contentType: "application/json ; charset=UTF-8",
@@ -408,7 +408,7 @@ var fncAprobarVehiculoConductor = function (opc) {
         }).then((valor) => {
             if (valor) {
                 $.ajax({
-                    url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+                    url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
                     type: "GET",
                     data: {opc: opc, jsonDisponVC: JSON.stringify(objJSONDV_C), jsonSolicitud: JSON.stringify(objJSONDV_C.solicitud)},
                     contentType: "application/json ; charset=UTF-8",
@@ -478,7 +478,7 @@ var fncVerAgendaPlaca = function () {
             fncIniciarCalendar(selectVehiculo);
         } else {
             var events = {
-                url: 'protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=AgendaVehiculo',
+                url: '../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=AgendaVehiculo',
                 type: "POST",
                 data: {// a function that returns an object
                     placaAgenda: selectVehiculo
@@ -530,7 +530,7 @@ var fncIniciarCalendar = function (selectVehiculo) {
         editable: true,
         eventLimit: true, // allow "more" link when too many events
         events: {
-            url: 'protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=AgendaVehiculo',
+            url: '../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp?opc=AgendaVehiculo',
             data: {
                 placaAgenda: selectVehiculo
             },
@@ -559,7 +559,7 @@ var fncModVerDatosVehiculo = function (idSelecVehiculo, idmodal) {
         var objeto = JSON.parse($("#" + idSelecVehiculo).find(':selected').attr("data-jsonvehiculo"));
         var jsonVehiculo = (typeof objeto.tbvehiculos !== "undefined") ? JSON.stringify(objeto.tbvehiculos) : JSON.stringify(objeto);
         $.ajax({
-            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
             type: "GET",
             data: {opc: "modDatosVehiculoDVC", jsonVehiculo: jsonVehiculo},
             contentType: "application/json ; charset=UTF-8",
@@ -582,7 +582,7 @@ var fncModVerDatosConductor = function (idSelecConductor, idmodal) {
         var jsonConductor = $("#" + idSelecConductor).find(':selected').attr("data-jsonconductor");
         console.log(jsonConductor);
         $.ajax({
-            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
             type: "GET",
             data: {opc: "modDatosConductorDVC", jsonConductor: jsonConductor},
             contentType: "application/json ; charset=UTF-8",
@@ -613,7 +613,7 @@ var fncModConsultarReg= function(idmodal,idtabla,rowid){
         if (typeof objeto.observacion !== "undefined" && objeto.observacion !== "" && objeto.observacion !== null)
             solicitud.observacion = objeto.observacion;
         $.ajax({
-            url: "protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
+            url: "../protected/Solicitudes/SolicitudesGestion/SolicitudesControlador.jsp",
             type: "GET",
             data: {opc: "modRegDocsSol", jsonSolicitud: JSON.stringify(solicitud)},
             contentType: "application/json ; charset=UTF-8",
