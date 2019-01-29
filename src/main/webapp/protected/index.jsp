@@ -116,6 +116,7 @@
                         login = new Login();
                         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
                         String json = swLogin.loginUser(cedulacas);
+//                        String json = "";
                         if (json.length() > 2) {
                             JSONArray arrayJSON = new JSONArray(json);
                             for (int i = 0; i < arrayJSON.length(); i++) {
@@ -133,7 +134,7 @@
 
                             session.setAttribute("login", login);
                         } else {
-                            response.sendError(501, "Error No existe en el sistema");
+                            response.sendRedirect("PaginasPrincipales/NoAutorizadoLogin.jsp");
                         }
                     }
                 }
