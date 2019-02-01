@@ -3,6 +3,8 @@
     Created on : 25/11/2018, 08:27:33 PM
     Author     : Xavy PC
 --%>
+<%@page import="ugt.entidades.Tbcargos"%>
+<%@page import="ugt.cargos.iu.CargosIU"%>
 <%@page import="ugt.entidades.Tbroles"%>
 <%@page import="com.google.gson.GsonBuilder"%>
 <%@page import="ugt.entidades.Tbentidad"%>
@@ -196,6 +198,7 @@
     EntidadesIU entidadesIU = (EntidadesIU) session.getAttribute("entidadesIU");
     RolesIU rolIU = (RolesIU) session.getAttribute("rolesIU");
     session.setAttribute("entidadesIU", null);
+    CargosIU cargosIU = (CargosIU) session.getAttribute("cargosIU");
     session.setAttribute("cedulaUG", null);
 %>
 <div class="modal-header">
@@ -239,6 +242,21 @@
                                         if (!rol.getEstado().equals("Deshabilitado")) {
                                             out.println("<option data-tokens='" + rol.getIdrol() + "' data-json='" + G.toJson(rol) + "' data-gerarquia='" + rol.getGerarquia().getIdtipo() + "'> [" + rol.getCharrol() + "] - " + rol.getDescripcion() + " </option>");
                                         }
+                                    }
+                                }
+                            %>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="addGUfechainicio" >Cargo</label>
+                    <div class="col-sm-10">
+                        <select name="tbroles" class="form-control selectpicker" id="addGURol" data-live-search="true" required>
+                            <%
+                                out.println("<option disabled value='' selected hidden>--Escoja un cargo --</option>");
+                                if (cargosIU != null) {
+                                    for (Tbcargos cargo : cargosIU.getLista()) {
+                                        out.println("<option data-tokens='" + cargo.getCargo() + "' data-json='" + G.toJson(cargo) + "'> " + cargo.getCargo() + " </option>");
                                     }
                                 }
                             %>
@@ -295,6 +313,7 @@
             <tr>            
                 <th>Entidad</th>         
                 <th>Rol</th>          
+                <th>Cargo</th>          
                 <th>F Inicio</th>       
                 <th>F Fin</th>       
                 <th>Acciones</th>       
@@ -310,6 +329,7 @@
                     out.println("    <tr>");
                     out.println("        <td>" + aux.getTbentidad().getCodigoentidad() + "</td>");
                     out.println("        <td>" + aux.getTbroles().getDescripcion() + "</td>");
+                    out.println("        <td>" + aux.getCargo() + "</td>");
                     out.println("        <td>" + sf.format(aux.getFechainicio()) + "</td>");
                     String ffin = (aux.getFechafin() == null) ? "" : sf.format(aux.getFechafin());
                     out.println("        <td>" + ffin + "</td>");

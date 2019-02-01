@@ -631,7 +631,10 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
                         }
                     }
                 }
-            }
+                if(this.getPasajeros()!=null && result.getCedula()==null){
+                    result = this.getPasajeros().get(0).getTbpasajeros();
+                } 
+           }
         } catch (Exception e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer total de pasajeros ", e.getClass().getName() + "****" + e.getMessage());
             System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());

@@ -326,7 +326,7 @@
         <label  class="control-label">Cargo: </label>
         <div class="form-group">
             <div class="col-sm-10">
-                <input type="text" class="form-control" value="<%=roles.getDescripcion()%>" title="<%=roles.getDescripcion()%>" readonly/>
+                <input type="text" class="form-control" value="<%=userSol.getCargo()%>" title="<%=userSol.getCargo()%>" readonly/>
             </div>
         </div>
         <label  class="control-label">Entidad: </label>

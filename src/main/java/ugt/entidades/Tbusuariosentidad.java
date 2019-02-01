@@ -17,6 +17,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -44,6 +45,9 @@ public class Tbusuariosentidad implements Serializable {
     @Column(name = "fechafin")
     @Temporal(TemporalType.DATE)
     private Date fechafin;
+    @Size(max = 2147483647)
+    @Column(name = "cargo")
+    private String cargo;
     @JoinColumn(name = "identidad", referencedColumnName = "identidad", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Tbentidad tbentidad;
@@ -55,6 +59,14 @@ public class Tbusuariosentidad implements Serializable {
     private Tbusuarios tbusuarios;
 
     public Tbusuariosentidad() {
+    }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
     }
 
     public Tbusuariosentidad(TbusuariosentidadPK tbusuariosentidadPK) {

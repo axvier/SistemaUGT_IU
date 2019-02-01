@@ -121,7 +121,7 @@ public class RegistrosM {
                     Tbusuariosentidad entidadRol = g.fromJson(objJSONSolicitante, Tbusuariosentidad.class);
                     registro.setResponsable(cedula + "-"
                             + nombres + "-"
-                            + entidadRol.getTbroles().getDescripcion() + " "
+                            + entidadRol.getCargo() + " "
                             + entidadRol.getTbentidad().getNombre());
                 }
             }

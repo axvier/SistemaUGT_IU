@@ -21,7 +21,7 @@ var fncConfirmarGenerarSolcitud = function (datos) {
         cancelButtonText: 'NO'
     }).then((valor) => {
         if (valor)
-            this.fncGenerarSOlcitud('modGestionSol', datos, "fncNuevaSolicitud()", "SolicitudPDFServelet"); // this should execute now
+            this.fncGenerarSOlcitud('modGestionSol', datos, "fncNuevaSolicitud()", "../SolicitudPDFServelet"); // this should execute now
     }, function (dismiss) {
         this.fncNuevaSolicitud();
     });
@@ -434,7 +434,7 @@ var ingInfoDescSolicitudModal = function (idmodal, idtabla) {
         var data = $("#" + idtabla + " #" + selRowId).attr("data-json");
         var dcodes = decodeURI(data);
         var objeto = JSON.parse(dcodes);
-        fncGenerarSOlcitud(idmodal, {idSolicitud: objeto.numero}, "null", "SolicitudPDFServelet");
+        fncGenerarSOlcitud(idmodal, {idSolicitud: objeto.numero}, "null", "../SolicitudPDFServelet");
     } else
         swalTimer("Solicitud", "Seleccione una solicitud", "error");
 };

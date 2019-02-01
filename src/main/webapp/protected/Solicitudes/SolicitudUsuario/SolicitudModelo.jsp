@@ -227,7 +227,7 @@
                         String objJSONSolicitante = swSeccionSolicitante.buscarEntidadSolicitante(cedula, idrol);
                         if (objJSONSolicitante.length() > 2) {
                             Tbusuariosentidad entidadRol = g.fromJson(objJSONSolicitante, Tbusuariosentidad.class);
-                            String auxRE = entidadRol.getTbroles().getDescripcion() + " de " + entidadRol.getTbentidad().getNombre();
+                            String auxRE = entidadRol.getCargo() + " de " + entidadRol.getTbentidad().getNombre();
                             session.setAttribute("statusrolentidad", auxRE);
                         }
                     }
@@ -245,7 +245,7 @@
                     String objJSONSolicitante = swSeccionSolicitante.buscarEntidadSolicitante(cedula, idrol);
                     if (objJSONSolicitante.length() > 2) {
                         Tbusuariosentidad entidadRol = g.fromJson(objJSONSolicitante, Tbusuariosentidad.class);
-                        String auxRE = entidadRol.getTbroles().getDescripcion() + " de " + entidadRol.getTbentidad().getNombre();
+                        String auxRE =  entidadRol.getCargo() + " de " + entidadRol.getTbentidad().getNombre();
                         session.setAttribute("statusrolentidad", auxRE);
                     }
                 }

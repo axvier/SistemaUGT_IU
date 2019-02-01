@@ -3,6 +3,8 @@
     Created on : 25/11/2018, 08:27:18 PM
     Author     : Xavy PC
 --%>
+<%@page import="ugt.cargos.iu.CargosIU"%>
+<%@page import="ugt.servicios.swCargo"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="java.util.Date"%>
@@ -101,6 +103,12 @@
                 RolesIU rolesIU = new RolesIU();
                 rolesIU.setListaJSON(arrayRoles);
                 session.setAttribute("rolesIU", rolesIU);
+            }
+            String arrayCargos = swCargo.listarCargos();
+            if(arrayCargos.length()>2){
+                CargosIU cargos = new CargosIU();
+                cargos.setListaJSON(arrayCargos);
+                session.setAttribute("cargosIU", cargos);
             }
             response.sendRedirect("UsuariosControlador.jsp?opc=mostrar&accion=" + opc);
         } else if (opc.equals("divModalVerEntidadRol")) {
