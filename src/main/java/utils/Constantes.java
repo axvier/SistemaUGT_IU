@@ -11,6 +11,7 @@ public class Constantes {
 //    public final static String IP = "172.17.103.29:8080";
     public final static String PREFIJO = "http://";
     public final static String SERVICIO = "SistemaUGT_AD";
+    public final static String SERVICIOESPOCH = "SWEspoch";
     public final static int POSICIONES = 20;
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="a quien va dirigido solicitud">

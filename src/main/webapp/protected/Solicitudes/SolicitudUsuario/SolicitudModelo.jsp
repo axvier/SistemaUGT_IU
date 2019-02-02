@@ -87,10 +87,31 @@
             } else {
                 String objJSON = new JSONObject()
                         .put("value", "")
-                        .put("label", "Cargando...").toString();
+                        .put("label", "Buscar pasajero...").toString();
                 session.setAttribute("listTerm", objJSON);
             }
             response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("buscarPasajeroServicio")) {
+            String cedulasw = (String) session.getAttribute("cedulasw");
+            session.setAttribute("cedulasw", null);
+            String tiposw = (String) session.getAttribute("tiposw");
+            session.setAttribute("tiposw", null);
+            cedulasw = cedulasw.substring(0,9)+"-"+cedulasw.substring(9,cedulasw.length());
+            String jsonPasajeros = (tiposw.equals("estudiante")) ? swPasajero.findPasajeroEstudianteSW(cedulasw) : swPasajero.findPasajeroInstitutoSW(cedulasw);
+            if (jsonPasajeros.length() > 2) {
+                JSONObject childJSONObject = new JSONObject(jsonPasajeros);
+                JSONObject objJSON = new JSONObject()
+                        .put("value", childJSONObject.getString("apellidos") + " " + childJSONObject.getString("nombres"))
+                        .put("label", childJSONObject.getString("cedula"))
+                        .put("json", jsonPasajeros);
+                session.setAttribute("listTerm", objJSON.toString());
+            } else {
+                String objJSON = new JSONObject()
+                        .put("value", "No petenece a la Espoch")
+                        .put("label", "No petenece a la Espoch").toString();
+                session.setAttribute("listTerm", objJSON);
+            }
+            response.sendRedirect("SolicitudControlador.jsp?opc=mostrar&accion=reponderFindSW");
         } else if (opc.equals("saveSolicitud")) {
             g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             String status = "";
@@ -113,7 +134,7 @@
             solicitud.setNumero(0);
             String objJSON = swSolicitudes.insertSolicitud(g.toJson(solicitud));
             if (objJSON.length() > 2) {
-                RegistrosM.Insertar(login, g.fromJson(objJSON, Tbsolicitudes.class),solicitud.getEstado());
+                RegistrosM.Insertar(login, g.fromJson(objJSON, Tbsolicitudes.class), solicitud.getEstado());
                 solicitud = g.fromJson(objJSON, Tbsolicitudes.class); // set nuevos datos de la solicitud insertada
                 Solicitudesfull solfull = new Solicitudesfull();
                 //insertar pdf y actualizar idpdf a solcitud
@@ -245,7 +266,7 @@
                     String objJSONSolicitante = swSeccionSolicitante.buscarEntidadSolicitante(cedula, idrol);
                     if (objJSONSolicitante.length() > 2) {
                         Tbusuariosentidad entidadRol = g.fromJson(objJSONSolicitante, Tbusuariosentidad.class);
-                        String auxRE =  entidadRol.getCargo() + " de " + entidadRol.getTbentidad().getNombre();
+                        String auxRE = entidadRol.getCargo() + " de " + entidadRol.getTbentidad().getNombre();
                         session.setAttribute("statusrolentidad", auxRE);
                     }
                 }
@@ -318,10 +339,10 @@
 //                }else
 //                    respuesta += "No se ha podido eliminar la solicitud";
                 sol.setEstado("eliminada");
-                if (swSolicitudes.modificarSolicitudID(idSolicitud, g.toJson(sol)).length()>2) {
-                    respuesta ="Se ha eliminado el registro";
+                if (swSolicitudes.modificarSolicitudID(idSolicitud, g.toJson(sol)).length() > 2) {
+                    respuesta = "Se ha eliminado el registro";
                     session.setAttribute("statusCodigo", "OK");
-                    RegistrosM.Insertar(login, sol,sol.getEstado());
+                    RegistrosM.Insertar(login, sol, sol.getEstado());
                 } else {
                     session.setAttribute("statusCodigo", "KO");
                 }

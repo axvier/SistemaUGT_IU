@@ -29,6 +29,11 @@
             session.setAttribute("listTerm", null);
             response.setContentType("text/plain");
             response.getWriter().write(json);
+        } else if (accion.equals("reponderFindSW")) {
+            String json = (String) session.getAttribute("listTerm");
+            session.setAttribute("listTerm", null);
+            response.setContentType("application/json");
+            response.getWriter().write(json);
         } else if (accion.equals("downloadReqSol")) {
             String result = (String) session.getAttribute("pdf64");
             session.setAttribute("pdf64", null);
@@ -215,8 +220,13 @@
                                     <div class="form-group">
                                         <label for="addExtension" class="col-md-3 control-label">Extension</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" id="addExtension" placeholder="Macas/Riobamba" required data-parsley-errors-container="#error-step112_1">
+                                            <!--                                            <input type="text" class="form-control" id="addExtension" placeholder="Macas/Riobamba" required data-parsley-errors-container="#error-step112_1">-->
                                             <!--<input type="text" class="form-control" id="addExtension" placeholder="Macas/Riobamba">-->
+                                            <select class="form-control" id="addExtension" required data-parsley-errors-container="#error-step112_1">
+                                                <option value="Riobamba" selected> Riobamba </option>
+                                                <option value="Macas"> Macas </option>
+                                                <option value="Norte amazónica"> Norte amazónica </option>
+                                            </select>
                                             <span class="input-group-addon"><i class="fa fa-home"></i></span>
                                         </div>
                                         <p id="error-step112_1"></p>
@@ -317,7 +327,20 @@
                                     <input type="text" id="search_solicitud_pasajeros" name="search" class="form-control searchbox" />
                                     <input type=hidden id="json_solicitud_pasajeros" name="search"/>
                                     <span class="input-group-btn">
-                                        <button id="search_solicitud_pasajeros_button" class="btn btn-custom-secondary" type="button" disabled="disabled" onclick="fncCatchSelectS('form3')"><i class="fa fa-plus"></i></button>
+                                        <button id="search_solicitud_pasajeros_button" class="btn btn-custom-secondary" type="button" onclick="fncCatchSelectS('form3')"><i class="fa fa-plus"></i></button>
+                                    </span>
+                                </div>
+                                <div class="input-group">
+                                    <label class="control-inline fancy-checkbox custom-color-green">
+                                        <input type="radio" name="tipoBusqueda" value="estudiante" checked>
+                                        <span> Estudiantes </span>
+                                    </label>
+                                    <label class="control-inline fancy-checkbox custom-color-green">
+                                        <input type="radio" name="tipoBusqueda" value="institucion">
+                                        <span> P. Institucional </span>
+                                    </label>
+                                    <span class="input-group-btn">
+                                        <button id="btn_solicitud_pasajeros_search" class="btn btn-success" type="button" onclick="fncBusquedaPasajero('form3')"><i class="fa fa-search"></i></button>
                                     </span>
                                 </div>
                             </div>
@@ -349,7 +372,7 @@
 //                                                        out.println("<input type='text' class='form-control' id='addOrigen' placeholder='vehiculo' value='El vehiculo será asignado en la unidad (UGT)' readonly>");
 //                                                    }
 //                                                } else {
-                                                    out.println("<input type='text' class='form-control' id='addOrigen' placeholder='vehiculo' value='El vehiculo será asignado en la unidad (UGT)' readonly>");
+                                                out.println("<input type='text' class='form-control' id='addOrigen' placeholder='vehiculo' value='El vehiculo será asignado en la unidad (UGT)' readonly>");
 //                                                }
                                             %>
                                             <span class="input-group-addon"><i class="fa fa-home"></i></span>
@@ -371,7 +394,7 @@
 //                                                        out.println("<input type='text' class='form-control' id='addDestino' placeholder='Condcutor' value='El conductor será asignado en la unidad (UGT)' readonly>");
 //                                                    }
 //                                                } else {
-                                                    out.println("<input type='text' class='form-control' id='addDestino' placeholder='Condcutor' value='El conductor será asignado en la unidad (UGT)' readonly>");
+                                                out.println("<input type='text' class='form-control' id='addDestino' placeholder='Condcutor' value='El conductor será asignado en la unidad (UGT)' readonly>");
 //                                                }
                                             %>
                                             <span class="input-group-addon"><i class="fa fa-plane"></i></span>
@@ -408,10 +431,10 @@
                                         Giras estudiantiles con el respectivo visto bueno
                                     </li>
                                     <li>
-                                        Pronóstico del tiempo INAMHI
+                                        <a target="_blank" rel="noopener noreferrer" href="http://www.serviciometeorologico.gob.ec/">Pronóstico del tiempo INAMHI</a>
                                     </li>
                                     <li>
-                                        Copias certificadas fiel copia del original
+                                        Copias certificadas que sean fiel copia del original
                                     </li>
                                 </ul></p>
                             </div>
@@ -518,16 +541,16 @@
         if (mm < 10) {
             mm = '0' + mm;
         }
-        if(mim <10){
-            mim = '0'+mim;
+        if (mim < 10) {
+            mim = '0' + mim;
         }
-        if(hh <10){
-            hh = '0'+hh;
+        if (hh < 10) {
+            hh = '0' + hh;
         }
         today = yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + mim;
         document.getElementById("addFechaSalida").setAttribute("min", today);
         document.getElementById("addFechaRetorno").setAttribute("min", today);
-        today = (yyyy+2) + '-' + mm + '-' + dd + 'T' + hh + ':' + mim;
+        today = (yyyy + 2) + '-' + mm + '-' + dd + 'T' + hh + ':' + mim;
         document.getElementById("addFechaSalida").setAttribute("max", today);
         document.getElementById("addFechaRetorno").setAttribute("max", today);
 
@@ -583,10 +606,34 @@
                 minLength: 3,
                 select: function (event, ui) {
 //                    fncCatchSelectS(ui);
-                    $("#json_solicitud_pasajeros").val(ui.item.json);
-                    $("#search_solicitud_pasajeros_button").prop('disabled', false);
+                    if (typeof ui.item.json !== "undefined") {
+                        $("#json_solicitud_pasajeros").val(ui.item.json);
+                        $("#search_solicitud_pasajeros_button").prop('disabled', false);
+                    } else if (ui.item.label === "Buscar pasajero...") {
+                        fncBusquedaPasajero();
+                        event.preventDefault();
+                    } else if (ui.item.label === "No petenece a la Espoch") {
+                        event.preventDefault();
+                    }
                 }
             });
+        });
+
+        $("#addFechaSalida").change(function (e) {
+            var f1 = $("#addFechaSalida").val();
+            var f2 = $("#addFechaRetorno").val();
+            if (typeof f2 !== 'undefined' && new Date(f2).getTime() <= new Date(f1).getTime()) {
+                alert("La fecha salida debe ser menor o igual que la final");
+                $("#addFechaSalida").val("");
+            }
+        });
+        $("#addFechaRetorno").change(function (e) {
+            var f1 = $("#addFechaSalida").val();
+            var f2 = $("#addFechaRetorno").val();
+            if (typeof f1 !== 'undefined' && new Date(f2).getTime() <=  new Date(f1).getTime()) {
+                alert("La fecha retorno debe ser mayor o igual que la de inicio");
+                $("#addFechaRetorno").val("");
+            }
         });
     });
 </script>

@@ -26,6 +26,12 @@
                 String term = request.getParameter("term");
                 session.setAttribute("term", term);
                 response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
+            } else if (opc.equals("buscarPasajeroServicio")) {
+                String cedulasw = request.getParameter("cedula");
+                session.setAttribute("cedulasw", cedulasw);
+                String tiposw = request.getParameter("tipo");
+                session.setAttribute("tiposw", tiposw);
+                response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
             } else if (opc.equals("misSolicitudes")) {
                 response.sendRedirect("SolicitudModelo.jsp?opc=" + opc);
             } else if (opc.equals("generarPDFSolID")) {

@@ -171,4 +171,52 @@ public class swPasajero {
         return jsonResponse;
     }
     //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Buscar pasajero estudiante por cedula"> 
+    public static String findPasajeroEstudianteSW(String cedula) {
+        String result = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIOESPOCH + "/ws/pasajeroestudiante/" + cedula);
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setRequestMethod("GET");
+            conexion.setDoOutput(true);
+            conexion.setDoInput(true);
+            InputStream contenido = (InputStream) conexion.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(contenido, "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result = line;
+            }
+            conexion.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicios web espoch para validar datos de un pasajero cedula ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Buscar pasajero institucion por cedula"> 
+    public static String findPasajeroInstitutoSW(String cedula) {
+        String result = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIOESPOCH + "/ws/pasajeroinstitucional/" + cedula);
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setRequestMethod("GET");
+            conexion.setDoOutput(true);
+            conexion.setDoInput(true);
+            InputStream contenido = (InputStream) conexion.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(contenido, "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result = line;
+            }
+            conexion.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicios web espoch para validar datos de un pasajero Inst cedula ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+    //</editor-fold>
 }

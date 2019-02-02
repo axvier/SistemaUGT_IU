@@ -1,5 +1,32 @@
 var idcont = 0;
 
+var fncBusquedaPasajero = function (idform) {
+    var cedula = $("#search_solicitud_pasajeros").val();
+    if (cedula.length === 10 && $.isNumeric(cedula)) {
+        var radioValue = $("input[name='tipoBusqueda']:checked").val();
+        if (radioValue)
+            $.ajax({
+                url: "../protected/Solicitudes/SolicitudUsuario/SolicitudControlador.jsp",
+                type: "GET",
+                data: {opc: 'buscarPasajeroServicio', tipo: radioValue, cedula: cedula},
+                contentType: "application/json ; charset=UTF-8",
+                success: function (data) {
+                    if (typeof data.json !== "undefined") {
+                        $("#json_solicitud_pasajeros").val(data.json);
+                        $("#search_solicitud_pasajeros_button").prop('disabled', false);
+                        fncCatchSelectS("form3");
+                    }else{
+                        swalNormal(data.label,data.value,"info");
+                    }
+                },
+                error: function (e) {
+                    location.reload();
+                }
+            });
+    } else
+        swalNormal("Cedula", "Debe ingresar 10 digitos numéricos", "error");
+};
+
 var fncConfirmarGenerarSolcitud = function (datos) {
     var titulo;
     var mensaje;

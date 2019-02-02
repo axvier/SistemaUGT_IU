@@ -122,10 +122,11 @@ public class GenConductoresKMPDF {
             /**
              * Inicio tabla nomina
              */
-            PdfPTable tablaNomina = new PdfPTable(5);
+            PdfPTable tablaNomina = new PdfPTable(6);
             tablaNomina.setWidthPercentage(100f);
             tablaNomina.setWidths(new float[]{
-                5, 15, 30, 30, 20});
+                5, 15, 25, 25, 10, 20
+            });
             /**
              * Inicio de encabezado de tablas
              */
@@ -148,6 +149,12 @@ public class GenConductoresKMPDF {
             tablaNomina.addCell(celda);
 
             celda = new PdfPCell(new Paragraph("Nombres", timesNewRomanNormalColor(FONTSIZEGENERAL, BaseColor.WHITE)));
+            celda.setHorizontalAlignment(Element.ALIGN_CENTER);
+            celda.setBackgroundColor(new BaseColor(118, 118, 118));
+//            celda.setBorderColor(new BaseColor(118, 118, 118));
+            tablaNomina.addCell(celda);
+
+            celda = new PdfPCell(new Paragraph("No Viajes", timesNewRomanNormalColor(FONTSIZEGENERAL, BaseColor.WHITE)));
             celda.setHorizontalAlignment(Element.ALIGN_CENTER);
             celda.setBackgroundColor(new BaseColor(118, 118, 118));
 //            celda.setBorderColor(new BaseColor(118, 118, 118));
@@ -210,6 +217,17 @@ public class GenConductoresKMPDF {
                 celda.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
                 tablaNomina.addCell(celda);
                 /**
+                 * Ingreso de numero de viajes
+                 */
+                celda = new PdfPCell();
+                valor = new Paragraph();
+                valor.add(this.getOrdenNumeroViajes(condOrdenes));
+                valor.setFont(timesNewRomanNormal(FONTSIZEGENERAL));
+                valor.setAlignment(Element.ALIGN_CENTER);
+                celda.addElement(valor);
+                celda.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tablaNomina.addCell(celda);
+                /**
                  * Ingreso de kms totales
                  */
                 celda = new PdfPCell();
@@ -236,6 +254,20 @@ public class GenConductoresKMPDF {
 //        return result;
     }
 
+    private String getOrdenNumeroViajes(ConductoresKms condOrden) {
+        String result = " ";
+        try {
+            if (condOrden != null && condOrden.getOrdenes() != null) {
+                long count = condOrden.getOrdenes().size();
+                result = String.valueOf(count);
+            }
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer nombres de condcutor kmfinal ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+    
     private String getOrdenKmsTotal(ConductoresKms condOrden) {
         String result = " ";
         try {

@@ -33,6 +33,7 @@
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../../assets/ico/kingadmin-favicon72x72.png">
         <link rel="apple-touch-icon-precomposed" sizes="57x57" href="../../assets/ico/kingadmin-favicon57x57.png">
         <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+        <script src="../../js/validacion.js" type="text/javascript"></script>
     </head>
 
     <body class="sidebar-fixed topnav-fixed ">
@@ -51,6 +52,7 @@
                     <div>
                         <a href="javascript:history.go(-1)" class="btn btn-custom-primary"><i class="fa fa-arrow-left"></i> Go Back</a>
                         <a href="../../index.jsp" class="btn btn-primary"><i class="fa fa-home"></i> Home</a>
+                        <a href="#" class="btn btn-danger" onclick="Matar2()"><i class="fa fa-close"></i> Cerrar Session</a>
                     </div>
                 </div>
             </div>
@@ -70,7 +72,6 @@
         <script src="../../assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
         <script src="../../assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
         <script src="../../assets/js/king-common.js"></script>
-        <script src="demo-style-switcher/../../assets/js/deliswitch.js"></script>
     </body>
 
 </html>

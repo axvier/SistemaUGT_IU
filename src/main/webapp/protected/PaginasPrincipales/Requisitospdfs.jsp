@@ -151,7 +151,6 @@
         <script src="../../assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
         <script src="../../assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
         <script src="../../assets/js/king-common.js"></script>
-        <script src="demo-style-switcher/../../assets/js/deliswitch.js"></script>
     </body>
 
 </html>
