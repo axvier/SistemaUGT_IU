@@ -145,6 +145,124 @@ var addModalRevisionMecanica = function (idmodal, idtabla) {
         swalTimer("Vehículo", "Seleccione un vehículo", "error");
 };
 
+var addModalDependencia = function (idmodal, idtabla) {
+    var $grid = $("#" + idtabla);
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    if (selRowId !== null) {
+        var rowData = $grid.jqGrid('getRowData', selRowId);
+        $('#' + idmodal + ' .modal-content').load('../protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=modDependencia&placaRM=' + rowData.placa, function () {
+//            $('#' + idmodal + " .modal-header .modal-title").html("<strong>[" + rowData.disco + "] Vehículo " + rowData.placa + "</strong> | Revisiones mecánicas ");
+            $('#' + idmodal).modal({show: true});
+        });
+    } else
+        swalTimer("Vehículo", "Seleccione un vehículo", "error");
+};
+
+var fncVerVehiculoDependencias = function (idDivModal, matricula) {
+    $('#' + idDivModal).html("");
+    $('#' + idDivModal).load('../protected/Administrador/Vehiculos/vehiculoControlador.jsp?opc=divModalVerVehiculoEntida&placaVD=' + matricula);
+};
+
+var fncAddVhiculoDependencia = function (idForm, idmodal, idplaca) {
+    var obj = fncObjFormGU_V_D(idForm, idplaca);
+    if (obj !== null) {
+        var json = JSON.stringify(obj);
+        $.ajax({
+            url: "../protected/Administrador/Vehiculos/vehiculoControlador.jsp",
+            type: "POST",
+            dataType: "text",
+            data: {opc: "savedependencia", jsonvehdep: json,placaD : idplaca},
+            success: function (datos) {
+                datos = JSON.parse(datos);
+                if (datos.codigo === "OK") {
+                    swalTimer("Dependencia estado", datos.respuesta, "success");
+                }
+                if (datos.codigo === "KO") {
+                    swalTimer("Dependencia estado", datos.respuesta, "error");
+                }
+                $("#"+idmodal).modal("hide");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Error de ejecucion -> " + textStatus + jqXHR);
+            }
+
+        });
+    }
+};
+
+var fncObjFormGU_V_D = function (idForm, idplaca) {
+    var $grid = $("#jqgridVehiculo");
+    var selRowId = $grid.jqGrid("getGridParam", "selrow");
+    var rowData = $grid.jqGrid('getRowData', selRowId);
+    delete rowData.actions;
+    var tbVehiculoEntidad = {
+        tbentidad: JSON.parse($("#" + idForm + " #addGUEntidad").find(':selected').attr('data-json')),
+//        tbvehiculos: rowData,
+        tbvehiculosdependenciasPK: {
+            fechainicio: $("#" + idForm + " #addGUfechainicio").val() + "T00:00:00-05:00",
+            iddependencia: JSON.parse($("#" + idForm + " #addGUEntidad").find(':selected').attr('data-json')).identidad,
+            matricula: idplaca
+        }
+    };
+    return tbVehiculoEntidad;
+};
+
+var fncEliminarGU_V_E = function (str) {
+    var obj = $("#row" + str).data("json");
+    if (obj !== null) {
+        var json = JSON.stringify(obj);
+        $.ajax({
+            type: "POST",
+            url: "../protected/Administrador/Vehiculos/vehiculoControlador.jsp",
+            dataType: "text",
+            data: {opc: "eliminardependencia", jsonvehdep: json},
+            success: function (datos) {
+                datos = JSON.parse(datos);
+                if (datos.codigo === "OK") {
+                    swalTimer("Entidad y rol", datos.codigo + " - " + datos.respuesta, "success");
+                    fncVerVehiculoDependencias('tabitem2',JSON.parse(json).tbvehiculos.placa);
+                }
+                if (datos.codigo === "KO") {
+                    swalTimer("Entidad estado", datos.codigo + " - " + datos.respuesta, "error");
+                }
+                $("#modGeneralVehiculo").modal("hide");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                window.location.reload();
+            }
+
+        });
+    }
+};
+
+var fncTerminarGU_V_E = function (str) {
+    var obj = $("#row" + str).data("json");
+    if (obj !== null) {
+        var json = JSON.stringify(obj);
+        $.ajax({
+            type: "POST",
+            url: "../protected/Administrador/Vehiculos/vehiculoControlador.jsp",
+            dataType: "text",
+            data: {opc: "modificardependencia", jsonvehdep: json},
+            success: function (datos) {
+                datos = JSON.parse(datos);
+                if (datos.codigo === "OK") {
+                    swalTimer("Entidad-rol", datos.codigo + " - " + datos.respuesta, "success");
+                    fncVerVehiculoDependencias('tabitem2',JSON.parse(json).tbvehiculos.placa);
+                }
+                if (datos.codigo === "KO") {
+                    swalTimer("Entidad-rol", datos.codigo + " - " + datos.respuesta, "error");
+                }
+                $("#modGeneralVehiculo").modal("hide");
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                window.location.reload();
+            }
+
+        });
+    }
+};
+
 var cerrarModRevisionM = function (idmodal) {
     $('#' + idmodal).modal("hide");
     $('#' + idmodal + ' .modal-content').html();
@@ -152,7 +270,7 @@ var cerrarModRevisionM = function (idmodal) {
 
 var downloadPDFOrden = function (idPDFRevision) {
     if (typeof idPDFRevision !== 'undefined' && idPDFRevision !== null && idPDFRevision !== "") {
-        swalTimerLoading("Consultando pdf "+idPDFRevision, "Esto puede tardar un momento...", 9000);
+        swalTimerLoading("Consultando pdf " + idPDFRevision, "Esto puede tardar un momento...", 9000);
         $.ajax({
             url: "../protected/Administrador/Vehiculos/vehiculoControlador.jsp",
             type: "POST",

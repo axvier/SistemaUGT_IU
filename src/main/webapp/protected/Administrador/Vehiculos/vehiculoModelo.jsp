@@ -1,3 +1,11 @@
+<%@page import="java.util.Date"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="ugt.entidades.Tbvehiculosdependencias"%>
+<%@page import="ugt.vehiculosdependencias.iu.VehiculosDependenciasIU"%>
+<%@page import="ugt.servicios.swVehiculoDependencia"%>
+<%@page import="ugt.entidades.iu.EntidadesIU"%>
+<%@page import="ugt.servicios.swEntidad"%>
 <%@page import="java.util.logging.Level"%>
 <%@page import="java.util.logging.Logger"%>
 <%@page import="ugt.servicios.swPDF"%>
@@ -107,8 +115,9 @@
             String objJSON = swRevisionesMecanicas.eliminarRevisionMecanica(idrevision);
             if (objJSON.equals("200") || objJSON.equals("204") || objJSON.equals("202")) {
                 Tbrevisionesmecanicas revDel = g.fromJson(objRevision, Tbrevisionesmecanicas.class);
-                if(revDel.getIdpdf() != null)
+                if (revDel.getIdpdf() != null) {
                     swPDF.eliminarPDF(revDel.getIdpdf().toString());
+                }
                 session.setAttribute("statusEliminar", "OK");
             } else {
                 session.setAttribute("statusEliminar", "KO");
@@ -178,6 +187,90 @@
                 response.sendRedirect("../../vista.jsp?accion=jsonVacio");
 
             }
+        } else if (opc.equals("modDependencia")) {
+            String arrayEntidades = swEntidad.listarEntidadesSinVehiculo();
+            if (arrayEntidades.length() > 2) {
+                EntidadesIU entidadesIU = new EntidadesIU();
+                entidadesIU.setListaJSON(arrayEntidades);
+                session.setAttribute("entidadesRM", entidadesIU);
+            }
+            response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("divModalVerVehiculoEntida")) {
+            String placaVD = (String) session.getAttribute("placaVD");
+            session.setAttribute("placaVD", null);
+            String arrayJSON = swVehiculoDependencia.listarVehiculosDependenciasPlaca(placaVD);
+            if (arrayJSON.length() > 2) {
+                VehiculosDependenciasIU vehiculoDependencia = new VehiculosDependenciasIU();
+                vehiculoDependencia.setListaJson(arrayJSON);
+                session.setAttribute("vehiculoDependencia", vehiculoDependencia);
+            }
+            response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=" + opc);
+        } else if (opc.equals("savedependencia")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String jsonvehdep = (String) session.getAttribute("jsonvehdep");
+            session.setAttribute("jsonvehdep", null);
+            String placaD = (String) session.getAttribute("placaD");
+            session.setAttribute("placaD", null);
+            Tbvehiculosdependencias vehDep = g.fromJson(jsonvehdep, Tbvehiculosdependencias.class);
+            String objJSONVEH = swVehiculoDependencia.listarVehiculosDependenciasPE(placaD, String.valueOf(vehDep.getTbvehiculosdependenciasPK().getIddependencia()));
+            if (objJSONVEH.length() <= 2) {
+                objJSONVEH = swVehiculo.listarVehiculoID(placaD);
+                if (objJSONVEH.length() > 2) {
+                    Tbvehiculos vehAux = g.fromJson(objJSONVEH, Tbvehiculos.class);
+                    vehDep.setTbvehiculos(vehAux);
+                    vehDep.getTbvehiculosdependenciasPK().setMatricula(vehAux.getPlaca());
+                    String resp = swVehiculoDependencia.insertVehiculoDependencia(g.toJson(vehDep));
+                    if (resp.length() > 2) {
+                        session.setAttribute("statusGuardar", "Se ha asignado correctamente la dependencia");
+                        session.setAttribute("statusCodigo", "OK");
+                    } else {
+                        session.setAttribute("statusGuardar", "Error no se ha podido asignar la dependencia");
+                        session.setAttribute("statusCodigo", "KO");
+                    }
+                } else {
+                    session.setAttribute("statusGuardar", "Error al momento de elegir de vehiculos");
+                    session.setAttribute("statusCodigo", "KO");
+                }
+            } else {
+                session.setAttribute("statusGuardar", "El vehiculo ya esta asignado a " + vehDep.getTbentidad().getCodigoentidad());
+                session.setAttribute("statusCodigo", "KO");
+            }
+            response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=guardarStatus");
+        } else if (opc.equals("modificardependencia")) {
+            g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+            String jsonvehdep = (String) session.getAttribute("jsonvehdep");
+            session.setAttribute("jsonvehdep", null);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00");
+            Tbvehiculosdependencias vehiculoDependencia = g.fromJson(jsonvehdep, Tbvehiculosdependencias.class);
+            Calendar today = Calendar.getInstance();
+            Date fechafinal = sdf.parse(sdf.format(today.getTime()));
+            vehiculoDependencia.setFechafin(fechafinal);
+            String objJSON = swVehiculoDependencia.modificarVehiculoDependenciaIDs(String.valueOf(vehiculoDependencia.getTbvehiculosdependenciasPK().getIddependencia()),
+                    vehiculoDependencia.getTbvehiculosdependenciasPK().getMatricula(),
+                    sdf.format(vehiculoDependencia.getTbvehiculosdependenciasPK().getFechainicio()),
+                    g.toJson(vehiculoDependencia));
+            if (objJSON.length() > 2) {
+                session.setAttribute("statusGuardar", "Se ha finalizado la vinculación con la dependencia");
+                session.setAttribute("statusCodigo", "OK");
+            } else {
+                session.setAttribute("statusGuardar", "Error al momento de finalizar el vínculo con la depenencia");
+                session.setAttribute("statusCodigo", "KO");
+            }
+            response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=guardarStatus");
+        } else if (opc.equals("eliminardependencia")) {
+            String jsonvehdep = (String) session.getAttribute("jsonvehdep");
+            session.setAttribute("jsonvehdep", null);
+            String objJSON = swVehiculoDependencia.eliminarVehiculoDependencia(jsonvehdep);
+            String result = "";
+            if (objJSON.equals("OK")) {
+                result += " Se ha eliminado correctamente ";
+                session.setAttribute("statusCodigo", "OK");
+            } else {
+                result += " No se ha podido eliminar a la dependencia ";
+                session.setAttribute("statusCodigo", "KO");
+            }
+            session.setAttribute("statusGuardar", result);
+            response.sendRedirect("vehiculoControlador.jsp?opc=mostrar&accion=guardarStatus");
         } else if (opc.equals("addRevisionM")) {
             g = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
             String placa = (String) session.getAttribute("placaRM");

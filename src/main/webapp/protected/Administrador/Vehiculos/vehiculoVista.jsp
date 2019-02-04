@@ -1,3 +1,7 @@
+<%@page import="ugt.vehiculosdependencias.iu.VehiculosDependenciasIU"%>
+<%@page import="ugt.entidades.Tbvehiculosdependencias"%>
+<%@page import="ugt.entidades.Tbentidad"%>
+<%@page import="ugt.entidades.iu.EntidadesIU"%>
 <%@page import="com.google.gson.GsonBuilder"%>
 <%@page import="ugt.entidades.Tbrevisionesmecanicas"%>
 <%@page import="java.text.SimpleDateFormat"%>
@@ -58,7 +62,7 @@
             session.setAttribute("pdf64", null);
             if (result != null) {
                 response.setContentType("text/plain");
-                response.getWriter().write("{\"respuesta\":\""+result+"\"}");
+                response.getWriter().write("{\"respuesta\":\"" + result + "\"}");
             } else {
                 response.setContentType("text/plain");
                 response.getWriter().write("{\"respuesta\":\"vacio\"}");
@@ -201,7 +205,7 @@
                 </a>
             </li>
             <li>
-                <a id="mnCondOcup" href="#" onclick="">
+                <a id="mnCondOcup" href="#" onclick="addModalDependencia('modGeneralVehiculo', 'jqgridVehiculo')">
                     <span class="fa-stack fa-lg"></i><i class="fa fa-university fa-stack-2x"></i></span>Dependencias
                 </a>
             </li>
@@ -235,8 +239,8 @@
     </div> 
 </div>
 <script>
-$(document).ready(function () {
-  $("#addDisco").keydown(function (e) {
+    $(document).ready(function () {
+        $("#addDisco").keydown(function (e) {
             // Allow: backspace, delete, tab, escape and enter
             if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
                     // Allow: Ctrl+A
@@ -250,8 +254,8 @@ $(document).ready(function () {
                     if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
                         e.preventDefault();
                     }
-                });  
-  $("#addMotor").keydown(function (e) {
+                });
+        $("#addMotor").keydown(function (e) {
             // Allow: backspace, delete, tab, escape and enter
             if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
                     // Allow: Ctrl+A
@@ -265,8 +269,8 @@ $(document).ready(function () {
                     if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
                         e.preventDefault();
                     }
-                });  
-  $("#addAnio").keydown(function (e) {
+                });
+        $("#addAnio").keydown(function (e) {
             // Allow: backspace, delete, tab, escape and enter
             if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110]) !== -1 ||
                     // Allow: Ctrl+A
@@ -280,8 +284,8 @@ $(document).ready(function () {
                     if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
                         e.preventDefault();
                     }
-                });  
-});
+                });
+    });
 </script>
 <%
 } else if (accion.equals("tableVehiculosUnlock")) {
@@ -529,8 +533,137 @@ $(document).ready(function () {
     <button type="button" class="btn btn-default" data-dismiss="modal" id="modGeneralVehiculo_Cerrar" onclick="cerrarModRevisionM('modGeneralVehiculo')"><i class="fa fa-times-circle"></i> Cerrar</button>
 </div>
 <%
+} else if (accion.equals("modDependencia")) {
+    String matricula = (String) session.getAttribute("placaRM");
+    session.setAttribute("placaRM", null);
+    EntidadesIU entidadesIU = (EntidadesIU) session.getAttribute("entidadesRM");
+    session.setAttribute("entidadesRM", null);
+%>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="modalLicenciaTitulo">Vehículo <%=matricula%>| Dependencia </h4>
+</div>
+<div class="modal-body">
+    <input type="hidden" value="<%=matricula%>" id="placaRM">
+    <ul class="nav nav-tabs nav-tabs-right">
+        <li class="active"><a href="#tabitem1" data-toggle="tab"><i class="fa fa-plus fa-2x"></i>  Agregar dependencia</a></li>
+        <li><a href="#tabitem2" data-toggle="tab" onclick="fncVerVehiculoDependencias('tabitem2', '<%=matricula%>')"><i class="fa fa-eye fa-2x text-center"></i>  Historial dependencias</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="tabitem1">
+            <form id="formAddGU_E_R" class="form-horizontal" role="form" onsubmit="fncAddVhiculoDependencia(this.id, 'modGeneralVehiculo', '<%=matricula%>');return false;">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="addGUEntidad" >Entidad</label>
+                    <div class="col-sm-10">
+                        <select name="tbentidad" class="select2" id="addGUEntidad" data-live-search="true" required>
+                            <%
+                                if (entidadesIU != null) {
+                                    G = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+                                    out.println("<option disabled value='' selected hidden>--Escoja una entidad --</option>");
+                                    for (Tbentidad entidad : entidadesIU.getLista()) {
+                                        if (entidad.getIdpadre() != null) {
+                                            String opcion = "<option data-tokens='" + entidad.getCodigoentidad()
+                                                    + "' data-json='" + G.toJson(entidad) + "'> "
+                                                    + entidad.getCodigoentidad() + " - " + entidad.getNombre();
+                                            opcion += " pertenece a: " + entidad.getIdpadre().getCodigoentidad();
+                                            opcion += " </option>";
+                                            out.println(opcion);
+                                        }
+                                    }
+                                }
+                            %>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="addGUfechainicio" >Fecha inicio</label>
+                    <div class="col-sm-10">
+                        <input id="addGUfechainicio" type="date" class="form-control" value="" required>
+                    </div>
+                </div>
+                <hr>
+                <div class="text-right">
+                    <button type="submit" class="btn btn-success" id="btnAddGU_E_R"><i class="fa fa-check-circle"></i> Agregar </button>
+                </div>
+            </form>
+        </div>
+        <div class="tab-pane fade" id="tabitem2">
+            <div id="jqgrid-wrapper">
+                <table id="tableDependenciaVver" class="table table-hover">
+                    <thead>        
+                        <tr>            
+                            <th>Entidad</th>         
+                            <th>Vehiculo</th>         
+                            <th>Fecha inicio</th>       
+                            <th>Fecha Fin</th>       
+                            <th>Acciones</th>       
+                        </tr>   
+                    </thead> 
+                    <tbody>
+                    </tbody>
+                </table>
+                <div id="tableDependenciaVver-pager"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal" id="modGeneralVehiculo_Cerrar"><i class="fa fa-times-circle"></i> Cerrar</button>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#addGUEntidad').select2();
+    });
+</script>
+<%
+} else if (accion.equals("divModalVerVehiculoEntida")) {
+    VehiculosDependenciasIU vehiculodepenencia = (VehiculosDependenciasIU) session.getAttribute("vehiculoDependencia");
+    session.setAttribute("vehiculoDependencia", null);
+%>
+<div id="jqgrid-wrapper">
+    <%
+        if (vehiculodepenencia != null) {
+    %>
+    <table id="tableEntidadRolVer" class="table table-striped table-condensed">
+        <thead>        
+            <tr>            
+                <th>Entidad</th>         
+                <th>Vehiculo</th>          
+                <th>F Inicio</th>       
+                <th>F Fin</th>       
+                <th>Acciones</th>       
+            </tr>   
+        </thead> 
+        <tbody>
+            <%
+                SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+                int count = 0;
+                G = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss-05:00").create();
+                for (Tbvehiculosdependencias aux : vehiculodepenencia.getLista()) {
+                    out.println("    <input id='row" + count + "' type='hidden' value='' data-json='" + G.toJson(aux) + "'/>");
+                    out.println("    <tr>");
+                    out.println("        <td>" + aux.getTbentidad().getCodigoentidad() + "</td>");
+                    out.println("        <td>" + aux.getTbvehiculos().getDisco() + " " + aux.getTbvehiculos().getPlaca() + "</td>");
+                    out.println("        <td>" + sf.format(aux.getTbvehiculosdependenciasPK().getFechainicio()) + "</td>");
+                    String ffin = (aux.getFechafin() == null) ? "" : sf.format(aux.getFechafin());
+                    out.println("        <td>" + ffin + "</td>");
+                    out.println("        <td><button id='delV-E-T'onclick=\"fncEliminarGU_V_E('" + count + "')\" class='btn btn-danger' title='Elimninar vehiculo dependencia'><i class='fa fa-trash'></i></button>");
+                    if (ffin.length() == 0) {
+                        out.println("        <button onclick=\"fncTerminarGU_V_E('" + count++ + "')\" class='btn btn-info' title='Finalizar vehiculo dependencia'><i class='fa fa-exclamation-triangle '></i></button></td>");
+                    }
+                    out.println("    </tr>");
+                }
+            %>
+        </tbody>
+    </table>
+    <%
         } else {
-            out.println("<h3>No se ha encontrado revisiones mecánicas</h3>");
+            out.println("<p>No se le ha asignado a ninguna dependencia</p>");
+        }
+    %>
+</div>
+<%
+        } else {
         }
     } else {
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");

@@ -16,7 +16,7 @@ var fncambiarRol = function (rol) {
             $("#contenidoDinamico").html("<div class='main-header'><h2>UGT</h2><em>ESPOCH</em></div><div id='contenidoInferior' class='main-content'><p class='lead'>Bienvenido.</p></div>");
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -33,7 +33,7 @@ var fncGestionChoferes = function () {
             fncDibujarTablaConductor();
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -50,7 +50,7 @@ var fncGestionChoferesBlock = function () {
             fncDibujarTablaConductorUnlock();
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -67,7 +67,7 @@ var fncGestionAuto = function () {
             fncDibujarTableVehiculos();
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -84,7 +84,7 @@ var fncGestionAutoBlock = function () {
             fncDibujarTableVehiculosUnlock();
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -101,7 +101,7 @@ var fncGestionUsuarios = function () {
             fncDibujarTableGUsuarios("tbUsuariosG");
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -118,7 +118,7 @@ var fncGestionRoles = function () {
             fncDibujarTableGRoles("tbRolesG");
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -135,7 +135,7 @@ var fncAsignarRolOpcion = function () {
 //            fncDibujarTableGRoles("tbRolesG");
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -154,7 +154,7 @@ var fncNuevaSolicitud = function () {
 //            fncConfirmarGenerarSolcitud({nombres_apellidos:"Giovanni Aranda", rol_entidad:"rol de "});
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -171,7 +171,7 @@ var fncMisSolicitudes = function () {
             fncDibujarMisSolicitudes("tbMisSolicitudes");
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -188,7 +188,7 @@ var fncGestionSolicitudesAdmin = function () {
             fncDibujarSolicitudesNuevas("tbSolicitudesNuevas");
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -205,7 +205,7 @@ var fncGestionSProcesadasAdmin = function () {
             fncDibujarSolicitudesProcesadas("tbSolicitudesNuevas");
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -222,7 +222,7 @@ var fncGestionSolicitudesVR = function () {
             fncDibujarSolicitudesAsignadas("tbSolicitudesAsignadas");
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -239,7 +239,7 @@ var fncGestionSAprobadasVR = function () {
             fncDibujarSolicitudesAprobadas("tbSolicitudesAsignadas");
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -256,7 +256,7 @@ var fncGenerarOrden = function () {
             fncDibujarSolSalvoConducto("tbSolSalvoConducto");
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -273,7 +273,7 @@ var fncGeListaOrden = function () {
             fncDibujaListaSalvoConductos("tbSolSalvoConducto");
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -290,7 +290,7 @@ var fncGestionSAprobadasSec = function () {
             fncDibujarSolicitudesAprobadasSecVA("tbSolicitudesAsignadas");
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -307,7 +307,7 @@ var fncReporteConductores = function () {
             fncDibujarGraficosConductores("placeholder");//iniciar grafico
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -324,7 +324,7 @@ var fncReporteVehiculos = function () {
             fncDibujarGraficosVehiculosEstado();//iniciar grafico
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -341,7 +341,7 @@ var fncReporteSolicitudes = function () {
             fncDibujarGraficosSolicitudEstado();//iniciar grafico
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };
@@ -358,7 +358,7 @@ var fncReporteOrdenes = function () {
             fncDibujarGraficosOrdenesEstado();//iniciar grafico
         },
         error: function (error) {
-            window.location.reload();
+            Matar();
         }
     });
 };

@@ -28,6 +28,7 @@ Total_horas_perdidas_aqui = 0-->
             response.sendRedirect("index.jsp");
         }
     } else {
+        session.invalidate();
         response.sendError(501, this.getServletName() + "-> Error no se ha logueado en el sistema contacte con proveedor");
     }
 

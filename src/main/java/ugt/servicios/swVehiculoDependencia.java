@@ -42,6 +42,54 @@ public class swVehiculoDependencia {
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Listar Vehiculos Dependencias JSON">
+    public static String listarVehiculosDependenciasPlaca(String placa) {
+        String result = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/totalvehiculodependencia/" + placa);
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setRequestMethod("GET");
+            conexion.setDoOutput(true);
+            conexion.setDoInput(true);
+            InputStream contenido = (InputStream) conexion.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(contenido, "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result = line;
+            }
+            conexion.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para listar dependencias asignados a un vehiculo ", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Listar Vehiculos Dependencias  con placa y con entidad JSON">
+    public static String listarVehiculosDependenciasPE(String placa, String entidad) {
+        String result = "";
+        try {
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/totalvehiculodependencia/" + placa + "/" + entidad);
+            HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
+            conexion.setRequestMethod("GET");
+            conexion.setDoOutput(true);
+            conexion.setDoInput(true);
+            InputStream contenido = (InputStream) conexion.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(contenido, "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result = line;
+            }
+            conexion.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para buscar dependencia asignados a un vehiculo con placa y entidad", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
+        }
+        return result;
+    }
+    //</editor-fold>
+
     //<editor-fold defaultstate="collapsed" desc="Buscar Vehiculo Dependencia por id compuesto separado"> //solo un json
     public static String listarVehiculoDependenciaIDs(String idDependencia, String matricula, String fechaInicio) {
         String result = "";
@@ -91,30 +139,29 @@ public class swVehiculoDependencia {
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Elinminar vehiculo dependencias con ids compuesto">
-    public static String eliminarVehiculoDependencia(String pk) {
-        String resul = "";
-        URL url = null;
+    public static String eliminarVehiculoDependencia(String json) {
+        String result = "";
         try {
-            url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/tbvehiculosdependencias/" + pk);
-        } catch (MalformedURLException exception) {
-            exception.printStackTrace();
-        }
-        HttpURLConnection httpURLConnection = null;
-        try {
-            httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            httpURLConnection.setRequestMethod("DELETE");
-//            System.out.println(httpURLConnection.getResponseCode());
-            resul = String.valueOf(httpURLConnection.getResponseCode());
-        } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para eliminar un vehiculo con dependencia con pk ", e.getClass().getName() + "****" + e.getMessage());
-            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
-        } finally {
-            if (httpURLConnection != null) {
-                httpURLConnection.disconnect();
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/totalvehiculodependenciadelete");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            connection.setRequestProperty("Accept", "application/json; charset=utf-8");
+            try (OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), "UTF-8")) {
+                writer.write(json);
+                writer.flush();
             }
+            InputStream content = (InputStream) connection.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(content));
+            result = in.readLine();
+            connection.disconnect();
+        } catch (Exception e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en consultar el servicio para eliminar una dependencia", e.getClass().getName() + "****" + e.getMessage());
+            System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());
         }
-        return resul;
+        return result;
     }
     //</editor-fold>
 
@@ -122,7 +169,7 @@ public class swVehiculoDependencia {
     public static String modificarVehiculoDependenciaIDs(String idDependencia, String matricula, String fechainicio, String json) {
         String jsonResponse = "";
         try {
-            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/vehiculosdependencias/" + idDependencia + "/" + matricula + "/" + fechainicio);
+            URL url = new URL(Constantes.PREFIJO + Constantes.IP + "/" + Constantes.SERVICIO + "/ws/totalvehiculodependencia/" + matricula + "/" + idDependencia + "/" + fechainicio);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
             connection.setDoOutput(true);
@@ -143,7 +190,7 @@ public class swVehiculoDependencia {
         }
         return jsonResponse;
     }
-    //</editor-fold> //aun no esta en AD
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Insertar vehiculo condcutor y retornar sus datos JSON">
     public static String insertVehiculoDependencia(String json) throws IOException {

@@ -58,6 +58,28 @@
                 String placa = request.getParameter("placaRM");
                 session.setAttribute("placaRM", placa);
                 response.sendRedirect("vehiculoVista.jsp?accion=" + opc );
+            } else if (opc.equals("modDependencia")) {
+                String placa = request.getParameter("placaRM");
+                session.setAttribute("placaRM", placa);
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc );
+            } else if (opc.equals("divModalVerVehiculoEntida")) {
+                String placa = request.getParameter("placaVD");
+                session.setAttribute("placaVD", placa);
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc );
+            } else if (opc.equals("savedependencia")) {
+                String jsonvehdep = request.getParameter("jsonvehdep");
+                session.setAttribute("jsonvehdep", jsonvehdep);
+                String placaD = request.getParameter("placaD");
+                session.setAttribute("placaD", placaD);
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc);
+            } else if (opc.equals("modificardependencia")) {
+                String jsonvehdep = request.getParameter("jsonvehdep");
+                session.setAttribute("jsonvehdep", jsonvehdep);
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc);
+            } else if (opc.equals("eliminardependencia")) {
+                String jsonvehdep = request.getParameter("jsonvehdep");
+                session.setAttribute("jsonvehdep", jsonvehdep);
+                response.sendRedirect("vehiculoModelo.jsp?opc=" + opc);
             } else if (opc.equals("jsonRevisionMecanica")) {
                 String placa = request.getParameter("matricula");
                 session.setAttribute("matricula", placa);
