@@ -128,9 +128,28 @@
                             <p class="lead">UNIDAD DE GESTIÓN DE TRASNPORTE.</p>
                             <p><h4><i class="fa fa-university"></i> Escuela Superior Politécnica del Chimborazo.</h4></p>
                         </div>
-                        <div class="text-justify">
+                        <div class="text-center">
                             <div><a href="">Requistos Contraloría</a></div>
                             <div><a href="../../assets/docs/reglamento_S_P_E.pdf">Reglamento de bienes publicos</a></div>
+                        </div>
+                        <div class="text-justify">
+                            <ul class="list-group">
+                                <li class="list-group-item">Documentación Solicitud Vehicular con 48 Horas de anticipación</li>
+                                <li class="list-group-item">Oficio solicitud vehicular dirigido a la Dr. Rosa del Carmen Saeteros Hernández Ph.D Vicerrectora Administrativa</li>
+                                <li class="list-group-item">Lugar de Destino</li>
+                                <li class="list-group-item">Objetivo del viaje con fines Institucionales</li>
+                                <li class="list-group-item">Nombres y cedulas de las personas institucionales que integran la comision</li>
+                                <li class="list-group-item">Lista de estudiantes validados en el sistema <span class="text bg-danger">(de ser el caso)</span></li>
+                                <li class="list-group-item">Lista de pasajeros institucionales validados en el sistema <span class="text bg-danger">(de ser el caso)</span></li>
+                                <li class="list-group-item">Carta de compromiso deslindando a la ESPOCH de las responsabilidades con las firmas respectivas</li>
+                                <li class="list-group-item">Planificación previa autorizada</li>
+                                <li class="list-group-item">Vistos buenos de las delegaciones respectivas</li>
+                                <li class="list-group-item">Invitacion <span class="text bg-danger">(de ser el caso)</span></li>
+                                <li class="list-group-item">Resolución del consejo politécnico <span class="text bg-danger">(de ser el caso)</span></li>
+                                <li class="list-group-item">Para giras estudiantiles con el respectivo visto bueno de la autoridad inmediata</li>
+                                <li class="list-group-item">Pronostico del tiempo <a href="http://www.serviciometeorologico.gob.ec/pronostico-del-tiempo-y-productos/">INAMHI</a></li>
+                                <li class="list-group-item">Las copias deben contar con sus respectivas certificaciones</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
