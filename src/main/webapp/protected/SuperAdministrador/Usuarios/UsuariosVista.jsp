@@ -249,9 +249,9 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label" for="addGUfechainicio" >Cargo</label>
+                    <label class="col-sm-2 control-label" for="addGUCargo" >Cargo</label>
                     <div class="col-sm-10">
-                        <select name="tbroles" class="form-control selectpicker" id="addGURol" data-live-search="true" required>
+                        <select name="tbroles" class="form-control selectpicker" id="addGUCargo" data-live-search="true" required>
                             <%
                                 out.println("<option disabled value='' selected hidden>--Escoja un cargo --</option>");
                                 if (cargosIU != null) {

@@ -100,6 +100,7 @@ var fncObjFormGU_E_R = function (idForm) {
     delete rowData.actions;
     var tbUsuarioEntidad = {
         fechainicio: $("#" + idForm + " #addGUfechainicio").val(),
+        cargo: $("#" + idForm + " #addGUCargo").val(),
         tbentidad: JSON.parse($("#" + idForm + " #addGUEntidad").find(':selected').attr('data-json')),
         tbroles: JSON.parse($("#" + idForm + " #addGURol").find(':selected').attr('data-json')),
         tbusuarios: rowData,

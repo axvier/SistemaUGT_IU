@@ -34,7 +34,7 @@ public class Tbviajepasajero implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected TbviajepasajeroPK tbviajepasajeroPK;
-    @Size(max = 15)
+    @Size(max = 100)
     @Column(name = "tipo")
     private String tipo;
     @JoinColumn(name = "cedulap", referencedColumnName = "cedula", insertable = false, updatable = false)

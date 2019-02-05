@@ -105,6 +105,7 @@ var fncGuardarSolicitud = function () {
     var motivo = JSON.stringify(fncObjSeccionMotivo());
     var viaje = JSON.stringify(fncObjSeccionViaje());
     var listaPasajeros = JSON.stringify(fnObjSeccionPasajeros());
+    console.log(listaPasajeros);
     var extension = $("#form1 #addExtension").val();
     var $dropZone = Dropzone.forElement("#drop_pdfs");
     $dropZone.on('sendingmultiple', function (data, xhr, formData) {
@@ -213,7 +214,7 @@ var fncAddPasajeroManual = function (idform) {
             + "                                                    <div class='form-group entidad'>"
             + "                                                        <label for='ticket-name' class='col-sm-2 control-label'>Entidad</label>"
             + "                                                        <div class='col-sm-6'>"
-            + "                                                            <input type='text' id='entidad' class='form-control' placeholder='Describa la entidad a la que pertenece' value='' aria-describedby='basic-addon1'>"
+            + "                                                            <input type='text' id='entidad' maxlength='19' class='form-control' placeholder='Describa la entidad a la que pertenece' value='' aria-describedby='basic-addon1'>"
             + "                                                        </div>"
             + "                                                    </div>"
             + "                                                    <div class='form-group descripcion'>"
@@ -227,7 +228,7 @@ var fncAddPasajeroManual = function (idform) {
             + "                                                        <div class='col-sm-6'>"
             + "                                                            <select id='tipo' class='form-control' title='Tipo de pasajero'>"
             + "                                                               <option disabled value='' selected hidden> -Escoja uno- </option>"
-            + "                                                               <option data-tokens='Servidor institucional' value='Normal'>Servidor institucional</option>"
+            + "                                                               <option data-tokens='Servidor institucional' value='Servidor institucional'>Servidor institucional</option>"
             + "                                                               <option data-tokens='Comision' value='Comision'>Comision</option>"
             + "                                                               <option data-tokens='Expositor' value='Expositor'>Expositor</option>"
             + "                                                               <option data-tokens='Invitado' value='Invitado'>Invitado</option>"
@@ -286,7 +287,7 @@ var fncCatchSelectS = function (idform) {
             + "                                                    <div class='form-group entidad'>"
             + "                                                        <label for='ticket-name' class='col-sm-2 control-label'>Entidad</label>"
             + "                                                        <div class='col-sm-6'>"
-            + "                                                            <input type='text' id='entidad' class='form-control' placeholder='Describa la entidad a la que pertenece' value='" + obj.entidad + "' aria-describedby='basic-addon1'>"
+            + "                                                            <input type='text' id='entidad' maxlength='19' class='form-control' placeholder='Describa la entidad a la que pertenece' value='" + obj.entidad + "' aria-describedby='basic-addon1'>"
             + "                                                        </div>"
             + "                                                    </div>"
             + "                                                    <div class='form-group descripcion'>"
@@ -300,7 +301,7 @@ var fncCatchSelectS = function (idform) {
             + "                                                        <div class='col-sm-6'>"
             + "                                                            <select id='tipo' class='form-control' title='Tipo de pasajero'>"
             + "                                                               <option disabled value='' selected hidden> -Escoja uno- </option>"
-            + "                                                               <option data-tokens='Servidor institucional' value='Normal'>Servidor institucional</option>"
+            + "                                                               <option data-tokens='Servidor institucional' value='Servidor institucional'>Servidor institucional</option>"
             + "                                                               <option data-tokens='Comision' value='Comision'>Comision</option>"
             + "                                                               <option data-tokens='Expositor' value='Expositor'>Expositor</option>"
             + "                                                               <option data-tokens='Invitado' value='Invitado'>Invitado</option>"

@@ -96,7 +96,7 @@
             session.setAttribute("cedulasw", null);
             String tiposw = (String) session.getAttribute("tiposw");
             session.setAttribute("tiposw", null);
-            cedulasw = cedulasw.substring(0,9)+"-"+cedulasw.substring(9,cedulasw.length());
+            cedulasw = cedulasw.substring(0, 9) + "-" + cedulasw.substring(9, cedulasw.length());
             String jsonPasajeros = (tiposw.equals("estudiante")) ? swPasajero.findPasajeroEstudianteSW(cedulasw) : swPasajero.findPasajeroInstitutoSW(cedulasw);
             if (jsonPasajeros.length() > 2) {
                 JSONObject childJSONObject = new JSONObject(jsonPasajeros);
@@ -212,19 +212,20 @@
 //                                status += "Error al ingresar pasajero " + viajePasajeroAux.getTbpasajeros().getCedula();
                         }
                         //pregutnamos si ya existe la seccion viaje de la solicitud con su id
-                        if (solfull.getViaje() != null) {
-                            if (solfull.getViaje().getIdviaje() != 0) {
-                                //insertamos la seccion viaje
-                                viajePasajeroAux.setTbseccionviajes(solfull.getViaje());
-                                //insertamos los pks
-                                viajePasajeroAux.setTbviajepasajeroPK(new TbviajepasajeroPK(solfull.getViaje().getIdviaje(), viajePasajeroAux.getTbpasajeros().getCedula()));
-                                // insertamos la relacion pasajero y viaje
-                                String objJSONViajePasajero = swViajePasajero.insertViajePasajero(g.toJson(viajePasajeroAux));
-                                if (objJSONViajePasajero.length() > 2) { // si se ingreso correctamente
-                                    pasajerosAux.add(g.fromJson(objJSONViajePasajero, Tbviajepasajero.class));
-                                } else { // si no enviar mensaje 
-                                    status += " ERROR PASAJERO " + viajePasajeroAux.getTbpasajeros().getCedula() + ", ";
-                                }
+                        if (solfull.getViaje() != null && solfull.getViaje().getIdviaje() != 0) {
+                            //insertamos la seccion viaje
+                            viajePasajeroAux.setTbseccionviajes(solfull.getViaje());
+                            //insertamos los pks
+                            TbviajepasajeroPK pks = new TbviajepasajeroPK();
+                            pks.setCedulap(viajePasajeroAux.getTbpasajeros().getCedula());
+                            pks.setIdviaje(solfull.getViaje().getIdviaje());
+                            viajePasajeroAux.setTbviajepasajeroPK(pks);
+                            // insertamos la relacion pasajero y viaje
+                            String objJSONViajePasajero = swViajePasajero.insertViajePasajero(g.toJson(viajePasajeroAux));
+                            if (objJSONViajePasajero.length() > 2) { // si se ingreso correctamente
+                                pasajerosAux.add(g.fromJson(objJSONViajePasajero, Tbviajepasajero.class));
+                            } else { // si no enviar mensaje 
+                                status += " ERROR PASAJERO " + viajePasajeroAux.getTbpasajeros().getCedula() + ", ";
                             }
                         }
                     }
