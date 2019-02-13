@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import ugt.entidades.Tbusuariosentidad;
 import ugt.entidades.Tbviajepasajero;
 import ugt.pdf.iu.Encabezado;
+import ugt.pdf.iu.EncabezadoReportes;
 import ugt.servicios.swLogin;
 import ugt.servicios.swSeccionSolicitante;
 import ugt.servicios.swSolicitudes;
@@ -76,7 +77,7 @@ public class SolicitudPDF extends Solicitudesfull {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         //fin de caso de servidor
         try {
-            Encabezado event = new Encabezado(new Paragraph(espacion + getEntidadSolicitante().toUpperCase(), fcambria_NormalWhite()));
+            EncabezadoReportes event = new EncabezadoReportes(new Paragraph(getEntidadSolicitante().toUpperCase(),fcambria_NormalWhite()), (float) 550,90);
             Document document = new Document(PageSize.A4, 60, 55, 20 + event.getTableHeight(), 45);
 //            Document document = new Document();
             //inicio Para caso de prueba en consola

@@ -37,7 +37,10 @@ public class EncabezadoReportes extends PdfPageEventHelper {
         table.setLockedWidth(true);
         table.setWidths(new float[]{12, 88});
         // instancia de la imgen localicada en src
-        Image imagen = Image.getInstance(Constantes.SRCIMGENORDEN);
+        String data1 = Constantes.SRCIMGENORDEN;
+        String base64Image1 = data1.split(",")[1];
+        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image1);
+        Image imagen = Image.getInstance(imageBytes);
         imagen.scaleToFit(75, 95);
         PdfPCell espoch = new PdfPCell(imagen);
         espoch.setBorder(Rectangle.NO_BORDER);
@@ -68,33 +71,36 @@ public class EncabezadoReportes extends PdfPageEventHelper {
 
         tableHeight = table.getTotalHeight();
     }
-    
+
     public EncabezadoReportes(Paragraph parrafo, float ancho, float alto) throws BadElementException, IOException, DocumentException {
         table = new PdfPTable(2);
         //establecer el ancho
         table.setTotalWidth(ancho);
         table.setLockedWidth(true);
-        table.setWidths(new float[]{(14*alto/100), (88*alto/100)});
+        table.setWidths(new float[]{(14 * alto / 100), (88 * alto / 100)});
         // instancia de la imgen localicada en src
-        Image imagen = Image.getInstance(Constantes.SRCIMGENORDEN);
-        imagen.scaleToFit((75*alto)/100, (100*alto)/100);
+        String data1 = Constantes.SRCIMGENORDEN;
+        String base64Image1 = data1.split(",")[1];
+        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image1);
+        Image imagen = Image.getInstance(imageBytes);
+        imagen.scaleToFit((75 * alto) / 100, (100 * alto) / 100);
         PdfPCell espoch = new PdfPCell(imagen);
         espoch.setBorder(Rectangle.NO_BORDER);
-        espoch.setPaddingRight(14*alto/100);
+        espoch.setPaddingRight(14 * alto / 100);
         espoch.setVerticalAlignment(Element.ALIGN_LEFT);
         espoch.setRowspan(3);
         table.addCell(espoch);
         //instancia de la celda para la tabla
-        espoch = new PdfPCell(new Paragraph("ESPOCH", timesNewRomanBold(30*alto/100)));
+        espoch = new PdfPCell(new Paragraph("ESPOCH", timesNewRomanBold(30 * alto / 100)));
         espoch.setBorder(Rectangle.NO_BORDER);
         espoch.setHorizontalAlignment(Element.ALIGN_LEFT);
-        espoch.setPaddingTop(10*alto/100);
+        espoch.setPaddingTop(10 * alto / 100);
         table.addCell(espoch);
 
-        espoch = new PdfPCell(new Paragraph("ESCUELA SUPERIOR POLITÉCNICA DEL CHIMBORAZO", timesNewRomanNormal((float) (14*alto/100))));
+        espoch = new PdfPCell(new Paragraph("ESCUELA SUPERIOR POLITÉCNICA DEL CHIMBORAZO", timesNewRomanNormal((float) (14 * alto / 100))));
         espoch.setBorder(Rectangle.NO_BORDER);
         espoch.setHorizontalAlignment(Element.ALIGN_LEFT);
-        espoch.setPaddingBottom(10*alto/100);
+        espoch.setPaddingBottom(10 * alto / 100);
         table.addCell(espoch);
 
         espoch = new PdfPCell();

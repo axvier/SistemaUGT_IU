@@ -92,7 +92,7 @@
                         </li>
                         <li style='cursor: pointer'>
                             <a href="protected/PaginasPrincipales/Requisitospdfs.jsp">
-                                <i class="fa fa-file-pdf-o"></i><span class="text">PDF requisitos</span>
+                                <i class="fa fa-file-pdf-o"></i><span class="text">Requisitos</span>
                             </a>
                         </li>
                     </ul>

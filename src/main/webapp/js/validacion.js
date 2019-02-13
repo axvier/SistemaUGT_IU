@@ -11,7 +11,8 @@ function Matar() {
             if (Tipo.length === 14) {
                 //INSTITUCIONAL
                 var urlLogout = "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=";
-                var urlQuery = "https://seguridad.espoch.edu.ec/cas/logout?service=https://localhost:8181/SistemaUGT_IU/index.jsp"; //Local
+//                var urlQuery = "https://seguridad.espoch.edu.ec/cas/logout?service=https://localhost:8181/SistemaUGT_IU/index.jsp"; //Local
+                var urlQuery = "https://seguridad.espoch.edu.ec/cas/logout?service=https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU"; //Local
 //                var urlQuery = "https://seguridad.espoch.edu.ec/cas/logout?service=https://contratacion.espoch.edu.ec/certificadosIU/index.jsp"; //Insitucional
                 urlQuery = encodeURI(urlQuery);
                 window.location.replace(urlLogout + urlQuery);
@@ -19,7 +20,8 @@ function Matar() {
             if (Tipo.length === 6) {
                 //BD CENTRALIZADA
                 var urlLogout = "https://seguridad.espoch.edu.ec/cas/logout?service=";
-                var urlQuery = "https://localhost:8181/EjemploDticIU/index.jsp"; //Local
+//                var urlQuery = "https://localhost:8181/EjemploDticIU/index.jsp"; //Local
+                var urlQuery = "https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU"; //Local
 //                var urlQuery = "https://contratacion.espoch.edu.ec/certificadosIU/index.jsp"; //Institucional
                 urlQuery = encodeURI(urlQuery);
                 window.location.replace(urlLogout + urlQuery);
@@ -39,7 +41,8 @@ function Matar2() {
             if (Tipo.length === 14) {
                 //INSTITUCIONAL
                 var urlLogout = "https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=";
-                var urlQuery = "https://seguridad.espoch.edu.ec/cas/logout?service=https://localhost:8181/SistemaUGT_IU/index.jsp"; //Local
+                var urlQuery = "https://seguridad.espoch.edu.ec/cas/logout?service=https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU"; //Local
+//                var urlQuery = "https://seguridad.espoch.edu.ec/cas/logout?service=https://localhost:8181/SistemaUGT_IU/index.jsp"; //Local
 //                var urlQuery = "https://seguridad.espoch.edu.ec/cas/logout?service=https://contratacion.espoch.edu.ec/certificadosIU/index.jsp"; //Insitucional
                 urlQuery = encodeURI(urlQuery);
                 window.location.replace(urlLogout + urlQuery);
@@ -47,7 +50,8 @@ function Matar2() {
             if (Tipo.length === 6) {
                 //BD CENTRALIZADA
                 var urlLogout = "https://seguridad.espoch.edu.ec/cas/logout?service=";
-                var urlQuery = "https://localhost:8181/EjemploDticIU/index.jsp"; //Local
+                var urlQuery = "https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU"; //Local
+//                var urlQuery = "https://localhost:8181/EjemploDticIU/index.jsp"; //Local
 //                var urlQuery = "https://contratacion.espoch.edu.ec/certificadosIU/index.jsp"; //Institucional
                 urlQuery = encodeURI(urlQuery);
                 window.location.replace(urlLogout + urlQuery);

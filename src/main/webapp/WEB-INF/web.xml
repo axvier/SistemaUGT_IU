@@ -27,7 +27,8 @@
         <init-param>
             <param-name>serverName</param-name>
             <!--<param-value>https://xxxxxx.espoch.edu.ec</param-value>-->
-            <param-value>https://localhost:8181/EjemploDticIU</param-value>
+            <!--<param-value>https://localhost:8181/EjemploDticIU</param-value>-->
+            <param-value>https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU</param-value>
         </init-param>
     </filter>
     <filter>
@@ -40,7 +41,8 @@
         <init-param>
             <param-name>serverName</param-name>
             <!--<param-value>https://xxxxxx.espoch.edu.ec</param-value>-->
-            <param-value>https://localhost:8181/EjemploDticIU</param-value>
+            <!--<param-value>https://localhost:8181/EjemploDticIU</param-value>-->
+            <param-value>https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU</param-value>
         </init-param>
         <init-param>
             <param-name>redirectAfterValidation</param-name>

@@ -1,4 +1,6 @@
 var idcont = 0;
+//var servidor = "https://localhost:8181/SistemaUGT_IU";
+var servidor = "https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU";
 
 var fncBusquedaPasajero = function (idform) {
     var cedula = $("#search_solicitud_pasajeros").val();
@@ -537,7 +539,7 @@ var fnccvalidarfechasalida = function (idorigen, iddestino) {
 
 var fncDibujarMisSolicitudes = function (idtabla) {
     var $grid = $("#" + idtabla);
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudUsuario";
+    var urlbase = servidor + "/protected/Solicitudes/SolicitudUsuario";
     $grid.jqGrid({
         url: urlbase + "/SolicitudControlador.jsp?opc=misSolicitudes",
         editurl: urlbase + "/SolicitudControlador.jsp",

@@ -3,7 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+//var servidor = "https://localhost:8181/SistemaUGT_IU";
+var servidor = "https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU";
 
 function eliminarConductor(objeto) {
     var cedula = $(objeto).attr('id'); //
@@ -92,13 +93,13 @@ var fncaddNuevoConductor = function () {
 
 var cambiarJQGConductor = function (tipo) {
     var $grid = $("#jqgridChofer");
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Conductores";
+    var urlbase = servidor + "/protected/Administrador/Conductores";
     $grid.jqGrid('clearGridData');
     $grid.jqGrid('setGridParam', {url: urlbase + "/conductorControlador.jsp?opc=" + tipo, datatype: "json"}).trigger("reloadGrid");
 };
 
 var verLicenciaConductor = function () {
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Conductores";
+    var urlbase = servidor + "/protected/Administrador/Conductores";
     var $grid = $("#jqgridChofer");
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
@@ -138,7 +139,7 @@ var fncAddVehiculosConductor = function () {
                 var msj = (datos.respuesta !== null) ? datos.respuesta : "Se han guardado correctamente";
                 swalTimer("Asignación Vehículo-Conductor", msj, "info");
 //                $("#jqgridChofer").jqGrid('setGridParam', {datatype: 'json'}).trigger('reloadGrid');
-//                $("#miModal").modal('hide');
+                $("#modGeneralCond").modal('hide');
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 alert("Error de ejecucion -> " + textStatus + jqXHR);
@@ -158,19 +159,32 @@ var fnObjAsignacionVC = function () {
     var vehiculosConductoresL = {};
     var lista = [];
     for (var i = 0; i < total; i++) {
-        var Tbvehiculosconductores = {
-            tbconductores: rowData,
-            tbvehiculos: JSON.parse($("#vehiculoAsigAdd" + i).find(':selected').attr('data-jsonvehiculo')),
-            tbvehiculosconductoresPK: {
-                cedula: rowData.cedula,
-                fechainicio: $("#fechainicio" + i).val() + "T00:00:00-05:00",
-                matricula: JSON.parse($("#vehiculoAsigAdd" + i).find(':selected').attr('data-jsonvehiculo')).placa
+        if (typeof $("#vehiculoAsigAdd" + i).val() !== "undefined" && $("#vehiculoAsigAdd" + i).val() !== null) {
+            var Tbvehiculosconductores = {
+                tbconductores: rowData,
+                tbvehiculos: JSON.parse($("#vehiculoAsigAdd" + i).find(':selected').attr('data-jsonvehiculo')),
+                tbvehiculosconductoresPK: {
+                    cedula: rowData.cedula,
+                    fechainicio: $("#fechainicio" + i).val() + "T00:00:00-05:00",
+                    matricula: JSON.parse($("#vehiculoAsigAdd" + i).find(':selected').attr('data-jsonvehiculo')).placa
+                }
+            };
+            if ($("#fechafin" + i).val() !== "") {
+                Tbvehiculosconductores.fechafin = $("#fechafin" + i).val() + "T00:00:00-05:00";
             }
-        };
-        if ($("#fechafin" + i).val() !== "") {
-            Tbvehiculosconductores.fechafin = $("#fechafin" + i).val() + "T00:00:00-05:00";
+            if (typeof $("#fechainicio" + i).val() === "undefined" || $("#fechainicio" + i).val() === null || $("#fechainicio" + i).val() === "") {
+                var d = new Date();
+
+                var month = d.getMonth() + 1;
+                var day = d.getDate();
+
+                var output = d.getFullYear() + '-' +
+                        (month < 10 ? '0' : '') + month + '-' +
+                        (day < 10 ? '0' : '') + day;
+                Tbvehiculosconductores.tbvehiculosconductoresPK.fechainicio = output + "T00:00:00-05:00";
+            }
+            lista.push(Tbvehiculosconductores);
         }
-        lista.push(Tbvehiculosconductores);
     }
     vehiculosConductoresL.lista = lista;
     return vehiculosConductoresL;
@@ -179,7 +193,7 @@ var fnObjAsignacionVC = function () {
 var fncDibujarTablaConductor = function () {
     var ced = "S/";
     var $grid = $("#jqgridChofer");
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Conductores";
+    var urlbase = servidor + "/protected/Administrador/Conductores";
     $grid.jqGrid({
         url: urlbase + "/conductorControlador.jsp?opc=jsonConductores",
         editurl: urlbase + "/conductorControlador.jsp",
@@ -379,7 +393,11 @@ var fncDibujarTablaConductor = function () {
                 editoptions: {
                     dataInit: function (elem) {
                         setTimeout(function () {
-                            $(elem).numeric(false, function() { alert("Integers only"); this.value = ""; this.focus(); });
+                            $(elem).numeric(false, function () {
+                                alert("Integers only");
+                                this.value = "";
+                                this.focus();
+                            });
                         }, 100);
                     }
 
@@ -424,7 +442,7 @@ var fncDibujarTablaConductor = function () {
 
 var fncDibujarTablaConductorUnlock = function () {
     var $grid = $("#jqgridChoferBloq");
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Conductores";
+    var urlbase = servidor + "/protected/Administrador/Conductores";
     $grid.jqGrid({
         url: urlbase + "/conductorControlador.jsp?opc=jsonConducBloc",
         editurl: urlbase + "/conductorControlador.jsp",

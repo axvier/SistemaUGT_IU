@@ -410,7 +410,11 @@
                     <div class="step-pane" id="step5">
                         <div class="row widget-content">
                             <div class="col-sm-4">
-                                <p style="font-size: 20px;">Espacio para subir un archivoPDF que debe contener los siguientes requerimientos escaneados: 
+                                <div class="bg-danger text-white text-center">
+                                    <i class="fa fa-warning fa-2x text-danger"></i><h4> Solo se debe subir un archivo PDF que contenga todos los requisitos.</h4>
+                                    <h4>Puede combinar sus PDFs en este <a target="_blank" rel="noopener noreferrer" href="https://www.ilovepdf.com/es/unir_pdf">enlace</a>.</h4>
+                                </div>
+                                <p style="font-size: 20px;">Espacio para subir un archivoPDF con los siguientes requerimientos escaneados: 
                                 <ul>
                                     <li>
                                         Carta de compromiso deslindando a la espoch de resposabilidad
@@ -431,10 +435,10 @@
                                         Giras estudiantiles con el respectivo visto bueno
                                     </li>
                                     <li>
-                                        <a target="_blank" rel="noopener noreferrer" href="http://www.serviciometeorologico.gob.ec/">Pronóstico del tiempo INAMHI</a>
+                                        <a target="_blank" rel="noopener noreferrer" href="http://www.serviciometeorologico.gob.ec/pronostico-del-tiempo-y-productos/">Pronóstico del tiempo INAMHI</a>
                                     </li>
                                     <li>
-                                        Copias certificadas que sean fiel copia del original
+                                        Copiasd debidamente certificadas
                                     </li>
                                 </ul></p>
                             </div>

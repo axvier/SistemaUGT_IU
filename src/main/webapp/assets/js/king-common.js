@@ -50,7 +50,7 @@ $(document).ready(function () {
         $('#submenu1').css("display", "none");
         $('#ico1').removeClass("fa fa-angle-down");
         $('#ico1').addClass("fa fa-angle-left");
-
+        
         if (!$('.left-sidebar').hasClass('minified')) {
             $('.left-sidebar').addClass('minified');
             $('.content-wrapper').addClass('expanded');

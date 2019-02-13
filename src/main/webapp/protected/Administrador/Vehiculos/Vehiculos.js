@@ -3,7 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+//var servidor = "https://localhost:8181/SistemaUGT_IU";
+var servidor = "https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU";
 
 function eliminarVehiculo(objeto) {
     var placa = $(objeto).attr('id');
@@ -127,7 +128,7 @@ var fncaddNuevoVehiculo = function () {
 
 var cambiarJQGVehiculo = function (tipo) {
     var $grid = $("#jqgridVehiculo");
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Vehiculos";
+    var urlbase = servidor + "/protected/Administrador/Vehiculos";
     $grid.jqGrid('clearGridData');
     $grid.jqGrid('setGridParam', {url: urlbase + "/vehiculoControlador.jsp?opc=" + tipo, datatype: "json"}).trigger("reloadGrid");
 };
@@ -171,7 +172,7 @@ var fncAddVhiculoDependencia = function (idForm, idmodal, idplaca) {
             url: "../protected/Administrador/Vehiculos/vehiculoControlador.jsp",
             type: "POST",
             dataType: "text",
-            data: {opc: "savedependencia", jsonvehdep: json,placaD : idplaca},
+            data: {opc: "savedependencia", jsonvehdep: json, placaD: idplaca},
             success: function (datos) {
                 datos = JSON.parse(datos);
                 if (datos.codigo === "OK") {
@@ -180,7 +181,7 @@ var fncAddVhiculoDependencia = function (idForm, idmodal, idplaca) {
                 if (datos.codigo === "KO") {
                     swalTimer("Dependencia estado", datos.respuesta, "error");
                 }
-                $("#"+idmodal).modal("hide");
+                $("#" + idmodal).modal("hide");
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 alert("Error de ejecucion -> " + textStatus + jqXHR);
@@ -219,11 +220,11 @@ var fncEliminarGU_V_E = function (str) {
             success: function (datos) {
                 datos = JSON.parse(datos);
                 if (datos.codigo === "OK") {
-                    swalTimer("Entidad y rol", datos.codigo + " - " + datos.respuesta, "success");
-                    fncVerVehiculoDependencias('tabitem2',JSON.parse(json).tbvehiculos.placa);
+                    swalTimer("Vehículo - Entidad", datos.codigo + " - " + datos.respuesta, "success");
+                    fncVerVehiculoDependencias('tabitem2', JSON.parse(json).tbvehiculos.placa);
                 }
                 if (datos.codigo === "KO") {
-                    swalTimer("Entidad estado", datos.codigo + " - " + datos.respuesta, "error");
+                    swalTimer("Vehículo - Entidad", datos.codigo + " - " + datos.respuesta, "error");
                 }
                 $("#modGeneralVehiculo").modal("hide");
             },
@@ -247,11 +248,11 @@ var fncTerminarGU_V_E = function (str) {
             success: function (datos) {
                 datos = JSON.parse(datos);
                 if (datos.codigo === "OK") {
-                    swalTimer("Entidad-rol", datos.codigo + " - " + datos.respuesta, "success");
-                    fncVerVehiculoDependencias('tabitem2',JSON.parse(json).tbvehiculos.placa);
+                    swalTimer("Vehículo - Entidad", datos.codigo + " - " + datos.respuesta, "success");
+                    fncVerVehiculoDependencias('tabitem2', JSON.parse(json).tbvehiculos.placa);
                 }
                 if (datos.codigo === "KO") {
-                    swalTimer("Entidad-rol", datos.codigo + " - " + datos.respuesta, "error");
+                    swalTimer("Vehículo - Entidad", datos.codigo + " - " + datos.respuesta, "error");
                 }
                 $("#modGeneralVehiculo").modal("hide");
             },
@@ -295,7 +296,7 @@ var downloadPDFOrden = function (idPDFRevision) {
 
 var countRM = 0;
 var fncVerListaRevisiones = function (idDivModal, idtabla) {
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Vehiculos";
+    var urlbase = servidor+"/protected/Administrador/Vehiculos";
     var $grid = $("#jqgridVehiculo");
     var selRowId = $grid.jqGrid("getGridParam", "selrow");
     if (selRowId !== null) {
@@ -462,7 +463,7 @@ var fncAddRevisionMForm = function (idform, idmodal) {
 var fncDibujarTableVehiculos = function () {
     countRM = 0;
     var $grid = $("#jqgridVehiculo");
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Vehiculos";
+    var urlbase = servidor+"/protected/Administrador/Vehiculos";
     $grid.jqGrid({
         url: urlbase + "/vehiculoControlador.jsp?opc=jsonVehiculos",
         editurl: urlbase + "/vehiculoControlador.jsp",
@@ -470,7 +471,7 @@ var fncDibujarTableVehiculos = function () {
         datatype: "json",
         colModel: [
             {label: 'Placa', name: 'placa', key: true, width: 80, editable: false},
-            {label: 'Disco', name: 'disco', width: 60, editable: true, editrules: {required: true}},
+            {label: 'Disco', name: 'disco', width: 60, editable: true, editrules: {required: true}, sorttype: 'integer'},
             {label: 'Marca', name: 'marca', width: 110, editable: true, editrules: {required: true}},
             {label: 'Modelo', name: 'modelo', width: 110, editable: true, editrules: {required: true}},
             {label: 'Motor', name: 'motor', width: 110, editable: true, editrules: {required: true}},
@@ -589,7 +590,7 @@ var fncDibujarTableVehiculos = function () {
 
 var fncDibujarTableVehiculosUnlock = function () {
     var $grid = $("#jqgridVehiculoUnlock");
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/Vehiculos";
+    var urlbase = servidor+"/protected/Administrador/Vehiculos";
     $grid.jqGrid({
         url: urlbase + "/vehiculoControlador.jsp?opc=jsonVehiculosUnlock",
         editurl: urlbase + "/vehiculoControlador.jsp",
@@ -597,7 +598,7 @@ var fncDibujarTableVehiculosUnlock = function () {
         datatype: "json",
         colModel: [
             {label: 'Placa', name: 'placa', key: true, width: 80, editable: false},
-            {label: 'Disco', name: 'disco', width: 60, editable: true},
+            {label: 'Disco', name: 'disco', width: 60, editable: true, sorttype: 'integer'},
             {label: 'Marca', name: 'marca', width: 150, editable: true},
             {label: 'Modelo', name: 'modelo', width: 150, editable: true},
             {label: 'Año', name: 'anio', width: 100},

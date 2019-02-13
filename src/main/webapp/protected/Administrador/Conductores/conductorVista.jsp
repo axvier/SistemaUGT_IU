@@ -373,9 +373,9 @@
                     <%
                         for (int i = 0; i < vahiculosXpersona; i++) {
                     %>
-                    <div class="input-group">
+                    <div class="input-group" style="height: 30px;">
                         <span class="input-group-addon" style="background:  #ECF790;">Vehiculo <%=i%></span>
-                        <select name="vehiculo" class="form-control selectpicker" data-live-search="true" id="vehiculoAsigAdd<%=i%>" required>
+                        <select name="vehiculo" class="selectpicker autosSelect" data-live-search="true" id="vehiculoAsigAdd<%=i%>">
                             <%
                                 String valor = "";
                                 String date1 = "";
@@ -435,7 +435,7 @@
                                 <span>Inicio</span>
                             </label>
                         </span>
-                        <input id="fechainicio<%=i%>" type="date" class="form-control" value="<%=date1%>" required>
+                        <input id="fechainicio<%=i%>" type="date" class="form-control" value="<%=date1%>">
                         <span class="input-group-addon" style="background:  #ECF790;">
                             <label class="fancy-checkbox">
                                 <span>Fin</span>
@@ -459,6 +459,11 @@
 <div class="modal-footer">
     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times-circle"></i> Cerrar</button>
 </div>
+<script>
+$(document).ready(function () {
+        $('.autosSelect').select2();
+    });
+</script>
 <%
         }
     } else {

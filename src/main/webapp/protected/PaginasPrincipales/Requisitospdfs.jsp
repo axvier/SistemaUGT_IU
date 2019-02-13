@@ -97,7 +97,7 @@
                         </li>
                         <li style='cursor: pointer'>
                             <a href="Requisitospdfs.jsp">
-                                <i class="fa fa-file-pdf-o"></i><span class="text">PDF normas</span>
+                                <i class="fa fa-file-pdf-o"></i><span class="text">Requisitos</span>
                             </a>
                         </li>
                     </ul>
@@ -128,10 +128,10 @@
                             <p class="lead">UNIDAD DE GESTIÓN DE TRASNPORTE.</p>
                             <p><h4><i class="fa fa-university"></i> Escuela Superior Politécnica del Chimborazo.</h4></p>
                         </div>
-                        <div class="text-center">
-                            <div><a href="">Requistos Contraloría</a></div>
-                            <div><a href="../../assets/docs/reglamento_S_P_E.pdf">Reglamento de bienes publicos</a></div>
-                        </div>
+<!--                        <div class="text-center">
+                            <div><a href="#">Requistos Contraloría</a></div>
+                            <div><a href="#">Reglamento de bienes publicos</a></div>
+                        </div>-->
                         <div class="text-justify">
                             <ul class="list-group">
                                 <li class="list-group-item">Documentación Solicitud Vehicular con 48 Horas de anticipación</li>

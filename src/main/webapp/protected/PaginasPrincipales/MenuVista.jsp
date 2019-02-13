@@ -47,7 +47,7 @@
                     for (Tbopciones opc : opcionesIU.getLista()) {
                         if (opc.getIdopcion().equals(1) && opc.getEstado().equals("Habilitado")) {//Menu Gestión roles - usuarios - opciones
             %>
-            <li style='cursor: pointer'>
+            <li id="submenu1" style='cursor: pointer'>
                 <a onclick="fncGestionUsuarios();">
                     <i class="fa fa-users"></i><span class="text">Usuarios</span>
                 </a>
@@ -66,7 +66,7 @@
                 }
                 if (opc.getIdopcion().equals(2) && opc.getEstado().equals("Habilitado")) {//Menu Gestión Entidades
             %>
-            <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-tasks"></i><span class="text">Gestión entidad</span>
+<!--            <li id="<% //out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-tasks"></i><span class="text">Gestión entidad</span>
                     <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
                 <ul id="submenu1" class="sub-menu ">
                     <li style='cursor: pointer'>
@@ -80,12 +80,12 @@
                         </a>
                     </li>
                 </ul>
-            </li>
+            </li>-->
             <%
                 }
                 if (opc.getIdopcion().equals(3) && opc.getEstado().equals("Habilitado")) {//Menu Gestión Conductores
             %>
-            <li id="<%out.println(opc.getIdopcion());%>"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-users"></i><span class="text">Gestión conductores</span>
+            <li id="menu1"><a href="#" class="js-sub-menu-toggle"><i class="fa fa-users"></i><span class="text">Gestión conductores</span>
                     <i id="ico1" class="toggle-icon fa fa-angle-left"></i></a>
                 <ul id="submenu1" class="sub-menu ">
                     <li style='cursor: pointer'>

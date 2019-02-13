@@ -151,7 +151,10 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
              * Logo Espoch
              */
             PdfPCell celEspoch = new PdfPCell();
-            Image imgespoch = Image.getInstance(Constantes.SRCIMGENORDEN);
+            String data1 = Constantes.SRCIMGENORDEN;
+            String base64Image1 = data1.split(",")[1];
+            byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image1);
+            Image imgespoch = Image.getInstance(imageBytes);
             imgespoch.scaleToFit(60, 50);
             imgespoch.setAlignment(Element.ALIGN_LEFT);
             celEspoch.setVerticalAlignment(Element.ALIGN_CENTER);
@@ -631,10 +634,10 @@ public class OrdenMovilizacionPDF extends Solicitudesfull {
                         }
                     }
                 }
-                if(this.getPasajeros()!=null && result.getCedula()==null){
+                if (this.getPasajeros() != null && result.getCedula() == null) {
                     result = this.getPasajeros().get(0).getTbpasajeros();
-                } 
-           }
+                }
+            }
         } catch (Exception e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "problemas en extraer total de pasajeros ", e.getClass().getName() + "****" + e.getMessage());
             System.err.println("ERROR: " + e.getClass().getName() + "***" + e.getMessage());

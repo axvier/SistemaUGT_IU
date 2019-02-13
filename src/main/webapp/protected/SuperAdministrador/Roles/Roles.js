@@ -3,6 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+//var servidor = "https://localhost:8181/SistemaUGT_IU";
+var servidor = "https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU";
 
 var addModalGRol = function (idmodal) {
     $('#' + idmodal + ' .modal-content').load('../protected/SuperAdministrador/Roles/RolesControlador.jsp?opc=modalAddRol', function () {
@@ -105,10 +107,10 @@ var objAddGR_Opc = function (idForm) {
     var lista = [];
     $('#' + idForm + ' #chksOpcionesRol input[type=checkbox]:checked').each(function () {
         var tbopciones = {
-            accion:$(this).attr("data-accion"),
-            descripcion:$(this).attr("data-descripcion"),
-            estado:$(this).attr("data-estado"),
-            idopcion:$(this).val()
+            accion: $(this).attr("data-accion"),
+            descripcion: $(this).attr("data-descripcion"),
+            estado: $(this).attr("data-estado"),
+            idopcion: $(this).val()
         };
         lista.push(tbopciones);
     });
@@ -117,7 +119,7 @@ var objAddGR_Opc = function (idForm) {
 
 var fncDibujarTableGRoles = function (idtabla) {
     var $grid = $("#" + idtabla);
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/SuperAdministrador/Roles";
+    var urlbase = servidor + "/protected/SuperAdministrador/Roles";
     $grid.jqGrid({
         url: urlbase + "/RolesControlador.jsp?opc=jsonRoles",
         editurl: urlbase + "/RolesControlador.jsp",

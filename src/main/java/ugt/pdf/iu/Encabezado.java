@@ -67,7 +67,10 @@ public class Encabezado extends PdfPageEventHelper {
         espoch.setBorder(Rectangle.NO_BORDER);
         espoch.setVerticalAlignment(Element.ALIGN_BOTTOM);
         // instancia de la imgen localicada en src
-        Image imagen = Image.getInstance(Constantes.ENCABEZADOIMG);
+        String data1 = Constantes.ENCABEZADOIMG;
+        String base64Image1 = data1.split(",")[1];
+        byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image1);
+        Image imagen = Image.getInstance(imageBytes);
         // add imagen en la celda
         espoch.setCellEvent(new ImageBackgroundEvent(imagen));
         espoch.setFixedHeight(580 * imagen.getScaledHeight() / imagen.getScaledWidth());

@@ -1,4 +1,6 @@
-var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Administrador/SalvoConductos";
+//var servidor = "https://localhost:8181/SistemaUGT_IU";
+var servidor = "https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU";
+var urlbase = servidor + "/protected/Administrador/SalvoConductos";
 
 var fncRecargarJQGenerarSalvo = function (idtabla) {
     var urltabla = "/SalvoConductosControlador.jsp?opc=jsonSolicitudesEstado&estadoSolicitudes=aprobada";

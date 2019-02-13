@@ -3,6 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+//var servidor = "https://localhost:8181/SistemaUGT_IU";
+var servidor = "https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU";
+
 var fncAddGUsuario = function (idForm) {
     var obj = objAddGUser(idForm);
     if (obj !== null) {
@@ -173,14 +176,14 @@ var fncRecargatTGUsuarios = function (idtabla) {
         var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
         grid.jqGrid("setGridWidth", newWidth, true);
     }).trigger('resize');
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/SuperAdministrador/Usuarios";
+    var urlbase = servidor + "/protected/SuperAdministrador/Usuarios";
     $grid.jqGrid('clearGridData');
     $grid.jqGrid('setGridParam', {url: urlbase + "/UsuariosControlador.jsp?opc=jsonUsuarios", datatype: "json"}).trigger("reloadGrid");
 };
 
 var fncDibujarTableGUsuarios = function (idtabla) {
     var $grid = $("#" + idtabla);
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/SuperAdministrador/Usuarios";
+    var urlbase = servidor + "/protected/SuperAdministrador/Usuarios";
     $grid.jqGrid({
         url: urlbase + "/UsuariosControlador.jsp?opc=jsonUsuarios",
         editurl: urlbase + "/UsuariosControlador.jsp",

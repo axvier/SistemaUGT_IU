@@ -1,3 +1,6 @@
+//var servidor = "https://localhost:8181/SistemaUGT_IU";
+var servidor = "https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU";
+
 var fncAprobarSolictud = function (idmodal, idtabla, rowid) {
     var data = $("#" + idtabla + " #" + rowid).attr("data-json");
     var objeto = JSON.parse(decodeURI(data));
@@ -52,7 +55,7 @@ var fncRechazarSolicitud = function (idmodal, idtabla, rowid) {
                     datos = JSON.parse(datos);
                     if (datos.codigo === "OK") {
                         swalNormal("Solicitud " + solicitud.numero, datos.codigo + " Se ha rechazado la solicitud esta sera enviada de nuevo al usuario que la solcito", "success");
-                        var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestionVA";
+                        var urlbase = servidor + "/protected/Solicitudes/SolicitudesGestionVA";
                         var urltabla = "/SolicitudesVAControlador.jsp?opc=jsonSolicitudesAsignada";
                         fncRecargarJQG(idtabla, urlbase, urltabla);
                     } else {
@@ -90,7 +93,7 @@ var fncRechazarSolicitudAprobadas = function (idmodal, idtabla, rowid) {
                     datos = JSON.parse(datos);
                     if (datos.codigo === "OK") {
                         swalNormal("Solicitud " + solicitud.numero, datos.codigo + " Se ha rechazado la solicitud esta sera enviada de nuevo al usuario que la solcito", "success");
-                        var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestionVA";
+                        var urlbase = servidor + "/protected/Solicitudes/SolicitudesGestionVA";
                         var urltabla = "/SolicitudesVAControlador.jsp?opc=jsonSolicitudesAprobadas";
                         fncRecargarJQG(idtabla, urlbase, urltabla);
                     } else {
@@ -108,13 +111,13 @@ var fncRechazarSolicitudAprobadas = function (idmodal, idtabla, rowid) {
 };
 
 var fncRecargarJQGSolicitud = function (idtabla) {
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestionVA";
+    var urlbase = servidor + "/protected/Solicitudes/SolicitudesGestionVA";
     var urltabla = "/SolicitudesVAControlador.jsp?opc=jsonSolicitudesAsignada";
     fncRecargarJQG(idtabla, urlbase, urltabla);
 };
 
 var fncRecargarJQGSolicitudaprobadas = function (idtabla) {
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestionVA";
+    var urlbase = servidor + "/protected/Solicitudes/SolicitudesGestionVA";
     var urltabla = "/SolicitudesVAControlador.jsp?opc=jsonSolicitudesAprobadas";
     fncRecargarJQG(idtabla, urlbase, urltabla);
 };
@@ -192,7 +195,7 @@ var fncCombinarPDFSec = function (idform, idmodal) {
 
 var fncDibujarSolicitudesAsignadas = function (idtabla) {
     var $grid = $("#" + idtabla);
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestionVA";
+    var urlbase = servidor + "/protected/Solicitudes/SolicitudesGestionVA";
     $grid.jqGrid({
         url: urlbase + "/SolicitudesVAControlador.jsp?opc=jsonSolicitudesAsignada",
         editurl: urlbase + "/SolicitudesVAControlador.jsp",
@@ -474,7 +477,7 @@ var fncDibujarSolicitudesAsignadas = function (idtabla) {
 var fncDibujarSolicitudesAprobadas = function (idtabla) {
     $(".list-inline #mnRefresh").attr("onclick", "fncRecargarJQGSolicitudaprobadas('" + idtabla + "')");
     var $grid = $("#" + idtabla);
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestionVA";
+    var urlbase = servidor + "/protected/Solicitudes/SolicitudesGestionVA";
     $grid.jqGrid({
         url: urlbase + "/SolicitudesVAControlador.jsp?opc=jsonSolicitudesAprobadas",
         editurl: urlbase + "/SolicitudesVAControlador.jsp",
@@ -752,7 +755,7 @@ var fncDibujarSolicitudesAprobadas = function (idtabla) {
 var fncDibujarSolicitudesAprobadasSecVA = function (idtabla) {
     $(".list-inline #mnRefresh").attr("onclick", "fncRecargarJQGSolicitudaprobadas('" + idtabla + "')");
     var $grid = $("#" + idtabla);
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestionVA";
+    var urlbase = servidor + "/protected/Solicitudes/SolicitudesGestionVA";
     $grid.jqGrid({
         url: urlbase + "/SolicitudesVAControlador.jsp?opc=jsonSolicitudesAprobadas",
         editurl: urlbase + "/SolicitudesVAControlador.jsp",

@@ -1,3 +1,6 @@
+//var servidor = "https://localhost:8181/SistemaUGT_IU";
+var servidor = "https://pruebas.espoch.edu.ec:8181/SistemaUGT_IU";
+
 var contagenda = 0;
 var viajeSolicitudModal = function (idmodal, idtabla, data) {
 //    var data = $("#" + idtabla + " #" + selRowId).attr("data-json");
@@ -176,7 +179,7 @@ var fncCombinarPDF = function (idform, idmodal) {
                         } else {
                             swalNormal("Completado", datos.respuesta, "error");
                         }
-                        fncRecargarJQG("tbSolicitudesNuevas", "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion",
+                        fncRecargarJQG("tbSolicitudesNuevas", servidor + "/protected/Solicitudes/SolicitudesGestion",
                                 "/SolicitudesControlador.jsp?opc=jsonSolicitudesProcesadas");
                     },
                     error: function () {
@@ -311,7 +314,7 @@ var fncFechaRecibidoSolicitud = function (idmodal, idtabla, data) {
                         var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
                         grid.jqGrid("setGridWidth", newWidth, true);
                     }).trigger('resize');
-                    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
+                    var urlbase = servidor + "/protected/Solicitudes/SolicitudesGestion";
                     $grid.jqGrid('clearGridData');
                     $grid.jqGrid('setGridParam', {url: urlbase + "/SolicitudesControlador.jsp?opc=jsonSolicitudesEnviados", datatype: "json"}).trigger("reloadGrid");
                 } else {
@@ -351,7 +354,7 @@ var fnVistoBuenoSolicitud = function (idmodal, idtabla, data) {
                         var grid = $grid, newWidth = $grid.closest(".ui-jqgrid").parent().width();
                         grid.jqGrid("setGridWidth", newWidth, true);
                     }).trigger('resize');
-                    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
+                    var urlbase = servidor + "/protected/Solicitudes/SolicitudesGestion";
                     $grid.jqGrid('clearGridData');
                     $grid.jqGrid('setGridParam', {url: urlbase + "/SolicitudesControlador.jsp?opc=jsonSolicitudesEnviados", datatype: "json"}).trigger("reloadGrid");
                 } else {
@@ -600,8 +603,8 @@ var fncModVerDatosConductor = function (idSelecConductor, idmodal) {
         swalNormal("Error", "Seleccione un conductor primero", "error");
 };
 
-var fncModConsultarReg= function(idmodal,idtabla,rowid){
-     var data = $("#" + idtabla + " #" + rowid).attr("data-json");
+var fncModConsultarReg = function (idmodal, idtabla, rowid) {
+    var data = $("#" + idtabla + " #" + rowid).attr("data-json");
     var objeto = JSON.parse(decodeURI(data));
     if (typeof objeto !== "undefined") {
         var solicitud = {};
@@ -618,8 +621,8 @@ var fncModConsultarReg= function(idmodal,idtabla,rowid){
             data: {opc: "modRegDocsSol", jsonSolicitud: JSON.stringify(solicitud)},
             contentType: "application/json ; charset=UTF-8",
             success: function (datos) {
-                $("#"+idmodal+" .modal-content").html(datos);
-                $("#"+idmodal).modal("show");
+                $("#" + idmodal + " .modal-content").html(datos);
+                $("#" + idmodal).modal("show");
             },
             error: function (error) {
                 location.reload();
@@ -631,7 +634,7 @@ var fncModConsultarReg= function(idmodal,idtabla,rowid){
 var fncDibujarSolicitudesNuevas = function (idtabla) {
     contagenda = 0;
     var $grid = $("#" + idtabla);
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
+    var urlbase = servidor + "/protected/Solicitudes/SolicitudesGestion";
     $grid.jqGrid({
         url: urlbase + "/SolicitudesControlador.jsp?opc=jsonSolicitudesEnviados",
         editurl: urlbase + "/SolicitudesControlador.jsp",
@@ -919,7 +922,7 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
     var estados = 'rechazada:rechazada;aprobadaUGT:aprobadaUGT;finalizada:finalizada;enviado:enviado;eliminada:eliminado';
     contagenda = 0;
     var $grid = $("#" + idtabla);
-    var urlbase = "https://localhost:8181/SistemaUGT_IU/protected/Solicitudes/SolicitudesGestion";
+    var urlbase = servidor + "/protected/Solicitudes/SolicitudesGestion";
     $grid.jqGrid({
         url: urlbase + "/SolicitudesControlador.jsp?opc=jsonSolicitudesProcesadas",
         editurl: urlbase + "/SolicitudesControlador.jsp",
@@ -1136,22 +1139,22 @@ var fncDibujarSolicitudesProcesadas = function (idtabla) {
                         var i = 0;
 //                        var data = JSON.parse(decodeURI($("#" + idtabla + " #" + $(this).closest("tr.jqgrow").attr("id")).attr("data-json")));
 //                        if (data.estado === "aprobada" || data.estado === "finalizada") {
-                            /**creación y asignación del botón para comibnar un pdf con los demas requerimientos*/
-                            $("<div>",
-                                    {
-                                        title: "Ver registro de cambios",
-                                        id: "btnVerReg_" + i,
-                                        onmouseover: "jQuery(this).addClass('ui-state-hover');",
-                                        onmouseout: "jQuery(this).removeClass('ui-state-hover');",
-                                        click: function (e) {
-                                            fncModConsultarReg('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("id"));
-                                        }
+                        /**creación y asignación del botón para comibnar un pdf con los demas requerimientos*/
+                        $("<div>",
+                                {
+                                    title: "Ver registro de cambios",
+                                    id: "btnVerReg_" + i,
+                                    onmouseover: "jQuery(this).addClass('ui-state-hover');",
+                                    onmouseout: "jQuery(this).removeClass('ui-state-hover');",
+                                    click: function (e) {
+                                        fncModConsultarReg('modGeneralSolicitudes', idtabla, $(e.target).closest("tr.jqgrow").attr("id"));
                                     }
+                                }
 
-                            ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
-                                    .addClass("ui-pg-div ui-inline-edit")
-                                    .append('<span class="fa fa-info-circle fa-2x text-primary"></span>')
-                                    .appendTo($(this).children("div"));
+                        ).css({"margin-left": "12px", "margin-top": "2px", float: "left", cursor: "pointer"})
+                                .addClass("ui-pg-div ui-inline-edit")
+                                .append('<span class="fa fa-info-circle fa-2x text-primary"></span>')
+                                .appendTo($(this).children("div"));
 //                        }
                         i++;
                     });

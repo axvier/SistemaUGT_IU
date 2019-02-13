@@ -188,7 +188,7 @@
 
             }
         } else if (opc.equals("modDependencia")) {
-            String arrayEntidades = swEntidad.listarEntidadesSinVehiculo();
+            String arrayEntidades = swEntidad.listarEntidades();
             if (arrayEntidades.length() > 2) {
                 EntidadesIU entidadesIU = new EntidadesIU();
                 entidadesIU.setListaJSON(arrayEntidades);

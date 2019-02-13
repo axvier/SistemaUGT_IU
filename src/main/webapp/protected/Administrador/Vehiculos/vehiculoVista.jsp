@@ -561,14 +561,16 @@
                                     G = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
                                     out.println("<option disabled value='' selected hidden>--Escoja una entidad --</option>");
                                     for (Tbentidad entidad : entidadesIU.getLista()) {
-                                        if (entidad.getIdpadre() != null) {
-                                            String opcion = "<option data-tokens='" + entidad.getCodigoentidad()
-                                                    + "' data-json='" + G.toJson(entidad) + "'> "
-                                                    + entidad.getCodigoentidad() + " - " + entidad.getNombre();
+//                                        if (entidad.getIdpadre() != null) {
+                                        String opcion = "<option data-tokens='" + entidad.getCodigoentidad()
+                                                + "' data-json='" + G.toJson(entidad) + "'> "
+                                                + entidad.getCodigoentidad() + " - " + entidad.getNombre();
+                                        if (entidad.getIdpadre() != null && entidad.getIdpadre().getCodigoentidad() != null) {
                                             opcion += " pertenece a: " + entidad.getIdpadre().getCodigoentidad();
-                                            opcion += " </option>";
-                                            out.println(opcion);
                                         }
+                                        opcion += " </option>";
+                                        out.println(opcion);
+//                                        }
                                     }
                                 }
                             %>
